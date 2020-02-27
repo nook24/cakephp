@@ -47,12 +47,14 @@ jobs:
     - name: Get composer cache directory
       id: composer-cache
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
     - name: Cache composer dependencies
       uses: actions/cache@v1
+      env:
+        KEY_DATE=$(date '+%y-%m')
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-        restore-keys: ${{ runner.os }}-composer-
+        key: ${{ runner.os }}-composer-${{ env.KEY_DATE }}-${{ hashFiles('composer.json') }}
 
     - name: Install packages
       run: |
@@ -115,12 +117,12 @@ jobs:
     - name: Get composer cache directory
       id: composer-cache
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
     - name: Cache composer dependencies
       uses: actions/cache@v1
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-        restore-keys: ${{ runner.os }}-composer-
+        key: ${{ runner.os }}-composer-${{ date "+%y-%m" }}-${{ hashFiles('composer.json') }}
 
     - name: composer install
       run: composer install
@@ -150,12 +152,12 @@ jobs:
     - name: Get composer cache directory
       id: composer-cache
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
     - name: Cache composer dependencies
       uses: actions/cache@v1
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-        restore-keys: ${{ runner.os }}-composer-
+        key: ${{ runner.os }}-composer-${{ date "+%y-%m" }}-${{ hashFiles('composer.json') }}
 
     - name: composer install
       run: composer install
@@ -182,12 +184,12 @@ jobs:
     - name: Get composer cache directory
       id: composer-cache
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
     - name: Cache composer dependencies
       uses: actions/cache@v1
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-        restore-keys: ${{ runner.os }}-composer-
+        key: ${{ runner.os }}-composer-${{ date "+%y-%m" }}-${{ hashFiles('composer.json') }}
 
     - name: composer install
       run: composer stan-setup
