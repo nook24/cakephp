@@ -30,6 +30,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManagerInterface;
 use Cake\Http\ContentTypeNegotiation;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\MimeType;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Log\LogTrait;
@@ -183,7 +184,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * View classes for content negotiation.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected array $viewClasses = [];
 
@@ -310,7 +311,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
             return $this->components()->get($name);
         }
 
-        /** @var array<int, array<string, mixed>> $trace */
         $trace = debug_backtrace();
         $parts = explode('\\', static::class);
         trigger_error(
@@ -318,10 +318,10 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
                 'Undefined property `%s::$%s` in `%s` on line %s',
                 array_pop($parts),
                 $name,
-                $trace[0]['file'],
-                $trace[0]['line']
+                $trace[0]['file'] ?? 'unknown',
+                $trace[0]['line'] ?? 'unknown',
             ),
-            E_USER_NOTICE
+            E_USER_NOTICE,
         );
 
         return null;
@@ -507,8 +507,8 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
                 sprintf(
                     'Controller actions can only return Response instance or null. '
                     . 'Got %s instead.',
-                    get_debug_type($result)
-                )
+                    get_debug_type($result),
+                ),
             );
         } elseif ($this->isAutoRenderEnabled()) {
             $result = $this->render();
@@ -646,7 +646,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
         if ($status < 300 || $status > 399) {
             throw new InvalidArgumentException(
                 sprintf('Invalid status code `%s`. It should be within the range ' .
-                    '`300` - `399` for redirect responses.', $status)
+                    '`300` - `399` for redirect responses.', $status),
             );
         }
 
@@ -720,7 +720,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * to participate in negotiation.
      *
      * @see \Cake\Http\ContentTypeNegotiation
-     * @return list<string>
+     * @return array<string>
      */
     public function viewClasses(): array
     {
@@ -733,7 +733,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * Each view class must implement the `getContentType()` hook method
      * to participate in negotiation.
      *
-     * @param list<string> $viewClasses View classes list.
+     * @param array<string> $viewClasses View classes list.
      * @return $this
      * @see \Cake\Http\ContentTypeNegotiation
      * @since 4.5.0
@@ -776,7 +776,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
         // Prefer the _ext route parameter if it is defined.
         $ext = $request->getParam('_ext');
         if ($ext) {
-            $extTypes = (array)($this->response->getMimeType($ext) ?: []);
+            $extTypes = MimeType::getMimeTypes($ext) ?? [];
             foreach ($extTypes as $extType) {
                 if (isset($typeMap[$extType])) {
                     return $typeMap[$extType];
@@ -808,7 +808,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
         if ($this->request->getParam('prefix')) {
             $prefixes = array_map(
                 'Cake\Utility\Inflector::camelize',
-                explode('/', $this->request->getParam('prefix'))
+                explode('/', $this->request->getParam('prefix')),
             );
             $templatePath = implode(DIRECTORY_SEPARATOR, $prefixes) . DIRECTORY_SEPARATOR . $templatePath;
         }
@@ -874,7 +874,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
         $paginator = App::className(
             $settings['className'] ?? NumericPaginator::class,
             'Datasource/Paging',
-            'Paginator'
+            'Paginator',
         );
         $paginator = new $paginator();
         unset($settings['className']);
@@ -883,7 +883,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
             $results = $paginator->paginate(
                 $object,
                 $this->request->getQueryParams(),
-                $settings
+                $settings,
             );
         } catch (PageOutOfBoundsException $exception) {
             throw new NotFoundException(null, null, $exception);

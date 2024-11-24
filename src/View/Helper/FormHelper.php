@@ -171,7 +171,7 @@ class FormHelper extends Helper
     /**
      * Default widgets
      *
-     * @var array<string, list<string>>
+     * @var array<string, array<string>>
      */
     protected array $_defaultWidgets = [
         'button' => ['Button'],
@@ -239,7 +239,7 @@ class FormHelper extends Helper
      * `data` - Corresponds to request data (POST/PUT).
      * `query` - Corresponds to request's query string.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected array $supportedValueSources = ['context', 'data', 'query'];
 
@@ -247,14 +247,14 @@ class FormHelper extends Helper
      * The default sources.
      *
      * @see FormHelper::$supportedValueSources for valid values.
-     * @var list<string>
+     * @var array<string>
      */
     protected array $_valueSources = ['data', 'context'];
 
     /**
      * Grouped input types.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected array $_groupedInputTypes = ['radio', 'multicheckbox'];
 
@@ -624,7 +624,7 @@ class FormHelper extends Helper
 
         $tokenData = $this->formProtector->buildTokenData(
             $this->_lastAction,
-            $this->_getFormProtectorSessionId()
+            $this->_getFormProtectorSessionId(),
         );
         $tokenFields = array_merge($secureAttributes, [
             'value' => $tokenData['fields'],
@@ -683,7 +683,7 @@ class FormHelper extends Helper
         $session->start();
 
         return new FormProtector(
-            $formTokenData
+            $formTokenData,
         );
     }
 
@@ -917,7 +917,7 @@ class FormHelper extends Helper
 
         $fields = array_merge(
             Hash::normalize($modelFields),
-            Hash::normalize($fields)
+            Hash::normalize($fields),
         );
 
         return $this->controls($fields, $options);
@@ -985,7 +985,7 @@ class FormHelper extends Helper
         if ($legend === true) {
             $isCreate = $context->isCreate();
             $modelName = Inflector::humanize(
-                Inflector::singularize($this->_View->getRequest()->getParam('controller'))
+                Inflector::singularize($this->_View->getRequest()->getParam('controller')),
             );
             if (!$isCreate) {
                 $legend = __d('cake', 'Edit {0}', $modelName);
@@ -1065,9 +1065,15 @@ class FormHelper extends Helper
         }
         unset($options['templates']);
 
-        // Hidden inputs don't need aria.
-        // Multiple checkboxes can't have aria generated for them at this layer.
-        if ($options['type'] !== 'hidden' && ($options['type'] !== 'select' && !isset($options['multiple']))) {
+        $addAriaAttributes = true;
+        if (
+            $options['type'] === 'hidden' ||
+            ($options['type'] === 'select' && isset($options['multiple']) && $options['multiple'] === 'checkbox')
+        ) {
+            $addAriaAttributes = false;
+        }
+
+        if ($addAriaAttributes) {
             $isFieldError = $this->isFieldError($fieldName);
             $options += [
                 'aria-invalid' => $isFieldError ? 'true' : null,
@@ -1097,7 +1103,7 @@ class FormHelper extends Helper
             } else {
                 $error = $this->error($fieldName, $options['error']);
             }
-            $errorSuffix = empty($error) ? '' : 'Error';
+            $errorSuffix = $error ? 'Error' : '';
             unset($options['error']);
         }
 
@@ -1224,7 +1230,7 @@ class FormHelper extends Helper
             case 'input':
                 throw new InvalidArgumentException(sprintf(
                     'Invalid type `input` used for field `%s`.',
-                    $fieldName
+                    $fieldName,
                 ));
 
             default:
@@ -1329,7 +1335,7 @@ class FormHelper extends Helper
         $fieldName = array_slice(explode('.', $fieldName), -1)[0];
 
         $varName = Inflector::variable(
-            $pluralize ? Inflector::pluralize($fieldName) : $fieldName
+            $pluralize ? Inflector::pluralize($fieldName) : $fieldName,
         );
         $varOptions = $this->_View->get($varName);
         if (!is_iterable($varOptions)) {
@@ -1591,7 +1597,7 @@ class FormHelper extends Helper
      *   the radio label will be 'empty'. Set this option to a string to control the label value.
      *
      * @param string $fieldName Name of a field, like this "modelname.fieldname"
-     * @param iterable $options Radio button options array.
+     * @param iterable<string, mixed> $options Radio button options array.
      * @param array<string, mixed> $attributes Array of attributes.
      * @return string Completed radio widget set.
      * @link https://book.cakephp.org/5/en/views/helpers/form.html#creating-radio-buttons
@@ -1700,14 +1706,14 @@ class FormHelper extends Helper
 
         $options = $this->_initInputField($fieldName, array_merge(
             $options,
-            ['secure' => static::SECURE_SKIP]
+            ['secure' => static::SECURE_SKIP],
         ));
 
         if ($secure === true && $this->formProtector) {
             $this->formProtector->addField(
                 $options['name'],
                 true,
-                $options['val'] === false ? '0' : (string)$options['val']
+                $options['val'] === false ? '0' : (string)$options['val'],
             );
         }
 
@@ -1971,7 +1977,7 @@ class FormHelper extends Helper
         if (isset($options['name']) && $this->formProtector) {
             $this->formProtector->addField(
                 $options['name'],
-                $options['secure']
+                $options['secure'],
             );
         }
         unset($options['secure']);
@@ -2071,7 +2077,7 @@ class FormHelper extends Helper
      * ```
      *
      * @param string $fieldName Name attribute of the SELECT
-     * @param iterable $options Array of the OPTION elements (as 'value'=>'Text' pairs) to be used in the
+     * @param iterable<string, mixed> $options Array of the OPTION elements (as 'value'=>'Text' pairs) to be used in the
      *   SELECT element
      * @param array<string, mixed> $attributes The HTML attributes of the select element.
      * @return string Formatted SELECT element
@@ -2150,7 +2156,7 @@ class FormHelper extends Helper
      * Can be used in place of a select box with the multiple attribute.
      *
      * @param string $fieldName Name attribute of the SELECT
-     * @param iterable $options Array of the OPTION elements
+     * @param iterable<string, mixed> $options Array of the OPTION elements
      *   (as 'value'=>'Text' pairs) to be used in the checkboxes element.
      * @param array<string, mixed> $attributes The HTML attributes of the select element.
      * @return string Formatted SELECT element
@@ -2422,7 +2428,7 @@ class FormHelper extends Helper
             if (is_array($first)) {
                 $disabled = array_filter(
                     $options['options'],
-                    fn ($i) => in_array($i['value'], $options['disabled'], true)
+                    fn ($i) => in_array($i['value'], $options['disabled'], true),
                 );
 
                 return $disabled !== [];
@@ -2567,7 +2573,7 @@ class FormHelper extends Helper
      *
      * Returns a list, but at least one item, of valid sources, such as: `'context'`, `'data'` and `'query'`.
      *
-     * @return list<string> List of value sources.
+     * @return array<string> List of value sources.
      */
     public function getValueSources(): array
     {
@@ -2577,7 +2583,7 @@ class FormHelper extends Helper
     /**
      * Validate value sources.
      *
-     * @param list<string> $sources A list of strings identifying a source.
+     * @param array<string> $sources A list of strings identifying a source.
      * @return void
      * @throws \InvalidArgumentException If sources list contains invalid value.
      */
@@ -2591,7 +2597,7 @@ class FormHelper extends Helper
             throw new InvalidArgumentException(sprintf(
                 'Invalid value source(s): %s. Valid values are: %s.',
                 implode(', ', $diff),
-                implode(', ', $this->supportedValueSources)
+                implode(', ', $this->supportedValueSources),
             ));
         }
     }
@@ -2603,7 +2609,7 @@ class FormHelper extends Helper
      * Order sets priority.
      *
      * @see FormHelper::$supportedValueSources for valid values.
-     * @param list<string>|string $sources A string or a list of strings identifying a source.
+     * @param array<string>|string $sources A string or a list of strings identifying a source.
      * @return $this
      * @throws \InvalidArgumentException If sources list contains invalid value.
      */

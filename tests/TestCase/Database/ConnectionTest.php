@@ -54,7 +54,7 @@ use function Cake\Core\namespaceSplit;
 class ConnectionTest extends TestCase
 {
     /**
-     * @var list<string>
+     * @var array<string>
      */
     protected array $fixtures = ['core.Things'];
 
@@ -259,6 +259,18 @@ class ConnectionTest extends TestCase
         $this->assertNotSame($connection->getDriver(Connection::ROLE_READ), $connection->getDriver(Connection::ROLE_WRITE));
         $this->assertNotNull($connection->getDriver(Connection::ROLE_READ)->getLogger());
         $this->assertNull($connection->getDriver(Connection::ROLE_WRITE)->getLogger());
+    }
+
+    public function testRole(): void
+    {
+        $this->skipIf(!extension_loaded('pdo_sqlite'), 'Skipping as SQLite extension is missing');
+        $config = ConnectionManager::getConfig('test') + ['read' => [], 'write' => []];
+        $connection = new Connection($config);
+        $this->assertEquals(Connection::ROLE_WRITE, $connection->role());
+
+        $config = ['name' => 'test:read'] + $config;
+        $connection = new Connection($config);
+        $this->assertEquals(Connection::ROLE_READ, $connection->role());
     }
 
     public function testDisabledReadWriteDriver(): void
@@ -811,6 +823,9 @@ class ConnectionTest extends TestCase
         $this->connection->commit();
         $this->assertFalse($this->connection->inTransaction());
 
+        $this->assertFalse($this->connection->commit());
+        $this->assertFalse($this->connection->inTransaction());
+
         $this->connection->begin();
         $this->assertTrue($this->connection->inTransaction());
 
@@ -828,9 +843,12 @@ class ConnectionTest extends TestCase
             $this->connection->getDriver() instanceof Sqlserver,
             'SQLServer fails when this test is included.'
         );
+        $this->connection->enableSavePoints(false);
+        $this->assertFalse($this->connection->isSavePointsEnabled());
 
         $this->connection->enableSavePoints(true);
         $this->skipIf(!$this->connection->isSavePointsEnabled(), "Database driver doesn't support save points");
+        $this->assertTrue($this->connection->isSavePointsEnabled());
 
         $this->connection->begin();
         $this->assertTrue($this->connection->inTransaction());
