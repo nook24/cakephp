@@ -43,10 +43,6 @@ class PhpErrorTest extends TestCase
             [E_USER_DEPRECATED, 'deprecated', LOG_NOTICE],
         ];
 
-        if (version_compare(PHP_VERSION, '8.4.0-dev', '<')) {
-            $return[] = [E_STRICT, 'strict', LOG_NOTICE];
-        }
-
         return $return;
     }
 
