@@ -37,6 +37,9 @@ class EncryptedCookieMiddlewareTest extends TestCase
 
     protected static string $encryptedString;
 
+    /**
+     * @phpstan-ignore method.parentMethodFinalByPhpDoc
+     */
     public function __construct(string $name)
     {
         parent::__construct($name);
