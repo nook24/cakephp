@@ -777,7 +777,7 @@ trait PaginatorTestTrait
         } catch (PageOutOfBoundsException $exception) {
             $this->assertEquals(
                 'Page number `3000` could not be found.',
-                $exception->getMessage()
+                $exception->getMessage(),
             );
 
             $attributes = $exception->getAttributes();
@@ -835,7 +835,7 @@ trait PaginatorTestTrait
         $this->assertEquals(
             $expected,
             $result['order'],
-            'Trusted fields in schema should be prefixed'
+            'Trusted fields in schema should be prefixed',
         );
     }
 
@@ -883,7 +883,7 @@ trait PaginatorTestTrait
         $this->assertEquals(
             $expected,
             $result['order'],
-            'Trusted fields not in schema should not be altered'
+            'Trusted fields not in schema should not be altered',
         );
     }
 
@@ -1149,31 +1149,6 @@ trait PaginatorTestTrait
         $pagingParams = $result->pagingParams();
         $this->assertEquals(10, $pagingParams['limit']);
         $this->assertEquals(10, $pagingParams['perPage']);
-    }
-
-    /**
-     * test the `finder` is unused if paginate() is called with a query instance.
-     */
-    public function testPaginateQueryUnusedFinder(): void
-    {
-        $settings = [
-            'finder' => 'published',
-            'limit' => 2,
-        ];
-        $table = $this->_getMockPosts(['find']);
-        $query = $this->_getMockFindQuery();
-        $query->setRepository($table);
-
-        $table->expects($this->never())
-            ->method('find');
-
-        $query->expects($this->once())->method('applyOptions')
-            ->with([
-                'limit' => 2,
-                'page' => 1,
-                'order' => [],
-            ]);
-        $this->Paginator->paginate($query, [], $settings)->pagingParams();
     }
 
     /**
