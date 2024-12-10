@@ -1088,10 +1088,7 @@ class ConnectionTest extends TestCase
                 $this->connection->transactional(function () {
                     return false;
                 });
-                $this->rollbackSourceLine = __LINE__ - 1;
-                if (PHP_VERSION_ID >= 80200) {
-                    $this->rollbackSourceLine -= 2;
-                }
+                $this->rollbackSourceLine = __LINE__ - 3;
 
                 return true;
             });
@@ -1129,10 +1126,7 @@ class ConnectionTest extends TestCase
                     $this->connection->transactional(function () {
                         return false;
                     });
-                    $this->rollbackSourceLine = __LINE__ - 1;
-                    if (PHP_VERSION_ID >= 80200) {
-                        $this->rollbackSourceLine -= 2;
-                    }
+                    $this->rollbackSourceLine = __LINE__ - 3;
 
                     $this->pushNestedTransactionState();
 
