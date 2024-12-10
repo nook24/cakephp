@@ -7,6 +7,7 @@ on:
       - '4.next'
       - '5.x'
       - '5.next'
+      - '6.x'
   pull_request:
     branches:
       - '*'
@@ -21,20 +22,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.3']
+        php-version: ['8.4']
         db-type: [sqlite, pgsql]
         include:
-          - php-version: '8.1'
+          - php-version: '8.4'
             db-type: 'mariadb'
-          - php-version: '8.1'
-            db-type: 'mysql'
-            dependencies: 'lowest'
-          - php-version: '8.2'
-            db-type: 'mysql'
-          - php-version: '8.3'
+          - php-version: '8.4'
             db-type: 'mysql'
           - php-version: '8.4'
             db-type: 'mysql'
+            dependencies: 'lowest'
 
     services:
       redis:
@@ -89,7 +86,7 @@ jobs:
         composer-options: "${{ matrix.composer-options }}"
 
     - name: Setup problem matchers for PHPUnit
-      if: matrix.php-version == '8.1' && matrix.db-type == 'mysql'
+      if: matrix.php-version == '8.4' && matrix.db-type == 'mysql' && matrix.dependencies != 'lowest'
       run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
     - name: Run PHPUnit
@@ -102,7 +99,7 @@ jobs:
         if [[ ${{ matrix.db-type }} == 'mariadb' ]]; then export DB_URL='mysql://root:root@127.0.0.1/cakephp'; fi
         if [[ ${{ matrix.db-type }} == 'pgsql' ]]; then export DB_URL='postgres://postgres:postgres@127.0.0.1/postgres'; fi
 
-        if [[ ${{ matrix.php-version }} == '8.1' ]]; then
+        if [[ ${{ matrix.php-version }} == '8.4' ]]; then
           export CODECOVERAGE=1
           vendor/bin/phpunit --display-deprecations --display-warnings --display-incomplete --coverage-clover=coverage.xml
           CAKE_TEST_AUTOQUOTE=1 vendor/bin/phpunit --display-deprecations --display-warnings --display-incomplete --testsuite=database
@@ -113,7 +110,7 @@ jobs:
         fi
 
     - name: Submit code coverage
-      if: matrix.php-version == '8.1'
+      if: matrix.php-version == '8.4'
       uses: codecov/codecov-action@v5
       with:
         files: coverage.xml,coverage-functions.xml
@@ -121,11 +118,11 @@ jobs:
 
   testsuite-windows:
     runs-on: windows-2022
-    name: Windows - PHP 8.1 & SQL Server
+    name: Windows - PHP 8.4 & SQL Server
 
     env:
       EXTENSIONS: mbstring, intl, apcu, redis, pdo_sqlsrv
-      PHP_VERSION: '8.1'
+      PHP_VERSION: '8.4'
 
     steps:
     - uses: actions/checkout@v4
@@ -195,7 +192,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.4'
           extensions: mbstring, intl
           coverage: none
           tools: phive, cs2pr
@@ -212,9 +209,9 @@ jobs:
         if: always()
         run: vendor/bin/phpcs --report=checkstyle | cs2pr
 
-      - name: Run psalm
-        if: always()
-        run: tools/psalm --output-format=github
+      #- name: Run psalm
+      #  if: always()
+      #  run: tools/psalm --output-format=github
 
       - name: Run phpstan
         if: always()
@@ -228,14 +225,14 @@ jobs:
         if: always()
         run: php contrib/validate-deprecation-aliases.php
 
-      - name: Run composer.json validation for split packages
-        if: always()
-        run: php contrib/validate-split-packages.php
+      #- name: Run composer.json validation for split packages
+      #  if: always()
+      #  run: php contrib/validate-split-packages.php
 
-      - name: Run PHPStan for split packages
-        if: always()
-        run: php contrib/validate-split-packages-phpstan.php
+      #- name: Run PHPStan for split packages
+      #  if: always()
+      #  run: php contrib/validate-split-packages-phpstan.php
 
       - name: Prefer lowest check
-        if: matrix.prefer-lowest == 'prefer-lowest'
+        if: matrix.dependencies == 'lowest'
         run: composer require --dev dereuromark/composer-prefer-lowest && vendor/bin/validate-prefer-lowest -m

@@ -74,7 +74,6 @@ class PhpError
         'error' => LOG_ERR,
         'warning' => LOG_WARNING,
         'notice' => LOG_NOTICE,
-        'strict' => LOG_NOTICE,
         'deprecated' => LOG_NOTICE,
     ];
 
@@ -94,10 +93,6 @@ class PhpError
         ?int $line = null,
         array $trace = [],
     ) {
-        if (version_compare(PHP_VERSION, '8.4.0-dev', '<')) {
-            $this->levelMap[E_STRICT] = 'strict';
-        }
-
         $this->code = $code;
         $this->message = $message;
         $this->file = $file;
