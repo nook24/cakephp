@@ -45,6 +45,7 @@ use Cake\View\Widget\WidgetLocator;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use ReflectionProperty;
 use TestApp\Model\Entity\Article;
 use TestApp\Model\Enum\ArticleStatus;
@@ -395,6 +396,18 @@ class FormHelperTest extends TestCase
                 'accept-charset' => $encoding, 'enctype' => 'multipart/form-data',
             ],
             'div' => ['style' => 'display:none;'],
+            'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'POST'],
+            '/div',
+        ];
+        $this->assertHtml($expected, $result);
+
+        $result = $this->Form->create(options: ['type' => 'file', 'templates' => ['hiddenClass' => 'hidden']]);
+        $expected = [
+            'form' => [
+                'method' => 'post', 'action' => '/articles/add',
+                'accept-charset' => $encoding, 'enctype' => 'multipart/form-data',
+            ],
+            'div' => ['class' => 'hidden'],
             'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'POST'],
             '/div',
         ];
@@ -1079,6 +1092,12 @@ class FormHelperTest extends TestCase
             ]],
             '/div',
         ];
+        $this->assertHtml($expected, $result);
+
+        $this->Form->create(options: ['templates' => ['hiddenClass' => 'hideme']]);
+        $result = $this->Form->secure($fields);
+        $expected['div'] = ['class' => 'hideme'];
+
         $this->assertHtml($expected, $result);
     }
 
@@ -2402,6 +2421,27 @@ class FormHelperTest extends TestCase
         ];
         $this->assertHtml($expected, $result);
 
+        $result = $this->Form->control('Article.title', ['templates' => ['errorClass' => 'danger']]);
+        $expected = [
+            'div' => ['class' => 'input text error'],
+            'label' => ['for' => 'article-title'],
+            'Title',
+            '/label',
+            'input' => [
+                'type' => 'text',
+                'name' => 'Article[title]',
+                'id' => 'article-title',
+                'class' => 'danger',
+                'aria-invalid' => 'true',
+                'aria-describedby' => 'article-title-error',
+            ],
+            ['div' => ['class' => 'error-message', 'id' => 'article-title-error']],
+            'error message',
+            '/div',
+            '/div',
+        ];
+        $this->assertHtml($expected, $result);
+
         $result = $this->Form->control('Article.user_id', [
             'type' => 'select',
             'options' => ['1' => 'One', '2' => 'Two'],
@@ -2517,6 +2557,44 @@ class FormHelperTest extends TestCase
             '/div',
         ];
         $this->assertHtml($expected, $result);
+    }
+
+    /**
+     * @deprecated
+     */
+    #[WithoutErrorHandler]
+    public function testWarningForDeprecatedErrorClassConfig(): void
+    {
+        $this->Form->setConfig('errorClass', 'danger');
+        $this->article['errors'] = [
+            'Article' => [
+                'title' => 'error message',
+            ],
+        ];
+        $this->Form->create($this->article);
+
+        $this->deprecated(function (): void {
+            $result = $this->Form->control('Article.title');
+            $expected = [
+                'div' => ['class' => 'input text error'],
+                'label' => ['for' => 'article-title'],
+                'Title',
+                '/label',
+                'input' => [
+                    'type' => 'text',
+                    'name' => 'Article[title]',
+                    'id' => 'article-title',
+                    'class' => 'danger',
+                    'aria-invalid' => 'true',
+                    'aria-describedby' => 'article-title-error',
+                ],
+                ['div' => ['class' => 'error-message', 'id' => 'article-title-error']],
+                'error message',
+                '/div',
+                '/div',
+            ];
+            $this->assertHtml($expected, $result);
+        });
     }
 
     /**
@@ -6925,11 +7003,12 @@ class FormHelperTest extends TestCase
         ];
         $this->assertHtml($expected, $result);
 
+        $this->Form->setTemplates(['hiddenClass' => 'hideme']);
         $result = $this->Form->postLink('Delete', '/posts/delete/1', ['method' => 'delete']);
         $expected = [
             'form' => [
                 'method' => 'post', 'action' => '/posts/delete/1',
-                'name' => 'preg:/post_\w+/', 'style' => 'display:none;',
+                'name' => 'preg:/post_\w+/', 'class' => 'hideme',
             ],
             'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'DELETE'],
             '/form',
@@ -6938,6 +7017,7 @@ class FormHelperTest extends TestCase
             '/a',
         ];
         $this->assertHtml($expected, $result);
+        $this->Form->setTemplates(['hiddenClass' => '']);
 
         $result = $this->Form->postLink(
             'Delete',
@@ -7028,6 +7108,66 @@ class FormHelperTest extends TestCase
         ];
 
         $this->assertHtml($expected, $result);
+    }
+
+    public function testPostLinkWithCspScriptNonce()
+    {
+        $request = $this->Form->getView()->getRequest()->withAttribute('cspScriptNonce', 'i-am-nonce');
+        $this->Form->getView()->setRequest($request);
+
+        $result = $this->Form->postLink('Delete', '/posts/delete/1', ['confirm' => 'Confirm?']);
+        $expected = [
+            'form' => [
+                'method' => 'post', 'action' => '/posts/delete/1',
+                'name' => 'preg:/post_\w+/', 'style' => 'display:none;',
+            ],
+            'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'POST'],
+            '/form',
+            'a' => [
+                'href' => '#',
+                'data-confirm-message' => 'Confirm?',
+                'id' => 'preg:/link-post-\w+/',
+            ],
+            'Delete',
+            '/a',
+            'script' => [
+                'nonce' => 'i-am-nonce',
+            ],
+            'preg:/document\.getElementById\("link\-post\-\w+"\)\.addEventListener\("click", function\(event\) { if \(confirm\(this\.dataset\.confirmMessage\)\) \{ document\.post_\w+\.submit\(\); \} event\.returnValue = false; return false; }\);/',
+            '/script',
+        ];
+        $this->assertHtml($expected, $result);
+
+        $result = $this->Form->postLink('Delete', '/posts/delete/1', ['confirm' => 'Confirm?', 'block' => true]);
+        $expected = [
+            'a' => [
+                'href' => '#',
+                'data-confirm-message' => 'Confirm?',
+                'id' => 'preg:/link-post-\w+/',
+            ],
+            'Delete',
+            '/a',
+        ];
+        $this->assertHtml($expected, $result);
+
+        $result = $this->Form->getView()->fetch('postLink');
+        $expected = [
+            'form' => [
+                'method' => 'post', 'action' => '/posts/delete/1',
+                'name' => 'preg:/post_\w+/', 'style' => 'display:none;',
+            ],
+            'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'POST'],
+            '/form',
+            'script' => [
+                'nonce' => 'i-am-nonce',
+            ],
+            'preg:/document\.getElementById\("link\-post\-\w+"\)\.addEventListener\("click", function\(event\) { if \(confirm\(this\.dataset\.confirmMessage\)\) \{ document\.post_\w+\.submit\(\); \} event\.returnValue = false; return false; }\);/',
+            '/script',
+        ];
+        $this->assertHtml($expected, $result);
+
+        $request = $this->Form->getView()->getRequest()->withAttribute('cspScriptNonce', null);
+        $this->Form->getView()->setRequest($request);
     }
 
     /**

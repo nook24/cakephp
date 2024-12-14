@@ -35,17 +35,7 @@ class EncryptedCookieMiddlewareTest extends TestCase
 
     protected EncryptedCookieMiddleware $middleware;
 
-    protected static string $encryptedString;
-
-    /**
-     * @phpstan-ignore method.parentMethodFinalByPhpDoc
-     */
-    public function __construct(string $name)
-    {
-        parent::__construct($name);
-
-        static::$encryptedString = $this->_encrypt('secret data', 'aes');
-    }
+    protected static string $encryptedString = '';
 
     protected function _getCookieEncryptionKey(): string
     {
@@ -57,6 +47,10 @@ class EncryptedCookieMiddlewareTest extends TestCase
      */
     public function setUp(): void
     {
+        parent::setup();
+
+        static::$encryptedString = $this->_encrypt('secret data', 'aes');
+
         $this->middleware = new EncryptedCookieMiddleware(
             ['secret', 'ninja'],
             $this->_getCookieEncryptionKey(),
