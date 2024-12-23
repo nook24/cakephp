@@ -36,7 +36,13 @@ class PostgresTest extends TestCase
     {
         $driver = $this->getMockBuilder(Postgres::class)
             ->onlyMethods(['createPdo'])
+            ->setConstructorArgs([[
+                'username' => 'root',
+                'password' => '',
+                'database' => 'cake',
+            ]])
             ->getMock();
+
         $dsn = 'pgsql:host=localhost;port=5432;dbname=cake';
         $expected = [
             'persistent' => true,

@@ -1206,6 +1206,7 @@ SQL;
             });
 
         $driver = $this->getMockBuilder(Sqlserver::class)
+            ->setConstructorArgs([['database' => 'cake']])
             ->onlyMethods(['createPdo'])
             ->getMock();
 
