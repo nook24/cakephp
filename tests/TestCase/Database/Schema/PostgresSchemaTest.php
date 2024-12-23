@@ -1437,6 +1437,10 @@ SQL;
     {
         $this->_needsConnection();
 
+        $config += [
+            'database' => 'cake',
+        ];
+
         $mock = $this->getMockBuilder(PDO::class)
             ->onlyMethods(['quote', 'exec'])
             ->disableOriginalConstructor()

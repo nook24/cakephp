@@ -44,14 +44,15 @@ class MysqlTest extends TestCase
     public function testConnectionConfigDefault(): void
     {
         $driver = $this->getMockBuilder(Mysql::class)
+            ->setConstructorArgs([['database' => 'cake']])
             ->onlyMethods(['createPdo'])
             ->getMock();
         $dsn = 'mysql:host=localhost;port=3306;dbname=cake;charset=utf8mb4';
         $expected = [
             'persistent' => true,
             'host' => 'localhost',
-            'username' => 'root',
-            'password' => '',
+            'username' => null,
+            'password' => null,
             'database' => 'cake',
             'port' => '3306',
             'flags' => [],
@@ -185,6 +186,7 @@ class MysqlTest extends TestCase
 
         /** @var \PHPUnit\Framework\MockObject\MockObject&\Cake\Database\Driver\Mysql $driver */
         $driver = $this->getMockBuilder(Mysql::class)
+            ->setConstructorArgs([['database' => 'cake']])
             ->onlyMethods(['createPdo'])
             ->getMock();
 
