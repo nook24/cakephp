@@ -927,9 +927,9 @@ abstract class TestCase extends BaseTestCase
      * @param array<string> $methods The list of methods to mock
      * @param array<string, mixed> $options The config data for the mock's constructor.
      * @throws \Cake\ORM\Exception\MissingTableClassException
-     * @return \Cake\ORM\Table|\PHPUnit\Framework\MockObject\MockObject
+     * @return \Cake\ORM\Table&\PHPUnit\Framework\MockObject\MockObject
      */
-    public function getMockForModel(string $alias, array $methods = [], array $options = []): Table|MockObject
+    public function getMockForModel(string $alias, array $methods = [], array $options = []): Table&MockObject
     {
         $className = $this->_getTableClassName($alias, $options);
         $connectionName = $className::defaultConnectionName();
@@ -940,34 +940,10 @@ abstract class TestCase extends BaseTestCase
         [, $baseClass] = pluginSplit($alias);
         $options += ['alias' => $baseClass, 'connection' => $connection];
         $options += $locator->getConfig($alias);
-        $reflection = new ReflectionClass($className);
-        $classMethods = array_map(function ($method) {
-            return $method->name;
-        }, $reflection->getMethods());
-
-        $existingMethods = array_intersect($classMethods, $methods);
-        /** @var list<non-empty-string> $nonExistingMethods */
-        $nonExistingMethods = array_diff($methods, $existingMethods);
 
         $builder = $this->getMockBuilder($className)
+            ->onlyMethods($methods)
             ->setConstructorArgs([$options]);
-
-        if ($existingMethods || !$nonExistingMethods) {
-            $builder->onlyMethods($existingMethods);
-        }
-
-        if ($nonExistingMethods) {
-            trigger_error(
-                sprintf(
-                    'Adding non-existent methods (%s) to model `%s` ' .
-                    'when mocking will not work in future PHPUnit versions.',
-                    implode(',', $nonExistingMethods),
-                    $alias,
-                ),
-                E_USER_DEPRECATED,
-            );
-            $builder->addMethods($nonExistingMethods);
-        }
 
         $mock = $builder->getMock();
         assert($mock instanceof Table);
