@@ -23,7 +23,6 @@ use Cake\ORM\Locator\LocatorInterface;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use TestApp\Model\Table\AuthorsTable;
 use TestApp\Model\Table\TestTable;
 use TestPlugin\Model\Table\CommentsTable;
@@ -493,24 +492,6 @@ class AssociationTest extends TestCase
             ['what' => 'custom', 'this' => 'custom'],
             $this->association->find(what: 'custom')->getOptions(),
         );
-    }
-
-    #[WithoutErrorHandler]
-    public function testCustomFinderWithOptions(): void
-    {
-        $this->association->setFinder('withOptions');
-
-        $this->deprecated(function (): void {
-            $this->assertEquals(
-                ['this' => 'worked'],
-                $this->association->find(null)->getOptions(),
-            );
-
-            $this->assertEquals(
-                ['that' => 'custom', 'this' => 'worked'],
-                $this->association->find(null, ['that' => 'custom'])->getOptions(),
-            );
-        });
     }
 
     /**

@@ -27,7 +27,6 @@ use Cake\TestSuite\TestCase;
 use Cake\View\Exception\MissingTemplateException;
 use DateTime;
 use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use TestApp\Mailer\TestMailer;
 use function Cake\Core\env;
 
@@ -103,25 +102,6 @@ class MailerTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The `Invalid` transport configuration does not exist');
         $this->mailer->setTransport('Invalid');
-    }
-
-    /**
-     * testMessage function
-     *
-     * @deprecated
-     */
-    #[WithoutErrorHandler]
-    public function testSetMessage(): void
-    {
-        $message = $this->mailer->getMessage();
-        $this->assertInstanceOf(Message::class, $message);
-
-        $newMessage = new Message();
-        $this->deprecated(function () use ($newMessage): void {
-            $this->mailer->setMessage($newMessage);
-        });
-        $this->assertSame($newMessage, $this->mailer->getMessage());
-        $this->assertNotSame($message, $newMessage);
     }
 
     /**
