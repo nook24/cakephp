@@ -22,9 +22,6 @@ use Cake\Datasource\Paging\PaginatedResultSet;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\ResultSet;
 use Cake\TestSuite\TestCase;
-use Mockery;
-use PHPUnit\Framework\Attributes\WithoutErrorHandler;
-use function Cake\Collection\collection;
 
 class PaginatedResultSetTest extends TestCase
 {
@@ -46,26 +43,6 @@ class PaginatedResultSetTest extends TestCase
 
         $out = $paginatedResults->toArray();
         $this->assertSame([1, 2, 3], $out);
-    }
-
-    #[WithoutErrorHandler]
-    public function testCall(): void
-    {
-        $resultSet = Mockery::mock(ResultSet::class);
-        $resultSet->shouldReceive('extract')
-            ->with('foo')
-            ->once()
-            ->andReturn(collection(['bar']));
-
-        $paginatedResults = new PaginatedResultSet(
-            $resultSet,
-            [],
-        );
-
-        $this->deprecated(function () use ($paginatedResults): void {
-            $result = $paginatedResults->extract('foo')->toList();
-            $this->assertEquals(['bar'], $result);
-        });
     }
 
     public function testJsonEncode(): void

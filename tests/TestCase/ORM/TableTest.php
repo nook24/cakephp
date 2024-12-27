@@ -62,7 +62,6 @@ use Exception;
 use InvalidArgumentException;
 use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use RuntimeException;
 use TestApp\Model\Entity\Article;
 use TestApp\Model\Entity\ArticlesTag;
@@ -617,26 +616,6 @@ class TableTest extends TestCase
 
         $result = $table->getSchema();
         $this->assertSame('foobar', $result->getColumnType('username'));
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @return void
-     * @deprecated
-     */
-    #[WithoutErrorHandler]
-    public function testFindAllOldStyleOptionsArray(): void
-    {
-        $this->deprecated(function (): void {
-            $table = new Table([
-                'table' => 'users',
-                'connection' => $this->connection,
-            ]);
-
-            $query = $table->find('all', ['fields' => ['id']]);
-            $this->assertSame(['id'], $query->clause('select'));
-        });
     }
 
     /**
@@ -1297,26 +1276,6 @@ class TableTest extends TestCase
         $this->assertSame(2, $author->id);
     }
 
-    #[WithoutErrorHandler]
-    public function testFindTypedParameterCompatibility(): void
-    {
-        $articles = $this->fetchTable('Articles');
-        $article = $articles->find('titled')->first();
-        $this->assertNotEmpty($article);
-
-        // Options arrays are deprecated but should work
-        $this->deprecated(function () use ($articles): void {
-            $article = $articles->find('titled', ['title' => 'Second Article'])->first();
-            $this->assertNotEmpty($article);
-            $this->assertEquals('Second Article', $article->title);
-        });
-
-        // Named parameters should be compatible with options finders
-        $article = $articles->find('titled', title: 'Second Article')->first();
-        $this->assertNotEmpty($article);
-        $this->assertEquals('Second Article', $article->title);
-    }
-
     public function testFindForFinderVariadic(): void
     {
         $testTable = $this->fetchTable('Test');
@@ -1605,31 +1564,6 @@ class TableTest extends TestCase
     }
 
     /**
-     * Tests find(list) with backwards compatibile options
-     */
-    #[WithoutErrorHandler]
-    public function testFindListArrayOptions(): void
-    {
-        $table = new Table([
-            'table' => 'users',
-            'connection' => $this->connection,
-        ]);
-        $table->setDisplayField('username');
-        $this->deprecated(function () use ($table): void {
-            $query = $table
-                ->find('list', ['fields' => ['id', 'username']])
-                ->orderBy('id');
-            $expected = [
-                1 => 'mariano',
-                2 => 'nate',
-                3 => 'larry',
-                4 => 'garrett',
-            ];
-            $this->assertSame($expected, $query->toArray());
-        });
-    }
-
-    /**
      * test that find('list') does not auto add fields to select if using virtual properties
      */
     public function testFindListWithVirtualField(): void
@@ -1680,36 +1614,6 @@ class TableTest extends TestCase
             3 => 'mariano',
         ];
         $this->assertSame($expected, $query->toArray());
-    }
-
-    /**
-     * Test find('list') called with option array instead of named args for backwards compatility
-     *
-     * @return void
-     * @deprecated
-     */
-    #[WithoutErrorHandler]
-    public function testFindListWithArray(): void
-    {
-        $this->deprecated(function (): void {
-            $articles = new Table([
-                'table' => 'articles',
-                'connection' => $this->connection,
-            ]);
-
-            $articles->belongsTo('Authors');
-            $query = $articles->find('list', ['valueField' => 'author.name'])
-                ->contain(['Authors'])
-                ->orderBy('articles.id');
-            $this->assertEmpty($query->clause('select'));
-
-            $expected = [
-                1 => 'mariano',
-                2 => 'larry',
-                3 => 'mariano',
-            ];
-            $this->assertSame($expected, $query->toArray());
-        });
     }
 
     /**
@@ -5392,21 +5296,6 @@ class TableTest extends TestCase
 
         $result = $table->get($primaryKey, ...$options);
         $this->assertSame($entity, $result);
-    }
-
-    /**
-     * Test get() with options array.
-     *
-     * @return void
-     */
-    #[WithoutErrorHandler]
-    public function testGetBackwardsCompatibility(): void
-    {
-        $this->deprecated(function (): void {
-            $table = $this->getTableLocator()->get('Articles');
-            $article = $table->get(1, ['contain' => 'Authors']);
-            $this->assertNotEmpty($article->author);
-        });
     }
 
     /**

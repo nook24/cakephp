@@ -45,11 +45,9 @@ use Cake\View\Widget\WidgetLocator;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use ReflectionProperty;
 use TestApp\Model\Entity\Article;
 use TestApp\Model\Enum\ArticleStatus;
-use TestApp\Model\Enum\ArticleStatusLabel;
 use TestApp\Model\Enum\ArticleStatusLabelInterface;
 use TestApp\Model\Enum\Priority;
 use TestApp\Model\Table\ContactsTable;
@@ -2560,44 +2558,6 @@ class FormHelperTest extends TestCase
     }
 
     /**
-     * @deprecated
-     */
-    #[WithoutErrorHandler]
-    public function testWarningForDeprecatedErrorClassConfig(): void
-    {
-        $this->Form->setConfig('errorClass', 'danger');
-        $this->article['errors'] = [
-            'Article' => [
-                'title' => 'error message',
-            ],
-        ];
-        $this->Form->create($this->article);
-
-        $this->deprecated(function (): void {
-            $result = $this->Form->control('Article.title');
-            $expected = [
-                'div' => ['class' => 'input text error'],
-                'label' => ['for' => 'article-title'],
-                'Title',
-                '/label',
-                'input' => [
-                    'type' => 'text',
-                    'name' => 'Article[title]',
-                    'id' => 'article-title',
-                    'class' => 'danger',
-                    'aria-invalid' => 'true',
-                    'aria-describedby' => 'article-title-error',
-                ],
-                ['div' => ['class' => 'error-message', 'id' => 'article-title-error']],
-                'error message',
-                '/div',
-                '/div',
-            ];
-            $this->assertHtml($expected, $result);
-        });
-    }
-
-    /**
      * testEmptyErrorValidation method
      *
      * Test validation errors, when validation message is an empty string.
@@ -3833,39 +3793,6 @@ class FormHelperTest extends TestCase
             '/div',
         ];
         $this->assertHtml($expected, $result);
-    }
-
-    /**
-     * @deprecated
-     */
-    #[WithoutErrorHandler]
-    public function testEnumOptionsDeprecationMessage(): void
-    {
-        $this->deprecated(function () {
-            $articlesTable = $this->getTableLocator()->get('Articles');
-            $articlesTable->getSchema()->setColumnType(
-                'published',
-                EnumType::from(ArticleStatusLabel::class),
-            );
-            $this->Form->create($articlesTable->newEmptyEntity());
-            $result = $this->Form->control('published');
-            $expected = [
-                'div' => ['class' => 'input select'],
-                'label' => ['for' => 'published'],
-                'Published',
-                '/label',
-                'select' => ['name' => 'published', 'id' => 'published'],
-                ['option' => ['value' => 'Y']],
-                'Is Published',
-                '/option',
-                ['option' => ['value' => 'N', 'selected' => 'selected']],
-                'Is Unpublished',
-                '/option',
-                '/select',
-                '/div',
-            ];
-            $this->assertHtml($expected, $result);
-        });
     }
 
     /**

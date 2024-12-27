@@ -22,7 +22,6 @@ use Cake\Log\Log;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use TestApp\Log\Engine\TestAppLog;
 use TestPlugin\Log\Engine\TestPluginLog;
 
@@ -399,28 +398,6 @@ class LogTest extends TestCase
         $this->_deleteLogs();
 
         Log::drop('shops');
-    }
-
-    /**
-     * Test scoped logging backwards compat
-     */
-    #[WithoutErrorHandler]
-    public function testScopedLoggingBackwardsCompat(): void
-    {
-        $this->_deleteLogs();
-
-        Log::setConfig('debug', [
-            'engine' => 'File',
-            'path' => LOGS,
-            'levels' => ['notice', 'info', 'debug'],
-            'file' => 'debug',
-            'scopes' => false,
-        ]);
-
-        $this->deprecated(function (): void {
-            Log::write('debug', 'debug message', 'orders');
-        });
-        $this->assertFileDoesNotExist(LOGS . 'debug.log');
     }
 
     /**

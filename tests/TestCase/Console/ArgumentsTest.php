@@ -250,18 +250,8 @@ class ArgumentsTest extends TestCase
         $args->getBooleanOption('list');
     }
 
-    public function testGetMultipleOption(): void
-    {
-        $options = [
-            'types' => ['one', 'two', 'three'],
-        ];
-        $args = new Arguments([], $options, []);
-        $this->assertSame(['one', 'two', 'three'], $args->getMultipleOption('types'));
-        $this->assertNull($args->getMultipleOption('missing'));
-    }
-
     /**
-     * Test getArrayOption(). Consistent method (alias of getMultipleOption())
+     * Test getArrayOption()
      */
     public function testGetArrayOption(): void
     {
