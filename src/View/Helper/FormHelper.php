@@ -113,8 +113,6 @@ class FormHelper extends Helper
             'errorList' => '<ul>{{content}}</ul>',
             // Error item wrapper.
             'errorItem' => '<li>{{text}}</li>',
-            // File input used by file().
-            'file' => '<input type="file" name="{{name}}"{{attrs}}>',
             // Fieldset element used by allControls().
             'fieldset' => '<fieldset{{attrs}}>{{content}}</fieldset>',
             // Open tag used by create().
@@ -185,7 +183,6 @@ class FormHelper extends Helper
     protected array $_defaultWidgets = [
         'button' => ['Button'],
         'checkbox' => ['Checkbox'],
-        'file' => ['File'],
         'label' => ['Label'],
         'nestingLabel' => ['NestingLabel'],
         'multicheckbox' => ['MultiCheckbox', 'nestingLabel'],
@@ -1772,7 +1769,8 @@ class FormHelper extends Helper
         $options += ['secure' => true];
         $options = $this->_initInputField($fieldName, $options);
 
-        unset($options['type']);
+        unset($options['val']);
+        $options['type'] = 'file';
 
         return $this->widget('file', $options);
     }
