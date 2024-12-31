@@ -22,7 +22,7 @@ namespace TestApp\Model\Behavior;
 
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Text;
 
 class SluggableBehavior extends Behavior
@@ -34,7 +34,7 @@ class SluggableBehavior extends Behavior
         return $query;
     }
 
-    public function findNoSlug(Query $query, array $options = []): Query
+    public function findNoSlug(SelectQuery $query, array $options = []): SelectQuery
     {
         $query->where(['slug IS' => null]);
 

@@ -47,7 +47,6 @@ use Cake\ORM\Exception\MissingBehaviorException;
 use Cake\ORM\Exception\MissingEntityException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Marshaller;
-use Cake\ORM\Query;
 use Cake\ORM\Query\DeleteQuery;
 use Cake\ORM\Query\InsertQuery;
 use Cake\ORM\Query\SelectQuery;
@@ -1424,7 +1423,7 @@ class TableTest extends TestCase
             ->onlyMethods(['find', 'findList'])
             ->disableOriginalConstructor()
             ->getMock();
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SelectQuery::class)
             ->onlyMethods(['addDefaultTypes'])
             ->setConstructorArgs([$table])
             ->getMock();
@@ -2005,7 +2004,7 @@ class TableTest extends TestCase
         $table->addBehavior('Sluggable');
 
         $query = $table->find('noSlug');
-        $this->assertInstanceOf(Query::class, $query);
+        $this->assertInstanceOf(SelectQuery::class, $query);
         $this->assertNotEmpty($query->clause('where'));
     }
 
@@ -2018,7 +2017,7 @@ class TableTest extends TestCase
         $table->addBehavior('Sluggable', ['implementedFinders' => ['special' => 'findNoSlug']]);
 
         $query = $table->find('special');
-        $this->assertInstanceOf(Query::class, $query);
+        $this->assertInstanceOf(SelectQuery::class, $query);
         $this->assertNotEmpty($query->clause('where'));
     }
 
@@ -3471,7 +3470,7 @@ class TableTest extends TestCase
         $table = $this->getTableLocator()->get('Users');
 
         $result = $table->findByUsername('garrett');
-        $this->assertInstanceOf(Query::class, $result);
+        $this->assertInstanceOf(SelectQuery::class, $result);
 
         $expected = new QueryExpression(['Users.username' => 'garrett'], $this->usersTypeMap);
         $this->assertEquals($expected, $result->clause('where'));
@@ -3521,7 +3520,7 @@ class TableTest extends TestCase
         $table = $this->getTableLocator()->get('Users');
 
         $result = $table->findByUsernameAndId('garrett', 4);
-        $this->assertInstanceOf(Query::class, $result);
+        $this->assertInstanceOf(SelectQuery::class, $result);
 
         $expected = new QueryExpression(['Users.username' => 'garrett', 'Users.id' => 4], $this->usersTypeMap);
         $this->assertEquals($expected, $result->clause('where'));
@@ -3535,7 +3534,7 @@ class TableTest extends TestCase
         $table = $this->getTableLocator()->get('Users');
 
         $result = $table->findByUsernameOrId('garrett', 4);
-        $this->assertInstanceOf(Query::class, $result);
+        $this->assertInstanceOf(SelectQuery::class, $result);
 
         $expected = new QueryExpression([], $this->usersTypeMap);
         $expected->add(
@@ -3557,7 +3556,7 @@ class TableTest extends TestCase
         $table = $this->getTableLocator()->get('Articles');
 
         $result = $table->findAllByAuthorId(1);
-        $this->assertInstanceOf(Query::class, $result);
+        $this->assertInstanceOf(SelectQuery::class, $result);
         $this->assertNull($result->clause('limit'));
 
         $expected = new QueryExpression(['Articles.author_id' => 1], $this->articlesTypeMap);
@@ -3572,7 +3571,7 @@ class TableTest extends TestCase
         $table = $this->getTableLocator()->get('Users');
 
         $result = $table->findAllByAuthorIdAndPublished(1, 'Y');
-        $this->assertInstanceOf(Query::class, $result);
+        $this->assertInstanceOf(SelectQuery::class, $result);
         $this->assertNull($result->clause('limit'));
         $expected = new QueryExpression(
             ['Users.author_id' => 1, 'Users.published' => 'Y'],
@@ -3589,7 +3588,7 @@ class TableTest extends TestCase
         $table = $this->getTableLocator()->get('Users');
 
         $result = $table->findAllByAuthorIdOrPublished(1, 'Y');
-        $this->assertInstanceOf(Query::class, $result);
+        $this->assertInstanceOf(SelectQuery::class, $result);
         $this->assertNull($result->clause('limit'));
         $expected = new QueryExpression();
         $expected->getTypeMap()->setDefaults($this->usersTypeMap->toArray());
@@ -5562,7 +5561,7 @@ class TableTest extends TestCase
         $calledOne = false;
         $calledTwo = false;
         $article = $articles->findOrCreate(function ($query) use (&$calledOne): void {
-            $this->assertInstanceOf(Query::class, $query);
+            $this->assertInstanceOf(SelectQuery::class, $query);
             $query->where(['title' => 'Something Else']);
             $calledOne = true;
         }, function ($article) use (&$calledTwo): void {
@@ -5605,7 +5604,7 @@ class TableTest extends TestCase
         });
 
         $article = $articles->findOrCreate(function ($query): void {
-            $this->assertInstanceOf(Query::class, $query);
+            $this->assertInstanceOf(SelectQuery::class, $query);
             $query->where(['title' => 'Find Something New']);
             $this->assertTrue($this->connection->inTransaction());
         }, function ($article): void {

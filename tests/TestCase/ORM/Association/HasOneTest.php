@@ -24,7 +24,7 @@ use Cake\Database\TypeMap;
 use Cake\Event\Event;
 use Cake\ORM\Association\HasOne;
 use Cake\ORM\Entity;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Mockery;
@@ -183,7 +183,7 @@ class HasOneTest extends TestCase
         $this->user->setPrimaryKey(['id', 'site_id']);
         $association = new HasOne('Profiles', $config);
 
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SelectQuery::class)
             ->onlyMethods(['join'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -210,7 +210,7 @@ class HasOneTest extends TestCase
     {
         $this->expectException(DatabaseException::class);
         $this->expectExceptionMessage('Cannot match provided foreignKey for `Profiles`, got `(user_id)` but expected foreign key for `(id, site_id)`');
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SelectQuery::class)
             ->onlyMethods(['join', 'select'])
             ->setConstructorArgs([$this->user])
             ->getMock();
@@ -289,7 +289,7 @@ class HasOneTest extends TestCase
         $this->profile->getEventManager()->on('Model.beforeFind', function ($event, $query, $options, bool $primary): void {
             $this->listenerCalled = true;
             $this->assertInstanceOf(Event::class, $event);
-            $this->assertInstanceOf(Query::class, $query);
+            $this->assertInstanceOf(SelectQuery::class, $query);
             $this->assertInstanceOf('ArrayObject', $options);
             $this->assertFalse($primary);
         });
@@ -315,7 +315,7 @@ class HasOneTest extends TestCase
             function ($event, $query, $options, bool $primary) use ($opts): void {
                 $this->listenerCalled = true;
                 $this->assertInstanceOf(Event::class, $event);
-                $this->assertInstanceOf(Query::class, $query);
+                $this->assertInstanceOf(SelectQuery::class, $query);
                 $this->assertEquals($options, $opts);
                 $this->assertFalse($primary);
             },
