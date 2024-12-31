@@ -38,7 +38,6 @@ use Cake\Event\EventInterface;
 use Cake\I18n\DateTime;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Entity;
-use Cake\ORM\Query;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\ResultSet;
 use Cake\TestSuite\TestCase;
@@ -1842,8 +1841,7 @@ class SelectQueryTest extends TestCase
      */
     public function testClearContain(): void
     {
-        /** @var \Cake\ORM\Query\SelectQuery $query */
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SelectQuery::class)
             ->onlyMethods(['all'])
             ->setConstructorArgs([$this->table])
             ->getMock();
@@ -1869,7 +1867,7 @@ class SelectQueryTest extends TestCase
      */
     public function testCacheReadIntegration(): void
     {
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SelectQuery::class)
             ->onlyMethods(['execute'])
             ->setConstructorArgs([$this->table])
             ->getMock();
@@ -2354,7 +2352,7 @@ class SelectQueryTest extends TestCase
      */
     public function testCountCache(): void
     {
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SelectQuery::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['_performCount'])
             ->getMock();
@@ -2376,7 +2374,7 @@ class SelectQueryTest extends TestCase
      */
     public function testCountCacheDirty(): void
     {
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SelectQuery::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['_performCount'])
             ->getMock();

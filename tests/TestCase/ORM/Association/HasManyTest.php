@@ -29,7 +29,7 @@ use Cake\Log\Log;
 use Cake\ORM\Association;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Entity;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\ResultSet;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
@@ -464,7 +464,7 @@ class HasManyTest extends TestCase
         $this->author->setPrimaryKey(['id', 'site_id']);
         $association = new HasMany('Articles', $config);
         $keys = [[1, 10], [2, 20], [3, 30], [4, 40]];
-        $query = $this->getMockBuilder(Query::class)
+        $query = $this->getMockBuilder(SelectQuery::class)
             ->onlyMethods(['all', 'andWhere', 'getRepository'])
             ->setConstructorArgs([$this->article])
             ->getMock();
