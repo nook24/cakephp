@@ -10,6 +10,8 @@
 
     <arg value="s"/>
 
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint" />
+
     <rule ref="CakePHP.Classes.ReturnTypeHint.InvalidSelf">
         <severity>0</severity>
     </rule>
