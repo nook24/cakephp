@@ -91,13 +91,13 @@ class TextTest extends TestCase
         $result = Text::insert($string, []);
         $this->assertSame($expected, $result);
 
-        $string = '2 + 2 = :sum. Cake is :adjective.';
+        $string = '2 + 2 = {sum}. Cake is {adjective}.';
         $expected = '2 + 2 = 4. Cake is yummy.';
         $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy']);
         $this->assertSame($expected, $result);
 
         $string = '2 + 2 = %sum. Cake is %adjective.';
-        $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy'], ['before' => '%']);
+        $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy'], ['before' => '%', 'after' => '']);
         $this->assertSame($expected, $result);
 
         $string = '2 + 2 = 2sum2. Cake is 9adjective9.';
@@ -109,7 +109,7 @@ class TextTest extends TestCase
         $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy'], ['format' => '/([\d])([\d])%s\\2\\1/']);
         $this->assertSame($expected, $result);
 
-        $string = ':web :web_site';
+        $string = '{web} {web_site}';
         $expected = 'www http';
         $result = Text::insert($string, ['web' => 'www', 'web_site' => 'http']);
         $this->assertSame($expected, $result);
@@ -119,46 +119,46 @@ class TextTest extends TestCase
         $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy'], ['before' => '<', 'after' => '>']);
         $this->assertSame($expected, $result);
 
-        $string = '2 + 2 = \:sum. Cake is :adjective.';
-        $expected = '2 + 2 = :sum. Cake is yummy.';
+        $string = '2 + 2 = \{sum}. Cake is {adjective}.';
+        $expected = '2 + 2 = {sum}. Cake is yummy.';
         $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy']);
         $this->assertSame($expected, $result);
 
-        $string = '2 + 2 = !:sum. Cake is :adjective.';
+        $string = '2 + 2 = !{sum}. Cake is {adjective}.';
         $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy'], ['escape' => '!']);
         $this->assertSame($expected, $result);
 
         $string = '2 + 2 = \%sum. Cake is %adjective.';
         $expected = '2 + 2 = %sum. Cake is yummy.';
-        $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy'], ['before' => '%']);
+        $result = Text::insert($string, ['sum' => '4', 'adjective' => 'yummy'], ['before' => '%', 'after' => '']);
         $this->assertSame($expected, $result);
 
-        $string = ':a :b \:a :a';
-        $expected = '1 2 :a 1';
+        $string = '{a} {b} \{a} {a}';
+        $expected = '1 2 {a} 1';
         $result = Text::insert($string, ['a' => 1, 'b' => 2]);
         $this->assertSame($expected, $result);
 
-        $string = ':a :b :c';
+        $string = '{a} {b} {c}';
         $expected = '2 3';
         $result = Text::insert($string, ['b' => 2, 'c' => 3], ['clean' => true]);
         $this->assertSame($expected, $result);
 
-        $string = ':a :b :c';
+        $string = '{a} {b} {c}';
         $expected = '1 3';
         $result = Text::insert($string, ['a' => 1, 'c' => 3], ['clean' => true]);
         $this->assertSame($expected, $result);
 
-        $string = ':a :b :c';
+        $string = '{a} {b} {c}';
         $expected = '2 3';
         $result = Text::insert($string, ['b' => 2, 'c' => 3], ['clean' => true]);
         $this->assertSame($expected, $result);
 
-        $string = ':a, :b and :c';
+        $string = '{a} {b} and {c}';
         $expected = '2 and 3';
         $result = Text::insert($string, ['b' => 2, 'c' => 3], ['clean' => true]);
         $this->assertSame($expected, $result);
 
-        $string = '":a, :b and :c"';
+        $string = '"{a}, {b} and {c}"';
         $expected = '"1, 2"';
         $result = Text::insert($string, ['a' => 1, 'b' => 2], ['clean' => true]);
         $this->assertSame($expected, $result);
@@ -168,32 +168,28 @@ class TextTest extends TestCase
         $result = Text::insert($string, ['a' => 1, 'b' => 2], ['before' => '${', 'after' => '}', 'clean' => true]);
         $this->assertSame($expected, $result);
 
-        $string = '<img src=":src" alt=":alt" class="foo :extra bar"/>';
+        $string = '<img src="{src}" alt="{alt}" class="foo {extra} bar"/>';
         $expected = '<img src="foo" class="foo bar"/>';
         $result = Text::insert($string, ['src' => 'foo'], ['clean' => 'html']);
 
         $this->assertSame($expected, $result);
 
-        $string = '<img src=":src" class=":no :extra"/>';
+        $string = '<img src="{src}" class="{no} {extra}"/>';
         $expected = '<img src="foo"/>';
         $result = Text::insert($string, ['src' => 'foo'], ['clean' => 'html']);
         $this->assertSame($expected, $result);
 
-        $string = '<img src=":src" class=":no :extra"/>';
+        $string = '<img src="{src}" class="{no} {extra}"/>';
         $expected = '<img src="foo" class="bar"/>';
         $result = Text::insert($string, ['src' => 'foo', 'extra' => 'bar'], ['clean' => 'html']);
         $this->assertSame($expected, $result);
 
-        $result = Text::insert('update saved_urls set url = :url where id = :id', ['url' => 'http://www.testurl.com/param1:url/param2:id', 'id' => 1]);
+        $result = Text::insert('update saved_urls set url = {url} where id = {id}', ['url' => 'http://www.testurl.com/param1:url/param2:id', 'id' => 1]);
         $expected = 'update saved_urls set url = http://www.testurl.com/param1:url/param2:id where id = 1';
         $this->assertSame($expected, $result);
 
-        $result = Text::insert('update saved_urls set url = :url where id = :id', ['id' => 1, 'url' => 'http://www.testurl.com/param1:url/param2:id']);
-        $expected = 'update saved_urls set url = http://www.testurl.com/param1:url/param2:id where id = 1';
-        $this->assertSame($expected, $result);
-
-        $result = Text::insert(':me cake. :subject :verb fantastic.', ['me' => 'I :verb', 'subject' => 'cake', 'verb' => 'is']);
-        $expected = 'I :verb cake. cake is fantastic.';
+        $result = Text::insert('{me} cake. {subject} {verb} fantastic.', ['me' => 'I {verb}', 'subject' => 'cake', 'verb' => 'is']);
+        $expected = 'I {verb} cake. cake is fantastic.';
         $this->assertSame($expected, $result);
 
         $result = Text::insert(':I.am: :not.yet: passing.', ['I.am' => 'We are'], ['before' => ':', 'after' => ':', 'clean' => ['replacement' => ' of course', 'method' => 'text']]);
@@ -208,26 +204,27 @@ class TextTest extends TestCase
         $expected = 'We are passing.';
         $this->assertSame($expected, $result);
 
-        $string = 'switching :timeout / :timeout_count';
+        $string = 'switching {timeout} / {timeout_count}';
         $expected = 'switching 5 / 10';
         $result = Text::insert($string, ['timeout' => 5, 'timeout_count' => 10]);
         $this->assertSame($expected, $result);
 
-        $string = 'switching :timeout / :timeout_count';
+        $string = 'switching {timeout} / {timeout_count}';
         $expected = 'switching 5 / 10';
         $result = Text::insert($string, ['timeout_count' => 10, 'timeout' => 5]);
         $this->assertSame($expected, $result);
 
-        $string = 'switching :timeout_count by :timeout';
+        $string = 'switching {timeout_count} by {timeout}';
         $expected = 'switching 10 by 5';
         $result = Text::insert($string, ['timeout' => 5, 'timeout_count' => 10]);
         $this->assertSame($expected, $result);
 
-        $string = 'switching :timeout_count by :timeout';
+        $string = 'switching {timeout_count} by {timeout}';
         $expected = 'switching 10 by 5';
         $result = Text::insert($string, ['timeout_count' => 10, 'timeout' => 5]);
         $this->assertSame($expected, $result);
-        $string = 'inserting a :user.email';
+
+        $string = 'inserting a {user.email}';
         $expected = 'inserting a security@example.com';
         $result = Text::insert($string, [
             'user.email' => 'security@example.com',
@@ -236,7 +233,7 @@ class TextTest extends TestCase
         ]);
         $this->assertSame($expected, $result);
 
-        $string = 'Sum is :sum (:ob).';
+        $string = 'Sum is {sum} ({ob}).';
         $expected = 'Sum is 26083 (foo).';
         $result = Text::insert($string, ['sum' => 26083, 'ob' => 'foo']); // crc32('ob') = 26083
         $this->assertSame($expected, $result);
@@ -247,6 +244,42 @@ class TextTest extends TestCase
      */
     public function testCleanInsert(): void
     {
+        $result = Text::cleanInsert('{incomplete}', [
+            'clean' => true, 'before' => '{', 'after' => '}',
+        ]);
+        $this->assertSame('', $result);
+
+        $result = Text::cleanInsert(
+            '{incomplete}',
+            [
+            'clean' => ['method' => 'text', 'replacement' => 'complete'],
+            'before' => '{', 'after' => '}'],
+        );
+        $this->assertSame('complete', $result);
+
+        $result = Text::cleanInsert('{in.complete}', [
+            'clean' => true, 'before' => '{', 'after' => '}',
+        ]);
+        $this->assertSame('', $result);
+
+        $result = Text::cleanInsert(
+            '{in.complete} and',
+            [
+            'clean' => true, 'before' => '{', 'after' => '}'],
+        );
+        $this->assertSame('', $result);
+
+        $result = Text::cleanInsert('{in.complete} or stuff', [
+            'clean' => true, 'before' => '{', 'after' => '}',
+        ]);
+        $this->assertSame('stuff', $result);
+
+        $result = Text::cleanInsert(
+            '<p class="{missing}" id="{missing}">Text here</p>',
+            ['clean' => 'html', 'before' => '{', 'after' => '}'],
+        );
+        $this->assertSame('<p>Text here</p>', $result);
+
         $result = Text::cleanInsert(':incomplete', [
             'clean' => true, 'before' => ':', 'after' => '',
         ]);
@@ -291,7 +324,7 @@ class TextTest extends TestCase
     public function testAutoIgnoreBadInsertData(): void
     {
         $data = ['foo' => 'alpha', 'bar' => 'beta', 'fale' => []];
-        $result = Text::insert('(:foo > :bar || :fale!)', $data, ['clean' => 'text']);
+        $result = Text::insert('({foo} > {bar} || {fale}!)', $data, ['clean' => 'text']);
         $this->assertSame('(alpha > beta || !)', $result);
     }
 
@@ -332,7 +365,7 @@ class TextTest extends TestCase
 
     public function testReplaceWithQuestionMarkInString(): void
     {
-        $string = ':a, :b and :c?';
+        $string = '{a}, {b} and {c}?';
         $expected = '2 and 3?';
         $result = Text::insert($string, ['b' => 2, 'c' => 3], ['clean' => true]);
         $this->assertSame($expected, $result);
