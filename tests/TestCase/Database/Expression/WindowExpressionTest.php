@@ -109,15 +109,6 @@ class WindowExpressionTest extends TestCase
         );
     }
 
-    public function testOrderDeprecated(): void
-    {
-        $w = (new WindowExpression())->order('test');
-        $this->assertEqualsSql(
-            'ORDER BY test',
-            $w->sql(new ValueBinder()),
-        );
-    }
-
     /**
      * Tests windows with range frames
      */

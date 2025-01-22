@@ -40,7 +40,6 @@ use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionMethod;
 use Throwable;
-use function Cake\Core\deprecationWarning;
 use function Cake\Core\h;
 use function Cake\Core\namespaceSplit;
 use function Cake\I18n\__d;
@@ -99,18 +98,6 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      * @var \Cake\Http\ServerRequest|null
      */
     protected ?ServerRequest $request;
-
-    /**
-     * Map of exceptions to http status codes.
-     *
-     * This can be customized for users that don't want specific exceptions to throw 404 errors
-     * or want their application exceptions to be automatically converted.
-     *
-     * @var array<class-string<\Throwable>, int>
-     * @deprecated 5.2.0 Exceptions returning HTTP error codes should extend
-     *   HttpErrorCodeInterface instead of using this array.
-     */
-    protected array $exceptionHttpCodes = [];
 
     /**
      * Creates the controller to perform rendering on the error response.
@@ -389,16 +376,6 @@ class WebExceptionRenderer implements ExceptionRendererInterface
     {
         if ($exception instanceof HttpErrorCodeInterface) {
             return $exception->getCode();
-        }
-
-        if (isset($this->exceptionHttpCodes[$exception::class])) {
-            deprecationWarning(
-                '5.2.0',
-                'Exceptions returning a HTTP error code should implement HttpErrorCodeInterface,'
-                . ' instead of using the WebExceptionRenderer::$exceptionHttpCodes property.'
-            );
-
-            return $this->exceptionHttpCodes[$exception::class];
         }
 
         return 500;

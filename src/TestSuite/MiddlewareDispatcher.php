@@ -16,13 +16,10 @@ declare(strict_types=1);
 namespace Cake\TestSuite;
 
 use Cake\Core\HttpApplicationInterface;
-use Cake\Core\PluginApplicationInterface;
 use Cake\Http\FlashMessage;
 use Cake\Http\Server;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
-use Cake\Routing\Router;
-use Cake\Routing\RoutingApplicationInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -48,53 +45,6 @@ class MiddlewareDispatcher
     public function __construct(HttpApplicationInterface $app)
     {
         $this->app = $app;
-    }
-
-    /**
-     * Resolve the provided URL into a string.
-     *
-     * @param array|string $url The URL array/string to resolve.
-     * @return string
-     * @deprecated 5.1.0 Use IntegrationTestTrait::resolveUrl() instead.
-     */
-    public function resolveUrl(array|string $url): string
-    {
-        // If we need to resolve a Route URL but there are no routes, load routes.
-        if (is_array($url) && Router::getRouteCollection()->routes() === []) {
-            return $this->resolveRoute($url);
-        }
-
-        return Router::url($url);
-    }
-
-    /**
-     * Convert a URL array into a string URL via routing.
-     *
-     * @param array $url The url to resolve
-     * @return string
-     * @deprecated 5.1.0 Use IntegrationTestTrait::resolveRouter() instead.
-     */
-    protected function resolveRoute(array $url): string
-    {
-        // Simulate application bootstrap and route loading.
-        // We need both to ensure plugins are loaded.
-        $this->app->bootstrap();
-        if ($this->app instanceof PluginApplicationInterface) {
-            $this->app->pluginBootstrap();
-        }
-        $builder = Router::createRouteBuilder('/');
-
-        if ($this->app instanceof RoutingApplicationInterface) {
-            $this->app->routes($builder);
-        }
-        if ($this->app instanceof PluginApplicationInterface) {
-            $this->app->pluginRoutes($builder);
-        }
-
-        $out = Router::url($url);
-        Router::resetRoutes();
-
-        return $out;
     }
 
     /**

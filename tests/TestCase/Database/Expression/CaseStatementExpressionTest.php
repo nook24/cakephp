@@ -1191,12 +1191,10 @@ class CaseStatementExpressionTest extends TestCase
             '`\Cake\Database\Expression\WhenThenExpression`, `null` given.',
         );
 
-        $this->deprecated(function (): void {
-            (new CaseStatementExpression())
-                ->when(function () {
-                    return null;
-                });
-        });
+        (new CaseStatementExpression())
+            ->when(function () {
+                return null;
+            });
     }
 
     // endregion
@@ -1278,9 +1276,7 @@ class CaseStatementExpressionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Case expression must have at least one when statement.');
 
-        $this->deprecated(function (): void {
-            (new CaseStatementExpression())->sql(new ValueBinder());
-        });
+        (new CaseStatementExpression())->sql(new ValueBinder());
     }
 
     public function testCompilingNonClosedWhenFails(): void
@@ -1288,11 +1284,9 @@ class CaseStatementExpressionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Case expression has incomplete when clause. Missing `then()` after `when()`.');
 
-        $this->deprecated(function (): void {
-            (new CaseStatementExpression())
-                ->when(['Table.column' => true])
-                ->sql(new ValueBinder());
-        });
+        (new CaseStatementExpression())
+            ->when(['Table.column' => true])
+            ->sql(new ValueBinder());
     }
 
     public function testCompilingWhenThenExpressionWithMissingWhenFails(): void
@@ -1300,13 +1294,11 @@ class CaseStatementExpressionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Case expression has incomplete when clause. Missing `when()`.');
 
-        $this->deprecated(function (): void {
-            (new CaseStatementExpression())
-                ->when(function (WhenThenExpression $whenThen) {
-                    return $whenThen->then(1);
-                })
-                ->sql(new ValueBinder());
-        });
+        (new CaseStatementExpression())
+            ->when(function (WhenThenExpression $whenThen) {
+                return $whenThen->then(1);
+            })
+            ->sql(new ValueBinder());
     }
 
     public function testCompilingWhenThenExpressionWithMissingThenFails(): void
@@ -1314,13 +1306,11 @@ class CaseStatementExpressionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Case expression has incomplete when clause. Missing `then()` after `when()`.');
 
-        $this->deprecated(function (): void {
-            (new CaseStatementExpression())
-                ->when(function (WhenThenExpression $whenThen) {
-                    return $whenThen->when(1);
-                })
-                ->sql(new ValueBinder());
-        });
+        (new CaseStatementExpression())
+            ->when(function (WhenThenExpression $whenThen) {
+                return $whenThen->when(1);
+            })
+            ->sql(new ValueBinder());
     }
 
     // endregion
@@ -2058,15 +2048,13 @@ class CaseStatementExpressionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Case expression has incomplete when clause. Missing `then()` after `when()`.');
 
-        $this->deprecated(function (): void {
-            $expression = (new CaseStatementExpression())
-                ->when(['Table.column' => true]);
+        $expression = (new CaseStatementExpression())
+            ->when(['Table.column' => true]);
 
-            $expression->traverse(
-                function (): void {
-                },
-            );
-        });
+        $expression->traverse(
+            function (): void {
+            },
+        );
     }
 
     // endregion
@@ -2099,12 +2087,10 @@ class CaseStatementExpressionTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Case expression has incomplete when clause. Missing `then()` after `when()`.');
 
-        $this->deprecated(function (): void {
-            $expression = (new CaseStatementExpression())
-                ->when(['Table.column' => true]);
+        $expression = (new CaseStatementExpression())
+            ->when(['Table.column' => true]);
 
-            clone $expression;
-        });
+        clone $expression;
     }
 
     // endregion

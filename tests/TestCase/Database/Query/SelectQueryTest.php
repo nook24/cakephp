@@ -1760,33 +1760,6 @@ class SelectQueryTest extends TestCase
         $result->closeCursor();
     }
 
-    public function testSelectOrderDeprecated(): void
-    {
-        $query = new SelectQuery($this->connection);
-        $result = $query
-            ->select(['id'])
-            ->from('comments')
-            ->order(['id' => 'desc'])
-            ->execute();
-        $this->assertEquals([6, 5, 4, 3, 2, 1], array_column($result->fetchAll('assoc'), 'id'));
-
-        $query = new SelectQuery($this->connection);
-        $result = $query
-            ->select(['id'])
-            ->from('comments')
-            ->orderDesc('id')
-            ->execute();
-        $this->assertEquals([6, 5, 4, 3, 2, 1], array_column($result->fetchAll('assoc'), 'id'));
-
-        $query = new SelectQuery($this->connection);
-        $result = $query
-            ->select(['user_id'])
-            ->from('comments')
-            ->orderAsc('user_id')
-            ->execute();
-        $this->assertEquals([1, 1, 1, 2, 2, 4], array_column($result->fetchAll('assoc'), 'user_id'));
-    }
-
     /**
      * Test that orderBy() being a string works.
      */
@@ -2041,20 +2014,6 @@ class SelectQueryTest extends TestCase
             ->groupBy(['articles.id'])
             ->execute();
         $this->assertCount(3, $result->fetchAll());
-    }
-
-    public function testSelectGroupDeprecated(): void
-    {
-        $query = new SelectQuery($this->connection);
-        $result = $query
-            ->select(['total' => 'count(author_id)', 'author_id'])
-            ->from('articles')
-            ->join(['table' => 'authors', 'alias' => 'a', 'conditions' => 'author_id = a.id'])
-            ->group('author_id')
-            ->orderBy(['total' => 'desc'])
-            ->execute();
-        $expected = [['total' => 2, 'author_id' => 1], ['total' => '1', 'author_id' => 3]];
-        $this->assertEquals($expected, $result->fetchAll('assoc'));
     }
 
     /**
