@@ -23,6 +23,7 @@ use Cake\Validation\ValidationSet;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
 use Laminas\Diactoros\UploadedFile;
+use Locale;
 use stdClass;
 use TestApp\Model\Enum\ArticleStatus;
 use TestApp\Model\Enum\NonBacked;
@@ -2377,6 +2378,33 @@ class ValidatorTest extends TestCase
         $expectedMessage = 'The provided value must be decimal with any number of decimal places, including none';
         $places = null;
         $this->assertValidationMessage($fieldName, $rule, $expectedMessage, $places);
+    }
+
+    /**
+     * Tests the localized decimal proxy method
+     */
+    public function testLocalizedDecimal(): void
+    {
+        $validator = new Validator();
+        $this->assertProxyMethod($validator, 'localizedDecimal', 2, [2]);
+        $this->assertNotEmpty($validator->validate(['username' => 10.1]));
+
+        $fieldName = 'field_name';
+        $rule = 'decimal';
+        $expectedMessage = 'The provided value must be decimal with `2` decimal places';
+        $places = 2;
+        $this->assertValidationMessage($fieldName, $rule, $expectedMessage, $places);
+
+        $expectedMessage = 'The provided value must be decimal with any number of decimal places, including none';
+        $places = null;
+        $this->assertValidationMessage($fieldName, $rule, $expectedMessage, $places);
+
+        $this->skipIf(DS === '\\', 'The locale is not supported in Windows and affects other tests.');
+        $this->skipIf(Locale::setDefault('pl_PL') === false, "The Polish locale isn't available.");
+
+        $this->assertEmpty($validator->validate(['username' => '1 200,99']));
+
+        Locale::setDefault(Validation::DEFAULT_LOCALE);
     }
 
     /**
