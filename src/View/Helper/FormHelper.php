@@ -75,8 +75,6 @@ class FormHelper extends Helper
      */
     protected array $_defaultConfig = [
         'idPrefix' => null,
-        // Deprecated option, use templates.errorClass intead.
-        'errorClass' => null,
         'defaultPostLinkBlock' => null,
         'typeMap' => [
             'string' => 'text',
@@ -128,10 +126,9 @@ class FormHelper extends Helper
             // Submit input element.
             'inputSubmit' => '<input type="{{type}}"{{attrs}}>',
             // Container element used by control().
-            'inputContainer' => '<div class="{{containerClass}} {{type}}{{required}}">{{content}}</div>',
-            // Container element used by control() when a field has an error.
-            // phpcs:ignore
-            'inputContainerError' => '<div class="{{containerClass}} {{type}}{{required}} error">{{content}}{{error}}</div>',
+            'inputContainer' => '<div class="{{containerClass}}">{{content}}{{error}}</div>',
+            // Optional container element used by control() when a field has error(s).
+            'inputContainerError' => '',
             // Label element when inputs are not nested inside the label.
             'label' => '<label{{attrs}}>{{text}}</label>',
             // Label element used for radio and multi-checkbox inputs.
@@ -166,7 +163,7 @@ class FormHelper extends Helper
             // selected class
             'selectedClass' => 'selected',
             // required class
-            'requiredClass' => 'required',
+            'requiredClass' => '',
             // CSS class added to the input when the field has validation errors
             'errorClass' => 'form-error',
             // Class to use instead of "display:none" style attribute for hidden elements
@@ -1107,11 +1104,12 @@ class FormHelper extends Helper
             $options += [
                 'aria-invalid' => $isFieldError ? 'true' : null,
             ];
+            $inputContainer = $templater->get('inputContainerError') ?: $templater->get('inputContainer');
             // Don't include aria-describedby unless we have a good chance of
             // having error message show up.
             if (
                 str_contains($templater->get('error'), '{{id}}') &&
-                str_contains($templater->get('inputContainerError'), '{{error}}')
+                str_contains($inputContainer, '{{error}}')
             ) {
                 $options += [
                    'aria-describedby' => $isFieldError ? $this->_domId($fieldName) . '-error' : null,
@@ -1218,18 +1216,30 @@ class FormHelper extends Helper
      */
     protected function _inputContainerTemplate(array $options): string
     {
-        $inputContainerTemplate = $options['options']['type'] . 'Container' . $options['errorSuffix'];
-        if (!$this->templater()->get($inputContainerTemplate)) {
-            $inputContainerTemplate = 'inputContainer' . $options['errorSuffix'];
+        $inputContainerTemplate = 'inputContainer';
+        $checkTemplates = [
+            $options['options']['type'] . 'Container' . $options['errorSuffix'],
+            'inputContainer' . $options['errorSuffix'],
+            $options['options']['type'] . 'Container',
+        ];
+        foreach ($checkTemplates as $templateName) {
+            if ($this->templater()->get($templateName)) {
+                $inputContainerTemplate = $templateName;
+                break;
+            }
+        }
+
+        $containerClass = $this->templater()->get('containerClass');
+        if ($options['options']['required'] && $this->templater()->get('requiredClass')) {
+            $containerClass .= ' ' . $this->templater()->get('requiredClass');
         }
 
         return $this->formatTemplate($inputContainerTemplate, [
             'content' => $options['content'],
             'error' => $options['error'],
             'label' => $options['label'] ?? '',
-            'required' => $options['options']['required'] ? ' ' . $this->templater()->get('requiredClass') : '',
             'type' => $options['options']['type'],
-            'containerClass' => $this->templater()->get('containerClass'),
+            'containerClass' => $containerClass,
             'templateVars' => $options['options']['templateVars'] ?? [],
         ]);
     }
