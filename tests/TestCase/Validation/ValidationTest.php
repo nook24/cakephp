@@ -1782,100 +1782,17 @@ class ValidationTest extends TestCase
         $this->assertFalse(Validation::date('12-27-2006', 'ymd', '%^(19|20)[0-9]{2}[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$%'));
     }
 
-    /**
-     * Test numbers with any number of decimal places, including none.
-     */
-    public function testDecimalWithPlacesNull(): void
+    #[DataProvider('providerDecimal')]
+    public function testDecimal(mixed $value, int|bool|null $places, bool $expected): void
     {
-        $this->assertTrue(Validation::decimal('+1234.54321', null));
-        $this->assertTrue(Validation::decimal('-1234.54321', null));
-        $this->assertTrue(Validation::decimal('1234.54321', null));
-        $this->assertTrue(Validation::decimal('+0123.45e6', null));
-        $this->assertTrue(Validation::decimal('-0123.45e6', null));
-        $this->assertTrue(Validation::decimal('0123.45e6', null));
-        $this->assertTrue(Validation::decimal(1234.56, null));
-        $this->assertTrue(Validation::decimal(1234.00, null));
-        $this->assertTrue(Validation::decimal(1234., null));
-        $this->assertTrue(Validation::decimal('1234.00', null));
-        $this->assertTrue(Validation::decimal(.0, null));
-        $this->assertTrue(Validation::decimal(.00, null));
-        $this->assertTrue(Validation::decimal('.00', null));
-        $this->assertTrue(Validation::decimal(.01, null));
-        $this->assertTrue(Validation::decimal('.01', null));
-        $this->assertTrue(Validation::decimal('1234', null));
-        $this->assertTrue(Validation::decimal('-1234', null));
-        $this->assertTrue(Validation::decimal('+1234', null));
-        $this->assertTrue(Validation::decimal((float)1234, null));
-        $this->assertTrue(Validation::decimal((float)1234, null));
-        $this->assertTrue(Validation::decimal((int)1234, null));
-
-        $this->assertFalse(Validation::decimal('', null));
-        $this->assertFalse(Validation::decimal('string', null));
-        $this->assertFalse(Validation::decimal('1234.', null));
+        $this->assertSame($expected, Validation::decimal($value, $places));
     }
 
-    /**
-     * Test numbers with any number of decimal places greater than 0, or a float|double.
-     */
-    public function testDecimalWithPlacesTrue(): void
+    public function testDecimalWithGroupingSeparator()
     {
-        $this->assertTrue(Validation::decimal('+1234.54321', true));
-        $this->assertTrue(Validation::decimal('-1234.54321', true));
-        $this->assertTrue(Validation::decimal('1234.54321', true));
-        $this->assertTrue(Validation::decimal('+0123.45e6', true));
-        $this->assertTrue(Validation::decimal('-0123.45e6', true));
-        $this->assertTrue(Validation::decimal('0123.45e6', true));
-        $this->assertTrue(Validation::decimal(1234.56, true));
-        $this->assertTrue(Validation::decimal(1234.00, true));
-        $this->assertTrue(Validation::decimal(1234., true));
-        $this->assertTrue(Validation::decimal('1234.00', true));
-        $this->assertTrue(Validation::decimal(.0, true));
-        $this->assertTrue(Validation::decimal(.00, true));
-        $this->assertTrue(Validation::decimal('.00', true));
-        $this->assertTrue(Validation::decimal(.01, true));
-        $this->assertTrue(Validation::decimal('.01', true));
-        $this->assertTrue(Validation::decimal((float)1234, true));
-        $this->assertTrue(Validation::decimal((float)1234, true));
-
-        $this->assertFalse(Validation::decimal('', true));
-        $this->assertFalse(Validation::decimal('string', true));
-        $this->assertFalse(Validation::decimal('1234.', true));
-        $this->assertFalse(Validation::decimal((int)1234, true));
-        $this->assertFalse(Validation::decimal('1234', true));
-        $this->assertFalse(Validation::decimal('-1234', true));
-        $this->assertFalse(Validation::decimal('+1234', true));
-    }
-
-    /**
-     * Test numbers with exactly that many number of decimal places.
-     */
-    public function testDecimalWithPlacesNumeric(): void
-    {
-        $this->assertTrue(Validation::decimal(0.27, 2));
-        $this->assertTrue(Validation::decimal(-0.27, 2));
-        $this->assertTrue(Validation::decimal(0.27, 2));
-        $this->assertTrue(Validation::decimal(0.277, 3));
-        $this->assertTrue(Validation::decimal(-0.277, 3));
-        $this->assertTrue(Validation::decimal(0.277, 3));
-        $this->assertTrue(Validation::decimal(1234.5678, 4));
-        $this->assertTrue(Validation::decimal(-1234.5678, 4));
-        $this->assertTrue(Validation::decimal(1234.5678, 4));
-        $this->assertTrue(Validation::decimal('.00', 2));
-        $this->assertTrue(Validation::decimal(.01, 2));
-        $this->assertTrue(Validation::decimal('.01', 2));
-
-        $this->assertFalse(Validation::decimal('', 1));
-        $this->assertFalse(Validation::decimal('string', 1));
-        $this->assertFalse(Validation::decimal(1234., 1));
-        $this->assertFalse(Validation::decimal('1234.', 1));
-        $this->assertFalse(Validation::decimal(.0, 1));
-        $this->assertFalse(Validation::decimal(.00, 2));
-        $this->assertFalse(Validation::decimal((float)1234, 1));
-        $this->assertFalse(Validation::decimal((float)1234, 1));
-        $this->assertFalse(Validation::decimal((int)1234, 1));
-        $this->assertFalse(Validation::decimal(1234.5678, 3));
-        $this->assertFalse(Validation::decimal(-1234.5678, 3));
-        $this->assertFalse(Validation::decimal(1234.5678, 3));
+        $this->assertFalse(Validation::decimal('1,234'));
+        $this->assertFalse(Validation::decimal('1,234.1'));
+        $this->assertFalse(Validation::decimal('1,234.1', 1));
     }
 
     /**
@@ -1887,22 +1804,143 @@ class ValidationTest extends TestCase
         $this->assertFalse(Validation::decimal('.54321', null, '/^[-+]?[0-9]+(\\.[0-9]+)?$/s'));
     }
 
+    #[DataProvider('providerDecimal')]
+    public function testLocalizedDecimal(mixed $value, int|bool|null $places, bool $expected): void
+    {
+        $this->assertSame($expected, Validation::localizedDecimal($value, $places));
+    }
+
+    public function testLocalizedDecimalWithGroupingSeparator()
+    {
+        $this->assertTrue(Validation::localizedDecimal('1,234'));
+        $this->assertTrue(Validation::localizedDecimal('1,234.1'));
+        $this->assertTrue(Validation::localizedDecimal('1,234.1', 1));
+
+        $this->assertFalse(Validation::localizedDecimal('1,,234'));
+    }
+
+    /**
+     * testDecimalCustomRegex method
+     */
+    public function testLocalizedDecimalCustomRegex(): void
+    {
+        $this->assertTrue(Validation::localizedDecimal('1.54321', null, '/^[-+]?[0-9]+(\\.[0-9]+)?$/s'));
+        $this->assertFalse(Validation::localizedDecimal('.54321', null, '/^[-+]?[0-9]+(\\.[0-9]+)?$/s'));
+    }
+
     /**
      * Test localized floats with decimal.
      */
-    public function testDecimalLocaleSet(): void
+    public function testLocalizedDecimalLocaleSet(): void
     {
         $this->skipIf(DS === '\\', 'The locale is not supported in Windows and affects other tests.');
         $this->skipIf(Locale::setDefault('da_DK') === false, "The Danish locale isn't available.");
 
-        $this->assertTrue(Validation::decimal(1.54), '1.54 should be considered a valid decimal');
-        $this->assertTrue(Validation::decimal('1.54'), '"1.54" should be considered a valid decimal');
+        $this->assertTrue(Validation::localizedDecimal(1.54), '1.54 should be considered a valid decimal');
+        $this->assertTrue(Validation::localizedDecimal('1.54'), '"1.54" should be considered a valid decimal');
 
-        $this->assertTrue(Validation::decimal(12345.67), '12345.67 should be considered a valid decimal');
-        $this->assertTrue(Validation::decimal('12,345.67'), '"12,345.67" should be considered a valid decimal');
+        $this->assertTrue(Validation::localizedDecimal(12345.67), '12345.67 should be considered a valid decimal');
+        $this->assertTrue(Validation::localizedDecimal('12,345.67'), '"12,345.67" should be considered a valid decimal');
 
         $this->skipIf(Locale::setDefault('pl_PL') === false, "The Polish locale isn't available.");
-        $this->assertTrue(Validation::decimal('1 200,99'), 'should be considered a valid decimal');
+        $this->assertTrue(Validation::localizedDecimal('1 200,99'), 'should be considered a valid decimal');
+
+        Locale::setDefault(Validation::DEFAULT_LOCALE);
+    }
+
+    /**
+     * [value, places, expected]
+     *
+     * @return array
+     */
+    public static function providerDecimal(): array
+    {
+        return [
+            // value, null, true
+            ['1234.54321', null, true],
+            ['-1234.54321', null, true],
+            ['1234.54321', null, true],
+            ['0123.45e6', null, true],
+            ['-0123.45e6', null, true],
+            ['0123.45e6', null, true],
+            [1234.56, null, true],
+            [1234.00, null, true],
+            [1234., null, true],
+            ['1234.00', null, true],
+            [.0, null, true],
+            [.00, null, true],
+            ['.00', null, true],
+            [.01, null, true],
+            ['.01', null, true],
+            [1234, null, true],
+            ['-1234', null, true],
+            ['+1234', null, true],
+            [(float)1234, null, true],
+            [(float)1234, null, true],
+            [(int)1234, null, true],
+
+            // value, null, false
+            ['', null, false],
+            ['string', null, false],
+            ['1234.', null, false],
+            ['1234..0', null, false],
+
+            // value, true, true
+            ['+1234.54321', true, true],
+            ['-1234.54321', true, true],
+            ['1234.54321', true, true],
+            ['+0123.45e6', true, true],
+            ['-0123.45e6', true, true],
+            ['0123.45e6', true, true],
+            [1234.56, true, true],
+            [1234.00, true, true],
+            [1234., true, true],
+            ['1234.00', true, true],
+            [.0, true, true],
+            [.00, true, true],
+            ['.00', true, true],
+            [.01, true, true],
+            ['.01', true, true],
+            [(float)1234, true, true],
+            [(float)1234, true, true],
+
+            // value, true, false
+            ['', true, false],
+            ['string', true, false],
+            ['1234.', true, false],
+            [(int)1234, true, false],
+            ['1234', true, false],
+            ['-1234', true, false],
+            ['+1234', true, false],
+
+            // value, n, true
+            [0.27, 2, true],
+            [-0.27, 2, true],
+            [0.27, 2, true],
+            [0.277, 3, true],
+            [-0.277, 3, true],
+            [0.277, 3, true],
+            [1234.5678, 4, true],
+            [-1234.5678, 4, true],
+            [1234.5678, 4, true],
+            ['.00', 2, true],
+            [.01, 2, true],
+            ['.01', 2, true],
+
+            // value, n, false
+            ['', 1, false],
+            ['string', 1, false],
+            [1234., 1, false],
+            ['1234.', 1, false],
+            [.0, 1, false],
+            [.00, 2, false],
+            [(float)1234, 1, false],
+            [(float)1234, 1, false],
+            [(int)1234, 1, false],
+            [1234.5678, 3, false],
+            [-1234.5678, 3, false],
+            [1234.5678, 3, false],
+        ];
     }
 
     /**
