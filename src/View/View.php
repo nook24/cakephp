@@ -435,7 +435,7 @@ class View implements EventDispatcherInterface
      * @param \Cake\Http\ServerRequest $request Request instance.
      * @return $this
      */
-    public function setRequest(ServerRequest $request)
+    public function setRequest(ServerRequest $request): static
     {
         $this->request = $request;
         $this->plugin = $request->getParam('plugin');
@@ -459,7 +459,7 @@ class View implements EventDispatcherInterface
      * @param \Cake\Http\Response $response Response instance.
      * @return $this
      */
-    public function setResponse(Response $response)
+    public function setResponse(Response $response): static
     {
         $this->response = $response;
 
@@ -482,7 +482,7 @@ class View implements EventDispatcherInterface
      * @param string $path Path for template files.
      * @return $this
      */
-    public function setTemplatePath(string $path)
+    public function setTemplatePath(string $path): static
     {
         $this->templatePath = $path;
 
@@ -531,7 +531,7 @@ class View implements EventDispatcherInterface
      * @param bool $enable Boolean to turn on/off.
      * @return $this
      */
-    public function enableAutoLayout(bool $enable = true)
+    public function enableAutoLayout(bool $enable = true): static
     {
         $this->autoLayout = $enable;
 
@@ -544,7 +544,7 @@ class View implements EventDispatcherInterface
      *
      * @return $this
      */
-    public function disableAutoLayout()
+    public function disableAutoLayout(): static
     {
         $this->autoLayout = false;
 
@@ -567,7 +567,7 @@ class View implements EventDispatcherInterface
      * @param string|null $theme Theme name.
      * @return $this
      */
-    public function setTheme(?string $theme)
+    public function setTheme(?string $theme): static
     {
         $this->theme = $theme;
 
@@ -592,7 +592,7 @@ class View implements EventDispatcherInterface
      * @param string $name Template file name to set.
      * @return $this
      */
-    public function setTemplate(string $name)
+    public function setTemplate(string $name): static
     {
         $this->template = $name;
 
@@ -872,7 +872,7 @@ class View implements EventDispatcherInterface
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If the array combine operation failed.
      */
-    public function set(array|string $name, mixed $value = null)
+    public function set(array|string $name, mixed $value = null): static
     {
         if (is_array($name)) {
             if (is_array($value)) {
@@ -928,7 +928,7 @@ class View implements EventDispatcherInterface
      * @return $this
      * @see \Cake\View\ViewBlock::start()
      */
-    public function start(string $name)
+    public function start(string $name): static
     {
         $this->Blocks->start($name);
 
@@ -946,7 +946,7 @@ class View implements EventDispatcherInterface
      * @return $this
      * @see \Cake\View\ViewBlock::concat()
      */
-    public function append(string $name, mixed $value = null)
+    public function append(string $name, mixed $value = null): static
     {
         $this->Blocks->concat($name, $value);
 
@@ -981,7 +981,7 @@ class View implements EventDispatcherInterface
      * @return $this
      * @see \Cake\View\ViewBlock::set()
      */
-    public function assign(string $name, mixed $value)
+    public function assign(string $name, mixed $value): static
     {
         $this->Blocks->set($name, $value);
 
@@ -996,7 +996,7 @@ class View implements EventDispatcherInterface
      * @return $this
      * @see \Cake\View\ViewBlock::set()
      */
-    public function reset(string $name)
+    public function reset(string $name): static
     {
         $this->assign($name, '');
 
@@ -1023,7 +1023,7 @@ class View implements EventDispatcherInterface
      * @return $this
      * @see \Cake\View\ViewBlock::end()
      */
-    public function end()
+    public function end(): static
     {
         $this->Blocks->end();
 
@@ -1050,7 +1050,7 @@ class View implements EventDispatcherInterface
      * @throws \LogicException when you extend a template with itself or make extend loops.
      * @throws \LogicException when you extend an element which doesn't exist
      */
-    public function extend(string $name)
+    public function extend(string $name): static
     {
         $type = str_starts_with($name, '/') ? static::TYPE_TEMPLATE : $this->_currentType;
         switch ($type) {
@@ -1110,7 +1110,7 @@ class View implements EventDispatcherInterface
      *
      * @return $this
      */
-    public function loadHelpers()
+    public function loadHelpers(): static
     {
         foreach ($this->helpers as $name => $config) {
             $this->loadHelper($name, $config);
@@ -1295,7 +1295,7 @@ class View implements EventDispatcherInterface
      * @return $this
      * @since 3.7.0
      */
-    public function setPlugin(?string $name)
+    public function setPlugin(?string $name): static
     {
         $this->plugin = $name;
 
@@ -1310,7 +1310,7 @@ class View implements EventDispatcherInterface
      * @see \Cake\View\View::$elementCache
      * @since 3.7.0
      */
-    public function setElementCache(string $elementCache)
+    public function setElementCache(string $elementCache): static
     {
         $this->elementCache = $elementCache;
 

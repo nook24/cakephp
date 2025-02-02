@@ -28,10 +28,7 @@ use Cake\Validation\Validator;
  */
 class ValidationBehavior extends Behavior
 {
-    /**
-     * @return $this
-     */
-    public function validationBehavior(Validator $validator)
+    public function validationBehavior(Validator $validator): Validator
     {
         return $validator->add('name', 'behaviorRule');
     }

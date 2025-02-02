@@ -9,6 +9,13 @@
     <rule ref="CakePHP"/>
 
     <arg value="s"/>
+
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint" />
+
+    <rule ref="CakePHP.Classes.ReturnTypeHint.InvalidSelf">
+        <severity>0</severity>
+    </rule>
+
     <!-- pretty sure this is a bug in slevomat -->
     <rule ref="Internal.Exception">
         <severity>0</severity>

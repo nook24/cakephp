@@ -46,7 +46,7 @@ abstract class SerializedView extends View
      *
      * @return $this
      */
-    public function loadHelpers()
+    public function loadHelpers(): static
     {
         if (!$this->getConfig('serialize')) {
             parent::loadHelpers();

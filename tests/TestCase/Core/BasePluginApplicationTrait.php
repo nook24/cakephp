@@ -31,7 +31,7 @@ trait BasePluginApplicationTrait
         return new Event('stub');
     }
 
-    public function setEventManager(EventManagerInterface $eventManager)
+    public function setEventManager(EventManagerInterface $eventManager): static
     {
         return $this;
     }
@@ -41,7 +41,7 @@ trait BasePluginApplicationTrait
         return new EventManager();
     }
 
-    public function addPlugin(PluginInterface|string $name, array $config = [])
+    public function addPlugin(PluginInterface|string $name, array $config = []): static
     {
         return $this;
     }

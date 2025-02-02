@@ -363,7 +363,7 @@ class RouteCollection
      *   Defaults to `true`.
      * @return $this
      */
-    public function setExtensions(array $extensions, bool $merge = true)
+    public function setExtensions(array $extensions, bool $merge = true): static
     {
         if ($merge) {
             $extensions = array_unique(array_merge(
@@ -386,7 +386,7 @@ class RouteCollection
      * @param \Psr\Http\Server\MiddlewareInterface|\Closure|string $middleware The middleware to register.
      * @return $this
      */
-    public function registerMiddleware(string $name, MiddlewareInterface|Closure|string $middleware)
+    public function registerMiddleware(string $name, MiddlewareInterface|Closure|string $middleware): static
     {
         $this->_middleware[$name] = $middleware;
 
@@ -401,7 +401,7 @@ class RouteCollection
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function middlewareGroup(string $name, array $middlewareNames)
+    public function middlewareGroup(string $name, array $middlewareNames): static
     {
         if ($this->hasMiddleware($name)) {
             $message = "Cannot add middleware group '{$name}'. A middleware by this name has already been registered.";

@@ -34,7 +34,7 @@ class MailerSendFailsEmailIsReset extends TestCase
                 throw new RuntimeException('kaboom');
             }
 
-            protected function restore()
+            protected function restore(): static
             {
                 $this->restoreIsCalled = true;
 

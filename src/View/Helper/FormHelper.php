@@ -325,7 +325,7 @@ class FormHelper extends Helper
      * @return $this
      * @since 3.6.0
      */
-    public function setWidgetLocator(WidgetLocator $instance)
+    public function setWidgetLocator(WidgetLocator $instance): static
     {
         $this->_locator = $instance;
 
@@ -689,7 +689,7 @@ class FormHelper extends Helper
      * @param string $name The dot separated name for the field.
      * @return $this
      */
-    public function unlockField(string $name)
+    public function unlockField(string $name): static
     {
         $this->getFormProtector()?->unlockField($name);
 
@@ -2692,7 +2692,7 @@ class FormHelper extends Helper
      * @return $this
      * @throws \InvalidArgumentException If sources list contains invalid value.
      */
-    public function setValueSources(array|string $sources)
+    public function setValueSources(array|string $sources): static
     {
         $sources = (array)$sources;
 

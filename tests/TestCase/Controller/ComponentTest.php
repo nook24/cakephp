@@ -79,10 +79,12 @@ class ComponentTest extends TestCase
         {
             public bool $isCalled = false;
             public bool $isCorrectType = false;
-            public function on($eventKey, $options = null, $callable = []): void
+            public function on($eventKey, $options = null, $callable = []): static
             {
                 $this->isCalled = true;
                 $this->isCorrectType = $eventKey instanceof AppleComponent;
+
+                return $this;
             }
         };
         $controller = new Controller(new ServerRequest());
@@ -235,10 +237,12 @@ class ComponentTest extends TestCase
         {
             public bool $isCalled = false;
             public bool $isCorrectType = false;
-            public function on($eventKey, $options = null, $callable = []): void
+            public function on($eventKey, $options = null, $callable = []): static
             {
                 $this->isCalled = true;
                 $this->isCorrectType = $eventKey instanceof AppleComponent;
+
+                return $this;
             }
         };
 

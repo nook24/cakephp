@@ -34,7 +34,7 @@ class MailerSendWithUnsetTemplateDefaultsToActionNameTest extends TestCase
                 return [];
             }
 
-            protected function restore()
+            protected function restore(): static
             {
                 return $this;
             }
