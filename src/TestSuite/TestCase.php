@@ -1018,7 +1018,7 @@ abstract class TestCase extends BaseTestCase
      * @param string $fixture Fixture
      * @return $this
      */
-    protected function addFixture(string $fixture)
+    protected function addFixture(string $fixture): static
     {
         $this->fixtures[] = $fixture;
 

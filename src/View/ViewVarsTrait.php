@@ -78,7 +78,7 @@ trait ViewVarsTrait
      *   Unused if $name is an associative array, otherwise serves as the values to $name's keys.
      * @return $this
      */
-    public function set(array|string $name, mixed $value = null)
+    public function set(array|string $name, mixed $value = null): static
     {
         if (is_array($name)) {
             if (is_array($value)) {
