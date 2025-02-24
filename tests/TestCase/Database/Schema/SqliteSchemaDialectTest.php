@@ -297,7 +297,7 @@ field1 VARCHAR(10) DEFAULT NULL,
 field2 VARCHAR(10) DEFAULT 'NULL',
 location POINT_TEXT,
 CONSTRAINT "title_idx" UNIQUE ("title", "body")
-CONSTRAINT "author_idx" FOREIGN KEY ("author_id") REFERENCES "schema_authors" ("id") ON UPDATE CASCADE ON DELETE RESTRICT
+CONSTRAINT "author_fk" FOREIGN KEY ("author_id") REFERENCES "schema_authors" ("id") ON UPDATE CASCADE ON DELETE RESTRICT
 );
 SQL;
         $connection->execute($table);
@@ -506,8 +506,8 @@ SQL;
                 'length' => null,
                 'null' => true,
                 'default' => null,
-                'precision' => null,
                 'comment' => null,
+                'precision' => null,
                 'collate' => null,
             ],
         ];
@@ -548,7 +548,7 @@ SQL;
 
         // Includes unique keys.
         $indexes = $dialect->describeIndexes('schema_articles');
-        $this->assertCount(3, $indexes);
+        $this->assertCount(4, $indexes);
 
         $foreignKeys = $dialect->describeForeignKeys('schema_articles');
         $this->assertCount(1, $foreignKeys);
@@ -565,7 +565,7 @@ SQL;
                 'columns' => ['title', 'body'],
                 'length' => [],
             ],
-            'author_id_0_fk' => [
+            'author_fk' => [
                 'type' => 'foreign',
                 'columns' => ['author_id'],
                 'references' => ['schema_authors', 'id'],
@@ -584,13 +584,13 @@ SQL;
         $this->assertCount(4, $result->constraints());
         $this->assertEquals($expected['primary'], $result->getConstraint('primary'));
         $this->assertEquals(
-            $expected['author_id_0_fk'],
-            $result->getConstraint('author_id_0_fk'),
+            $expected['author_fk'],
+            $result->getConstraint('author_fk'),
         );
 
         $authorIdFk = $foreignKeys[0];
-        $expectedAuthorIdFk = $expected['author_id_0_fk'];
-        $this->assertEquals('author_id_0_fk', $authorIdFk['name']);
+        $expectedAuthorIdFk = $expected['author_fk'];
+        $this->assertEquals('author_fk', $authorIdFk['name']);
 
         unset($authorIdFk['name']);
         $this->assertEquals($expectedAuthorIdFk, $authorIdFk);
@@ -688,9 +688,10 @@ SQL;
         // Because all our 'constraints' are unique indexes
         // they are treated as indexes by the basic reflection API
         $indexes = $dialect->describeIndexes('schema_unique_constraint_variations');
-        $this->assertCount(6, $indexes);
+        $this->assertCount(7, $indexes);
         foreach ($indexes as $index) {
             $expectedIndex = $expected[$index['name']];
+            $this->assertNotEmpty($expectedIndex, 'Could not find expected for ' . $index['name']);
             unset($index['name']);
             $this->assertEquals($expectedIndex, $index);
         }
@@ -720,7 +721,7 @@ SQL;
                 ],
                 'length' => [],
             ],
-            'author_id_author_name_0_fk' => [
+            'multi_col_author_fk' => [
                 'type' => 'foreign',
                 'columns' => [
                     'author_id',
@@ -734,7 +735,7 @@ SQL;
                 'delete' => 'noAction',
                 'length' => [],
             ],
-            'author_id_1_fk' => [
+            'author_fk' => [
                 'type' => 'foreign',
                 'columns' => [
                     'author_id',

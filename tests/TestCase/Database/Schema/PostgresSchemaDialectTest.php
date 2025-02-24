@@ -337,6 +337,7 @@ SQL;
         $result = $schema->describe('public.schema_articles');
         $this->assertEquals(['id'], $result->getPrimaryKey());
         $this->assertSame('schema_articles', $result->name());
+        $this->assertCount(1, $result->indexes());
     }
 
     /**
@@ -347,8 +348,8 @@ SQL;
         $connection = ConnectionManager::get('test');
         $this->_createTables($connection);
 
-        $schema = new SchemaCollection($connection);
-        $result = $schema->describe('schema_articles');
+        $dialect = $connection->getDriver()->schemaDialect();
+        $result = $dialect->describe('schema_articles');
         $expected = [
             'id' => [
                 'type' => 'biginteger',
@@ -385,6 +386,16 @@ SQL;
                 'length' => 10,
                 'precision' => null,
                 'unsigned' => null,
+                'comment' => null,
+                'autoIncrement' => null,
+            ],
+            'unique_id' => [
+                'type' => 'integer',
+                'null' => false,
+                'unsigned' => null,
+                'default' => null,
+                'length' => 10,
+                'precision' => null,
                 'comment' => null,
                 'autoIncrement' => null,
             ],
@@ -476,6 +487,16 @@ SQL;
         $this->assertEquals(['id'], $result->getPrimaryKey());
         foreach ($expected as $field => $definition) {
             $this->assertEquals($definition, $result->getColumn($field));
+        }
+
+        // Compare with describeColumns as well
+        $columns = $dialect->describeColumns('schema_articles');
+        foreach ($columns as $column) {
+            $this->assertArrayHasKey($column['name'], $expected);
+            $expectedItem = $expected[$column['name']];
+            $expectedFields = array_intersect_key($expectedItem, $column);
+            $resultFields = array_intersect_key($column, $expectedFields);
+            $this->assertEquals($expectedFields, $resultFields, 'difference in ' . $column['name']);
         }
     }
 
@@ -640,8 +661,8 @@ SQL;
         $connection = ConnectionManager::get('test');
         $this->_createTables($connection);
 
-        $schema = new SchemaCollection($connection);
-        $result = $schema->describe('schema_articles');
+        $dialect = $connection->getDriver()->schemaDialect();
+        $result = $dialect->describe('schema_articles');
         $this->assertInstanceOf(TableSchema::class, $result);
 
         $this->assertCount(4, $result->constraints());
@@ -678,12 +699,39 @@ SQL;
         $this->assertEquals($expected['unique_id_idx'], $result->getConstraint('unique_id_idx'));
 
         $this->assertCount(1, $result->indexes());
-        $expected = [
+        $authorIdx = [
             'type' => 'index',
             'columns' => ['author_id'],
             'length' => [],
         ];
-        $this->assertEquals($expected, $result->getIndex('author_idx'));
+        $this->assertEquals($authorIdx, $result->getIndex('author_idx'));
+
+        // Compare describeForeignKeys()
+        $keys = $dialect->describeForeignKeys('schema_articles');
+        foreach ($keys as $foreignKey) {
+            $name = $foreignKey['name'];
+            $this->assertArrayHasKey($name, $expected);
+            $expectedItem = $expected[$name];
+            $expectedFields = array_intersect_key($expectedItem, $foreignKey);
+            $resultFields = array_intersect_key($foreignKey, $expectedFields);
+
+            $this->assertNotEmpty($resultFields);
+            $this->assertEquals($expectedFields, $resultFields);
+        }
+        $expected['author_idx'] = $authorIdx;
+
+        // Compare with describeIndexes() which includes indexes + uniques
+        $indexes = $dialect->describeIndexes('schema_articles');
+        foreach ($indexes as $index) {
+            $name = $index['name'];
+            $this->assertArrayHasKey($name, $expected);
+            $expectedItem = $expected[$name];
+            $expectedFields = array_intersect_key($expectedItem, $index);
+            $resultFields = array_intersect_key($index, $expectedFields);
+
+            $this->assertNotEmpty($resultFields);
+            $this->assertEquals($expectedFields, $resultFields);
+        }
     }
 
     /**
@@ -1470,6 +1518,30 @@ SQL;
         $result = $table->truncateSql($connection);
         $this->assertCount(1, $result);
         $this->assertSame('TRUNCATE "schema_articles" RESTART IDENTITY CASCADE', $result[0]);
+    }
+
+    public function testDescribeIndexSql(): void
+    {
+        $driver = $this->getMockBuilder(Postgres::class)->getMock();
+        $dialect = new PostgresSchemaDialect($driver);
+
+        $result = $dialect->describeIndexSql('schema_name.table_name', []);
+        $this->assertEquals(['schema_name', 'table_name'], $result[1]);
+
+        $result = $dialect->describeIndexSql('table_name', ['schema' => 'schema_name']);
+        $this->assertEquals(['schema_name', 'table_name'], $result[1]);
+    }
+
+    public function testDescribeForeignKeySql(): void
+    {
+        $driver = $this->getMockBuilder(Postgres::class)->getMock();
+        $dialect = new PostgresSchemaDialect($driver);
+
+        $result = $dialect->describeForeignKeySql('schema_name.table_name', []);
+        $this->assertEquals(['schema_name', 'table_name'], $result[1]);
+
+        $result = $dialect->describeForeignKeySql('table_name', ['schema' => 'schema_name']);
+        $this->assertEquals(['schema_name', 'table_name'], $result[1]);
     }
 
     /**

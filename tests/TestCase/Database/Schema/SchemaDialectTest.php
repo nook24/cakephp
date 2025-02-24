@@ -21,6 +21,7 @@ use Cake\Database\Driver\Sqlite;
 use Cake\Database\Exception\DatabaseException;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use TestApp\Database\Schema\CompatDialect;
 
 /**
  * Test case for SchemaDialect methods
@@ -53,9 +54,6 @@ class SchemaDialectTest extends TestCase
 
     /**
      * Test that describing nonexistent tables fails.
-     *
-     * Tests for positive describe() calls are in each platformSchema
-     * test case.
      */
     public function testDescribeIncorrectTable(): void
     {
@@ -218,7 +216,6 @@ class SchemaDialectTest extends TestCase
         // TODO this could be resolved if we use the key reflection logic from phinx/migrations
         // that logic parses the SQL of the key to extract and preserve the name.
         $driver = ConnectionManager::get('test')->getDriver();
-        $this->skipIf($driver instanceof Sqlite, 'sqlite does not preserve foreign key names');
         $this->skipIf($driver instanceof Mysql, 'mysql tests fail when this runs');
 
         // Name is wrong
@@ -226,5 +223,22 @@ class SchemaDialectTest extends TestCase
 
         $this->assertTrue($this->dialect->hasForeignKey('orders', ['product_category', 'product_id'], 'product_category_fk'));
         $this->assertTrue($this->dialect->hasForeignKey('orders', [], 'product_category_fk'));
+    }
+
+    /**
+     * Test that SchemaDialect implementations without describeColumns etc
+     * implemented still work with describe().
+     */
+    public function testBackwardsCompatibility(): void
+    {
+        /** @var \Cake\Database\Driver $driver */
+        $driver = ConnectionManager::get('test')->getDriver();
+        $this->skipIf(!($driver instanceof Sqlite), 'requires sqlite connection');
+        $dialect = new CompatDialect($driver);
+        $table = $dialect->describe('orders');
+
+        $this->assertNotEmpty($table->columns());
+        $this->assertNotEmpty($table->indexes());
+        $this->assertNotEmpty($table->constraints());
     }
 }

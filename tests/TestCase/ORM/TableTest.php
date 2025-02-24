@@ -2201,8 +2201,7 @@ class TableTest extends TestCase
         ]);
         $listener = function (EventInterface $event, $entity) {
             $event->stopPropagation();
-
-            return $entity;
+            $event->setResult($entity);
         };
         $table->getEventManager()->on('Model.beforeSave', $listener);
         $this->assertSame($data, $table->save($data));
@@ -2233,7 +2232,7 @@ class TableTest extends TestCase
     public function testBeforeSaveException(): void
     {
         $this->expectException(AssertionError::class);
-        $this->expectExceptionMessage('The beforeSave callback must return `false` or `EntityInterface` instance. Got `int` instead.');
+        $this->expectExceptionMessage('The result for the `Model.beforeSave` event must be `false` or `EntityInterface` instance. Got `int` instead.');
 
         $table = $this->getTableLocator()->get('users');
         $data = new Entity([
@@ -2243,8 +2242,7 @@ class TableTest extends TestCase
         ]);
         $listener = function (EventInterface $event, $entity) {
             $event->stopPropagation();
-
-            return 1;
+            $event->setResult(1);
         };
         $table->getEventManager()->on('Model.beforeSave', $listener);
         $table->save($data);
@@ -5694,6 +5692,27 @@ class TableTest extends TestCase
         );
 
         $articles->findOrCreate(['body' => 'test']);
+    }
+
+    /**
+     * Test that findOrCreate with array data.
+     */
+    public function testFindOrCreateArrayData(): void
+    {
+        $articles = $this->getTableLocator()->get('Articles');
+
+        $firstArticle = $articles->findOrCreate(['title' => 'Some title'], ['body' => 'Some body']);
+        $this->assertFalse($firstArticle->isNew());
+        $this->assertNotNull($firstArticle->id);
+        $this->assertSame('Some title', $firstArticle->title);
+        $this->assertSame('Some body', $firstArticle->body);
+
+        $secondArticle = $articles->findOrCreate(['title' => 'Some title'], ['body' => 'Different body']);
+        $this->assertFalse($secondArticle->isNew());
+        $this->assertNotNull($secondArticle->id);
+        $this->assertSame('Some title', $secondArticle->title);
+        $this->assertEquals($firstArticle->id, $secondArticle->id);
+        $this->assertSame('Some body', $secondArticle->body);
     }
 
     /**

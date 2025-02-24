@@ -6971,7 +6971,7 @@ class FormHelperTest extends TestCase
             ],
             'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'POST'],
             '/form',
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -6986,7 +6986,7 @@ class FormHelperTest extends TestCase
             ],
             'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'DELETE'],
             '/form',
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7005,7 +7005,7 @@ class FormHelperTest extends TestCase
             ],
             'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'POST'],
             '/form',
-            'a' => ['class' => 'btn btn-danger', 'href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['class' => 'btn btn-danger', 'href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7030,7 +7030,7 @@ class FormHelperTest extends TestCase
             'a' => [
                 'href' => '#',
                 'data-confirm-message' => 'Confirm?',
-                'onclick' => 'preg:/if \(confirm\(this.dataset.confirmMessage\)\) \{ document\.post_\w+\.submit\(\); \} event\.returnValue = false; return false;/',
+                'onclick' => 'preg:/if \(confirm\(this.dataset.confirmMessage\)\) \{ document\.post_\w+\.requestSubmit\(\); \} event\.returnValue = false; return false;/',
             ],
             'Delete',
             '/a',
@@ -7052,7 +7052,7 @@ class FormHelperTest extends TestCase
             'a' => [
                 'href' => '#',
                 'data-confirm-message' => "&#039;Confirm&#039;\nthis &quot;deletion&quot;?",
-                'onclick' => "preg:/if \(confirm\(this.dataset.confirmMessage\)\) \{ document\.post_\w+\.submit\(\); \} event\.returnValue = false; return false;/",
+                'onclick' => "preg:/if \(confirm\(this.dataset.confirmMessage\)\) \{ document\.post_\w+\.requestSubmit\(\); \} event\.returnValue = false; return false;/",
             ],
             'Delete',
             '/a',
@@ -7107,7 +7107,7 @@ class FormHelperTest extends TestCase
             'script' => [
                 'nonce' => 'i-am-nonce',
             ],
-            'preg:/document\.getElementById\("link\-post\-\w+"\)\.addEventListener\("click", function\(event\) { if \(confirm\(this\.dataset\.confirmMessage\)\) \{ document\.post_\w+\.submit\(\); \} event\.returnValue = false; return false; }\);/',
+            'preg:/document\.getElementById\("link\-post\-\w+"\)\.addEventListener\("click", function\(event\) { if \(confirm\(this\.dataset\.confirmMessage\)\) \{ document\.post_\w+\.requestSubmit\(\); \} event\.returnValue = false; return false; }\);/',
             '/script',
         ];
         $this->assertHtml($expected, $result);
@@ -7135,7 +7135,7 @@ class FormHelperTest extends TestCase
             'script' => [
                 'nonce' => 'i-am-nonce',
             ],
-            'preg:/document\.getElementById\("link\-post\-\w+"\)\.addEventListener\("click", function\(event\) { if \(confirm\(this\.dataset\.confirmMessage\)\) \{ document\.post_\w+\.submit\(\); \} event\.returnValue = false; return false; }\);/',
+            'preg:/document\.getElementById\("link\-post\-\w+"\)\.addEventListener\("click", function\(event\) { if \(confirm\(this\.dataset\.confirmMessage\)\) \{ document\.post_\w+\.requestSubmit\(\); \} event\.returnValue = false; return false; }\);/',
             '/script',
         ];
         $this->assertHtml($expected, $result);
@@ -7162,7 +7162,7 @@ class FormHelperTest extends TestCase
             ],
             'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'POST'],
             '/form',
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7230,7 +7230,7 @@ class FormHelperTest extends TestCase
             ]],
             '/div',
             '/form',
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7293,7 +7293,7 @@ class FormHelperTest extends TestCase
             ['input' => ['type' => 'hidden', 'name' => '_Token[unlocked]', 'value' => '']],
             '/div',
             '/form',
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7356,7 +7356,7 @@ class FormHelperTest extends TestCase
             ]],
             '/div',
             '/form',
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7372,7 +7372,7 @@ class FormHelperTest extends TestCase
     {
         $result = $this->Form->postLink('Delete', '/posts/delete/1', ['block' => true]);
         $expected = [
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7395,7 +7395,7 @@ class FormHelperTest extends TestCase
             ['block' => true, 'method' => 'DELETE'],
         );
         $expected = [
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7422,7 +7422,7 @@ class FormHelperTest extends TestCase
 
         $result = $this->Form->postLink('Delete', '/posts/delete/1', ['block' => 'foobar']);
         $expected = [
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
