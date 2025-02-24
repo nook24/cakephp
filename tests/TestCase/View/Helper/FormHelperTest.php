@@ -7442,7 +7442,7 @@ class FormHelperTest extends TestCase
         $this->Form->setConfig('defaultPostLinkBlock', 'foobaz');
         $result = $this->Form->postLink('Delete', '/posts/delete/4');
         $expected = [
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7475,7 +7475,7 @@ class FormHelperTest extends TestCase
             ],
             'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'DELETE'],
             '/form',
-            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
@@ -7493,7 +7493,7 @@ class FormHelperTest extends TestCase
             ],
             'input' => ['type' => 'hidden', 'name' => '_method', 'value' => 'DELETE'],
             '/form',
-            'a' => ['class' => 'btn btn-danger', 'href' => '#', 'onclick' => 'preg:/document\.post_\w+\.submit\(\); event\.returnValue = false; return false;/'],
+            'a' => ['class' => 'btn btn-danger', 'href' => '#', 'onclick' => 'preg:/document\.post_\w+\.requestSubmit\(\); event\.returnValue = false; return false;/'],
             'Delete',
             '/a',
         ];
