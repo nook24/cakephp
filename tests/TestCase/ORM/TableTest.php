@@ -118,7 +118,7 @@ class TableTest extends TestCase
      */
     protected $articlesTypeMap;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->connection = ConnectionManager::get('test');
@@ -203,7 +203,7 @@ class TableTest extends TestCase
     /**
      * teardown method
      */
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->clearPlugins();

@@ -30,14 +30,14 @@ use TestPlugin\Log\Engine\TestPluginLog;
  */
 class LogTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Log::reset();
         $this->clearPlugins();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
         Log::reset();

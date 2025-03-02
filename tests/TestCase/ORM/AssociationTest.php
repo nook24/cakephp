@@ -45,7 +45,7 @@ class AssociationTest extends TestCase
     /**
      * Set up
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->source = new TestTable();
