@@ -34,7 +34,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class ClientTest extends TestCase
 {
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -573,7 +573,7 @@ class ClientTest extends TestCase
                 'headers' => [
                     'Content-Type' => 'application/octet-stream',
                 ],
-            ]
+            ],
         );
     }
 
@@ -608,7 +608,7 @@ class ClientTest extends TestCase
                 'headers' => [
                     'Content-Type' => 'application/octet-stream',
                 ],
-            ]
+            ],
         );
     }
 

@@ -86,6 +86,15 @@ INDEX [unique_id_idx] UNIQUE ([unique_id])
 )
 SQL;
         $connection->execute($table);
+
+        $comment = <<<SQL
+            EXECUTE sp_addextendedproperty
+            N'MS_Description', N'is published or not',
+            N'SCHEMA', N'dbo',
+            N'TABLE', N'schema_articles',
+            N'COLUMN', N'published';
+SQL;
+        $connection->execute($comment);
         $connection->execute('CREATE INDEX [author_idx] ON [schema_articles] ([author_id])');
 
         $table = <<<SQL
@@ -438,7 +447,7 @@ SQL;
                 'default' => 0,
                 'length' => null,
                 'precision' => null,
-                'comment' => null,
+                'comment' => 'is published or not',
             ],
             'views' => [
                 'type' => 'smallinteger',
@@ -1243,6 +1252,47 @@ SQL;
             "DBCC CHECKIDENT('schema_articles', RESEED, 0)",
             $result[1],
         );
+    }
+
+    public function testCreateTableColumnComment(): void
+    {
+        $this->_needsConnection();
+
+        $columns = [
+            'id' => [
+                'type' => 'biginteger',
+                'default' => null,
+                'null' => false,
+                'length' => 19,
+                'precision' => null,
+                'unsigned' => null,
+                'autoIncrement' => true,
+                'comment' => null,
+            ],
+            'title' => [
+                'type' => 'string',
+                'length' => 20,
+                'null' => true,
+                'precision' => null,
+                'comment' => null,
+            ],
+            'body' => [
+                'type' => 'string',
+                'null' => true,
+                'length' => 1000,
+                'precision' => null,
+                'comment' => 'the body field',
+            ],
+        ];
+        $schema = new TableSchema('schema_comment');
+        foreach ($columns as $name => $column) {
+            $schema->addColumn($name, $column);
+        }
+        $connection = ConnectionManager::get('test');
+        $sql = $schema->createSql($connection);
+        $comment = $sql[1];
+        $this->assertStringContainsString('the body field', $comment);
+        $this->assertStringContainsString("EXEC sp_addextendedproperty N'MS_Description'", $comment);
     }
 
     /**

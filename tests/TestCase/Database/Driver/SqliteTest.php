@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 class SqliteTest extends TestCase
 {
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
         ConnectionManager::drop('test_shared_cache');
