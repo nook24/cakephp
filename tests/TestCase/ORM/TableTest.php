@@ -1147,6 +1147,24 @@ class TableTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testUpdateExpression(): void
+    {
+        $table = new Table([
+            'table' => 'counter_cache_users',
+            'connection' => $this->connection,
+        ]);
+        $entity = new Entity([
+            'name' => 'test',
+            'post_count' => 0,
+            'comment_count' => 0,
+            'posts_published' => 0,
+        ]);
+        $table->save($entity);
+        $expression = new QueryExpression(['post_count = post_count + 1']);
+        $result = $table->updateAll([$expression], ['id' => 1]);
+        $this->assertNotEmpty($result);
+    }
+
     /**
      * Test that exceptions from the Query bubble up.
      */
@@ -3381,6 +3399,34 @@ class TableTest extends TestCase
         $validator = $table->getValidator('Behavior');
         $set = $validator->field('name');
         $this->assertArrayHasKey('behaviorRule', $set);
+    }
+
+    /**
+     * https://github.com/cakephp/cakephp/issues/18273
+     */
+    public function testValidatorWithMethodInBehavior(): void
+    {
+        $table = new Table();
+        $table->addBehavior('Validation');
+
+        $table->getValidator('default')->add(
+            'name',
+            'customValidationRule',
+            ['rule' => 'customValidationRule', 'provider' => 'table'],
+        );
+
+        $result = $table->getValidator('default')->validate([
+            'name' => 'test',
+        ], true);
+
+        $this->assertSame(
+            [
+                'name' => [
+                    'customValidationRule' => 'The provided value is invalid',
+                ],
+            ],
+            $result,
+        );
     }
 
     /**
