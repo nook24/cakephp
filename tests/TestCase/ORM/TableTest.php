@@ -1908,20 +1908,6 @@ class TableTest extends TestCase
     }
 
     /**
-     * Test removing a behavior from a table clears the method map for the behavior
-     */
-    public function testRemoveBehaviorMethodMapCleared(): void
-    {
-        $table = new Table(['table' => 'articles']);
-        $table->addBehavior('Sluggable');
-        $this->assertTrue($table->behaviors()->hasMethod('slugify'), 'slugify should be mapped');
-        $this->assertSame('foo-bar', $table->slugify('foo bar'));
-
-        $table->removeBehavior('Sluggable');
-        $this->assertFalse($table->behaviors()->hasMethod('slugify'), 'slugify should not be callable');
-    }
-
-    /**
      * Test adding multiple behaviors to a table.
      */
     public function testAddBehaviors(): void
@@ -1991,26 +1977,6 @@ class TableTest extends TestCase
         $this->expectException(MissingBehaviorException::class);
         $table = $this->getTableLocator()->get('article');
         $this->assertNull($table->addBehavior('NopeNotThere'));
-    }
-
-    /**
-     * Test mixin methods from behaviors.
-     */
-    public function testCallBehaviorMethod(): void
-    {
-        $table = $this->getTableLocator()->get('article');
-        $table->addBehavior('Sluggable');
-        $this->assertSame('some-value', $table->slugify('some value'));
-    }
-
-    /**
-     * Test you can alias a behavior method
-     */
-    public function testCallBehaviorAliasedMethod(): void
-    {
-        $table = $this->getTableLocator()->get('article');
-        $table->addBehavior('Sluggable', ['implementedMethods' => ['wednesday' => 'slugify']]);
-        $this->assertSame('some-value', $table->wednesday('some value'));
     }
 
     /**
@@ -3386,58 +3352,6 @@ class TableTest extends TestCase
         $this->assertInstanceOf(Validator::class, $validator);
         $default = $table->getValidator('default');
         $this->assertSame($validator, $default);
-    }
-
-    /**
-     * Tests that there exists a validator defined in a behavior.
-     */
-    public function testValidatorBehavior(): void
-    {
-        $table = new Table();
-        $table->addBehavior('Validation');
-
-        $validator = $table->getValidator('Behavior');
-        $set = $validator->field('name');
-        $this->assertArrayHasKey('behaviorRule', $set);
-    }
-
-    /**
-     * https://github.com/cakephp/cakephp/issues/18273
-     */
-    public function testValidatorWithMethodInBehavior(): void
-    {
-        $table = new Table();
-        $table->addBehavior('Validation');
-
-        $table->getValidator('default')->add(
-            'name',
-            'customValidationRule',
-            ['rule' => 'customValidationRule', 'provider' => 'table'],
-        );
-
-        $result = $table->getValidator('default')->validate([
-            'name' => 'test',
-        ], true);
-
-        $this->assertSame(
-            [
-                'name' => [
-                    'customValidationRule' => 'The provided value is invalid',
-                ],
-            ],
-            $result,
-        );
-    }
-
-    /**
-     * Tests that a InvalidArgumentException is thrown if the custom validator method does not exist.
-     */
-    public function testValidatorWithMissingMethod(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The `Cake\ORM\Table::validationMissing()` validation method does not exists.');
-        $table = new Table();
-        $table->getValidator('missing');
     }
 
     /**

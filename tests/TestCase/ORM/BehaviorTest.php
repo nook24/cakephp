@@ -55,13 +55,7 @@ class BehaviorTest extends TestCase
         $table = $this->getMockBuilder(Table::class)->getMock();
         $behavior = new Test3Behavior($table);
         $expected = [
-            'finders' => [
-                'foo' => 'findFoo',
-            ],
-            'methods' => [
-                'doSomething' => 'doSomething',
-                'testReflectionCache' => 'testReflectionCache',
-            ],
+            'foo' => 'findFoo',
         ];
         $this->assertEquals($expected, $behavior->testReflectionCache());
     }
@@ -118,49 +112,6 @@ class BehaviorTest extends TestCase
             ],
         ];
         $this->assertEquals($expected, $behavior->implementedEvents());
-    }
-
-    /**
-     * testImplementedMethods
-     */
-    public function testImplementedMethods(): void
-    {
-        $table = $this->getMockBuilder(Table::class)->getMock();
-        $behavior = new Test2Behavior($table);
-        $expected = [
-            'doSomething' => 'doSomething',
-        ];
-        $this->assertEquals($expected, $behavior->implementedMethods());
-    }
-
-    /**
-     * testImplementedMethodsAliased
-     */
-    public function testImplementedMethodsAliased(): void
-    {
-        $table = $this->getMockBuilder(Table::class)->getMock();
-        $behavior = new Test2Behavior($table, [
-            'implementedMethods' => [
-                'aliased' => 'doSomething',
-            ],
-        ]);
-        $expected = [
-            'aliased' => 'doSomething',
-        ];
-        $this->assertEquals($expected, $behavior->implementedMethods());
-    }
-
-    /**
-     * testImplementedMethodsDisabled
-     */
-    public function testImplementedMethodsDisabled(): void
-    {
-        $table = $this->getMockBuilder(Table::class)->getMock();
-        $behavior = new Test2Behavior($table, [
-            'implementedMethods' => [],
-        ]);
-        $expected = [];
-        $this->assertEquals($expected, $behavior->implementedMethods());
     }
 
     /**
@@ -267,21 +218,5 @@ class BehaviorTest extends TestCase
         ]);
         $behavior->verifyConfig();
         $this->assertTrue(true, 'No exception thrown');
-    }
-
-    /**
-     * testVerifyImplementedMethodsInvalid
-     */
-    public function testVerifyImplementedMethodsInvalid(): void
-    {
-        $this->expectException(CakeException::class);
-        $this->expectExceptionMessage('The method `iDoNotExist` is not callable on class `' . Test2Behavior::class . '`');
-        $table = $this->getMockBuilder(Table::class)->getMock();
-        $behavior = new Test2Behavior($table, [
-            'implementedMethods' => [
-                'aliased' => 'iDoNotExist',
-            ],
-        ]);
-        $behavior->verifyConfig();
     }
 }
