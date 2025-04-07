@@ -3355,6 +3355,17 @@ class TableTest extends TestCase
     }
 
     /**
+     * Tests that a InvalidArgumentException is thrown if the custom validator method does not exist.
+     */
+    public function testValidatorWithMissingMethod(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The `Cake\ORM\Table::validationMissing()` validation method does not exists.');
+        $table = new Table();
+        $table->getValidator('missing');
+    }
+
+    /**
      * Tests that it is possible to set a custom validator under a name
      */
     public function testValidatorSetter(): void
@@ -5729,8 +5740,8 @@ class TableTest extends TestCase
     {
         $table = $this->getTableLocator()->get('Users');
         $validator = new Validator();
-        $validator->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
         $validator->setProvider('table', $table);
+        $validator->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $data = ['username' => ['larry', 'notthere']];
         $this->assertNotEmpty($validator->validate($data));
@@ -5758,11 +5769,11 @@ class TableTest extends TestCase
     {
         $table = $this->getTableLocator()->get('Users');
         $validator = new Validator();
+        $validator->setProvider('table', $table);
         $validator->add('username', 'unique', [
             'rule' => ['validateUnique', ['derp' => 'erp', 'scope' => 'id']],
             'provider' => 'table',
         ]);
-        $validator->setProvider('table', $table);
         $data = ['username' => 'larry', 'id' => 3];
         $this->assertNotEmpty($validator->validate($data));
 
@@ -5789,6 +5800,7 @@ class TableTest extends TestCase
         $table->save($entity);
 
         $validator = new Validator();
+        $validator->setProvider('table', $table);
         $validator->add('site_id', 'unique', [
             'rule' => [
                 'validateUnique',
@@ -5800,7 +5812,6 @@ class TableTest extends TestCase
             'provider' => 'table',
             'message' => 'Must be unique.',
         ]);
-        $validator->setProvider('table', $table);
 
         $data = ['site_id' => 1, 'author_id' => null, 'title' => 'Null dupe'];
         $expected = ['site_id' => ['unique' => 'Must be unique.']];

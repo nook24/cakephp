@@ -105,10 +105,10 @@ class ValidatorTest extends TestCase
         $this->assertCount(2, $validator);
 
         $validator->add('email', 'notBlank');
-        $result = $validator->field('email')->rule('notBlank')->get('rule');
-        $this->assertSame('notBlank', $result);
+        $result = $validator->field('email')->rule('notBlank')->get('callable');
+        $this->assertSame([Validation::class, 'notBlank'], $result);
 
-        $rule = new ValidationRule([]);
+        $rule = new ValidationRule(['callable' => [Validation::class, 'notBlank']]);
         $validator->add('field', 'myrule', $rule);
         $result = $validator->field('field')->rule('myrule');
         $this->assertSame($rule, $result);
@@ -136,14 +136,10 @@ class ValidatorTest extends TestCase
         $validator->setProvider('test', $this);
 
         $inner = new Validator();
-        $inner->add('username', 'not-blank', ['rule' => function () use ($inner, $validator) {
-            $this->assertSame($validator->providers(), $inner->providers(), 'Providers should match');
-
-            return false;
-        }]);
+        $inner->add('username', 'not-blank', ['rule' => 'notBlank']);
         $validator->addNested('user', $inner);
 
-        $result = $validator->validate(['user' => ['username' => 'example']]);
+        $result = $validator->validate(['user' => ['username' => ' ']]);
         $this->assertNotEmpty($result, 'Validation should fail');
     }
 
@@ -197,14 +193,10 @@ class ValidatorTest extends TestCase
         $validator->setProvider('test', $this);
 
         $inner = new Validator();
-        $inner->add('comment', 'not-blank', ['rule' => function () use ($inner, $validator) {
-            $this->assertSame($validator->providers(), $inner->providers(), 'Providers should match');
-
-            return false;
-        }]);
+        $inner->add('comment', 'not-blank', ['rule' => 'notBlank']);
         $validator->addNestedMany('comments', $inner);
 
-        $result = $validator->validate(['comments' => [['comment' => 'example']]]);
+        $result = $validator->validate(['comments' => [['comment' => ' ']]]);
         $this->assertNotEmpty($result, 'Validation should fail');
     }
 
@@ -1518,23 +1510,13 @@ class ValidatorTest extends TestCase
      */
     public function testErrorsFromCustomProvider(): void
     {
-        $validator = new Validator();
+        $validator = $this->getValidator();
+        $thing = $validator->getProvider('thing');
+
         $validator
             ->add('email', 'alpha', ['rule' => 'alphanumeric'])
             ->add('title', 'cool', ['rule' => 'isCool', 'provider' => 'thing']);
 
-        $thing = new class {
-            public $args = [];
-
-            public function isCool($data, $context)
-            {
-                $this->args = [$data, $context];
-
-                return "That ain't cool, yo";
-            }
-        };
-
-        $validator->setProvider('thing', $thing);
         $errors = $validator->validate(['email' => '!', 'title' => 'bar']);
         $expected = [
             'email' => ['alpha' => 'The provided value is invalid'],
@@ -1545,15 +1527,8 @@ class ValidatorTest extends TestCase
         $this->assertSame('bar', $thing->args[0]);
 
         $context = $thing->args[1];
-        $provider = $context['providers']['thing'];
-        $this->assertSame($thing, $provider);
-
-        unset($context['providers']['thing']);
         $expected = [
             'newRecord' => true,
-            'providers' => [
-                'default' => 'Cake\Validation\Validation',
-            ],
             'data' => [
                 'email' => '!',
                 'title' => 'bar',
@@ -1569,11 +1544,6 @@ class ValidatorTest extends TestCase
      */
     public function testMethodsWithExtraArguments(): void
     {
-        $validator = new Validator();
-        $validator->add('title', 'cool', [
-            'rule' => ['isCool', 'and', 'awesome'],
-            'provider' => 'thing',
-        ]);
         $thing = new class {
             public $args = [];
 
@@ -1585,7 +1555,12 @@ class ValidatorTest extends TestCase
             }
         };
 
+        $validator = new Validator();
         $validator->setProvider('thing', $thing);
+        $validator->add('title', 'cool', [
+            'rule' => ['isCool', 'and', 'awesome'],
+            'provider' => 'thing',
+        ]);
         $errors = $validator->validate(['email' => '!', 'title' => 'bar']);
         $expected = [
             'title' => ['cool' => "That ain't cool, yo"],
@@ -1597,15 +1572,8 @@ class ValidatorTest extends TestCase
         $this->assertSame('awesome', $thing->args[2]);
 
         $context = $thing->args[3];
-        $provider = $context['providers']['thing'];
-        $this->assertSame($thing, $provider);
-
-        unset($context['providers']['thing']);
         $expected = [
             'newRecord' => true,
-            'providers' => [
-                'default' => 'Cake\Validation\Validation',
-            ],
             'data' => [
                 'email' => '!',
                 'title' => 'bar',
@@ -1675,7 +1643,7 @@ class ValidatorTest extends TestCase
      */
     public function testArrayAccessGet(): void
     {
-        $validator = new Validator();
+        $validator = $this->getValidator();
         $validator
             ->add('email', 'alpha', ['rule' => 'alphanumeric'])
             ->add('title', 'cool', ['rule' => 'isCool', 'provider' => 'thing']);
@@ -1699,7 +1667,7 @@ class ValidatorTest extends TestCase
      */
     public function testArrayAccessExists(): void
     {
-        $validator = new Validator();
+        $validator = $this->getValidator();
         $validator
             ->add('email', 'alpha', ['rule' => 'alphanumeric'])
             ->add('title', 'cool', ['rule' => 'isCool', 'provider' => 'thing']);
@@ -1713,7 +1681,7 @@ class ValidatorTest extends TestCase
      */
     public function testArrayAccessSet(): void
     {
-        $validator = new Validator();
+        $validator = $this->getValidator();
         $validator
             ->add('email', 'alpha', ['rule' => 'alphanumeric'])
             ->add('title', 'cool', ['rule' => 'isCool', 'provider' => 'thing']);
@@ -1728,7 +1696,7 @@ class ValidatorTest extends TestCase
      */
     public function testArrayAccessUnset(): void
     {
-        $validator = new Validator();
+        $validator = $this->getValidator();
         $validator
             ->add('email', 'alpha', ['rule' => 'alphanumeric'])
             ->add('title', 'cool', ['rule' => 'isCool', 'provider' => 'thing']);
@@ -1742,7 +1710,7 @@ class ValidatorTest extends TestCase
      */
     public function testGetIterator(): void
     {
-        $validator = new Validator();
+        $validator = $this->getValidator();
         $validator
             ->add('email', 'alpha', ['rule' => 'alphanumeric'])
             ->add('title', 'cool', ['rule' => 'isCool', 'provider' => 'thing']);
@@ -1756,7 +1724,7 @@ class ValidatorTest extends TestCase
      */
     public function testCount(): void
     {
-        $validator = new Validator();
+        $validator = $this->getValidator();
         $validator
             ->add('email', 'alpha', ['rule' => 'alphanumeric'])
             ->add('title', 'cool', ['rule' => 'isCool', 'provider' => 'thing']);
@@ -1789,16 +1757,12 @@ class ValidatorTest extends TestCase
     public function testAddMultipleNumericKeyArraysInvalid(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('You cannot add validation rules without a `name` key. Update rules array to have string keys.');
+        $this->expectExceptionMessage('You cannot add validation rules without a name. Update your rules array to have string keys.');
 
         $validator = new Validator();
         $validator->add('title', [
             [
                 'rule' => 'notBlank',
-            ],
-            [
-                'rule' => ['minLength', 10],
-                'message' => 'Titles need to be at least 10 characters long',
             ],
         ]);
     }
@@ -2992,9 +2956,8 @@ class ValidatorTest extends TestCase
         $this->assertNotEmpty($rule, "Rule was not found for {$method}");
         $this->assertNotNull($rule->get('message'), 'Message is not present when it should be');
         $this->assertNull($rule->get('on'), 'On clause is present when it should not be');
-        $this->assertSame($name, $rule->get('rule'), 'Rule name does not match');
+        $this->assertSame([Validation::class, $name], $rule->get('callable'), 'Rule name does not match');
         $this->assertEquals($pass, $rule->get('pass'), 'Passed options are different');
-        $this->assertSame('default', $rule->get('provider'), 'Provider does not match');
 
         $validator->remove('username', $method);
         if ($extra !== null) {
@@ -3055,6 +3018,24 @@ class ValidatorTest extends TestCase
         $this->assertEmpty($validator->validate(['field' => 1.23]));
     }
 
+    protected function getValidator(): Validator
+    {
+        $thing = new class {
+            public $args = [];
+
+            public function isCool($data, $context)
+            {
+                $this->args = [$data, $context];
+
+                return "That ain't cool, yo";
+            }
+        };
+
+        $validator = new Validator();
+
+        return $validator->setProvider('thing', $thing);
+    }
+
     /**
      * Assert for the data validation message for a given field's rule for a I18n-enabled & a I18n-disabled validator
      *
@@ -3095,10 +3076,3 @@ class ValidatorTest extends TestCase
         );
     }
 }
-
-// phpcs:disable
-class stdMock extends stdClass
-{
-    public function isCool() {}
-}
-// phpcs:enable
