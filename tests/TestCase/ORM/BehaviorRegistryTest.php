@@ -27,7 +27,6 @@ use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use LogicException;
 use Mockery;
-use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use TestApp\Model\Behavior\SluggableBehavior;
 use TestPlugin\Model\Behavior\PersisterOneBehavior;
 
@@ -168,35 +167,6 @@ class BehaviorRegistryTest extends TestCase
     }
 
     /**
-     * Test load() duplicate method error
-     */
-    public function testLoadDuplicateMethodError(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('`TestApp\Model\Behavior\DuplicateBehavior` contains duplicate method `slugify`'
-        . ' which is already provided by `Sluggable`.');
-        $this->Behaviors->load('Sluggable');
-        $this->Behaviors->load('Duplicate');
-    }
-
-    /**
-     * Test load() duplicate method aliasing
-     */
-    public function testLoadDuplicateMethodAliasing(): void
-    {
-        $this->Behaviors->load('Tree');
-        $this->Behaviors->load('Duplicate', [
-            'implementedFinders' => [
-                'renamed' => 'findChildren',
-            ],
-            'implementedMethods' => [
-                'renamed' => 'slugify',
-            ],
-        ]);
-        $this->assertTrue($this->Behaviors->hasMethod('renamed'));
-    }
-
-    /**
      * Test load() duplicate finder error
      */
     public function testLoadDuplicateFinderError(): void
@@ -222,38 +192,6 @@ class BehaviorRegistryTest extends TestCase
         $this->assertTrue($this->Behaviors->hasFinder('renamed'));
     }
 
-    public function testSet()
-    {
-        $this->Behaviors->set('Sluggable', new SluggableBehavior($this->Table, ['replacement' => '_']));
-
-        $this->assertEquals(['replacement' => '_'], $this->Behaviors->get('Sluggable')->getConfig());
-        $this->assertTrue($this->Behaviors->hasMethod('slugify'));
-    }
-
-    /**
-     * test hasMethod()
-     */
-    public function testHasMethod(): void
-    {
-        $this->loadPlugins(['TestPlugin']);
-        $this->Behaviors->load('TestPlugin.PersisterOne');
-        $this->Behaviors->load('Sluggable');
-
-        $this->assertTrue($this->Behaviors->hasMethod('slugify'));
-        $this->assertTrue($this->Behaviors->hasMethod('SLUGIFY'));
-
-        $this->assertTrue($this->Behaviors->hasMethod('persist'));
-        $this->assertTrue($this->Behaviors->hasMethod('PERSIST'));
-
-        $this->assertFalse($this->Behaviors->hasMethod('__construct'));
-        $this->assertFalse($this->Behaviors->hasMethod('config'));
-        $this->assertFalse($this->Behaviors->hasMethod('implementedEvents'));
-
-        $this->assertFalse($this->Behaviors->hasMethod('nope'));
-        $this->assertFalse($this->Behaviors->hasMethod('beforeFind'));
-        $this->assertFalse($this->Behaviors->hasMethod('noSlug'));
-    }
-
     /**
      * Test hasFinder() method.
      */
@@ -268,33 +206,6 @@ class BehaviorRegistryTest extends TestCase
         $this->assertFalse($this->Behaviors->hasFinder('slugify'));
         $this->assertFalse($this->Behaviors->hasFinder('beforeFind'));
         $this->assertFalse($this->Behaviors->hasFinder('nope'));
-    }
-
-    /**
-     * test call
-     *
-     * Setup a behavior, then replace it with a mock to verify methods are called.
-     * use dummy return values to verify the return value makes it back
-     */
-    #[WithoutErrorHandler]
-    public function testCall(): void
-    {
-        $this->deprecated(function () {
-            $this->Behaviors->load('Sluggable');
-            $return = $this->Behaviors->call('slugify', ['some value']);
-            $this->assertSame('some-value', $return);
-        });
-    }
-
-    /**
-     * Test errors on unknown methods.
-     */
-    public function testCallError(): void
-    {
-        $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Cannot call `nope`, it does not belong to any attached behavior.');
-        $this->Behaviors->load('Sluggable');
-        $this->Behaviors->call('nope');
     }
 
     /**
@@ -337,22 +248,6 @@ class BehaviorRegistryTest extends TestCase
     }
 
     /**
-     * Test errors on unloaded behavior methods.
-     */
-    public function testUnloadBehaviorThenCall(): void
-    {
-        $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Cannot call `slugify`, it does not belong to any attached behavior.');
-        $this->Behaviors->load('Sluggable');
-
-        $this->assertTrue($this->Behaviors->hasMethod('slugify'));
-        $this->Behaviors->unload('Sluggable');
-
-        $this->assertFalse($this->Behaviors->hasMethod('slugify'), 'should not have method anymore');
-        $this->Behaviors->call('slugify');
-    }
-
-    /**
      * Test errors on unloaded behavior finders.
      */
     public function testUnloadBehaviorThenCallFinder(): void
@@ -390,18 +285,12 @@ class BehaviorRegistryTest extends TestCase
         $this->Behaviors->load('Sluggable');
         $this->assertTrue($this->Behaviors->hasFinder('noSlug'));
 
-        $this->Behaviors->load('Validation');
-        $this->assertTrue($this->Behaviors->hasMethod('customValidationRule'));
-
-        $this->Behaviors->unload('Validation');
         $this->Behaviors->unload('Sluggable');
 
         $this->assertEmpty($this->Behaviors->loaded());
         $this->assertCount(0, $this->EventManager->listeners('Model.beforeFind'));
         $this->assertFalse($this->Behaviors->hasFinder('noSlug'));
         $this->assertFalse($this->Behaviors->hasFinder('noslug'));
-        $this->assertFalse($this->Behaviors->hasMethod('customValidationRule'));
-        $this->assertFalse($this->Behaviors->hasMethod('customvalidationrule'));
     }
 
     /**

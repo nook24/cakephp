@@ -639,7 +639,7 @@ class TreeBehaviorTest extends TestCase
             ->orderBy('lft')
             ->toArray();
         $table->updateAll(['lft' => null, 'rght' => null, 'depth' => null], []);
-        $table->behaviors()->Tree->setConfig('level', 'depth');
+        $table->getBehavior('Tree')->setConfig('level', 'depth');
         $table->getBehavior('Tree')->recover();
 
         $expected = [
@@ -1376,7 +1376,7 @@ class TreeBehaviorTest extends TestCase
      */
     public function testSetLevelNewNode(): void
     {
-        $this->table->behaviors()->Tree->setConfig('level', 'depth');
+        $this->table->getBehavior('Tree')->setConfig('level', 'depth');
 
         $entity = new Entity(['parent_id' => null, 'name' => 'Depth 0']);
         $this->table->save($entity);
@@ -1399,7 +1399,7 @@ class TreeBehaviorTest extends TestCase
      */
     public function testSetLevelExistingNode(): void
     {
-        $this->table->behaviors()->Tree->setConfig('level', 'depth');
+        $this->table->getBehavior('Tree')->setConfig('level', 'depth');
 
         // Leaf node
         $entity = $this->table->get(4);
