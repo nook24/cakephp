@@ -37,8 +37,10 @@ class ValidationSetTest extends TestCase
         $field->add('notBlank', ['callable' => Validation::class . '::' . 'notBlank', 'message' => 'Can not be empty']);
         $result = $field->rule('notBlank');
         $this->assertInstanceOf(ValidationRule::class, $result);
-        $expected = new ValidationRule(['callable' => Validation::class . '::' . 'notBlank', 'message' => 'Can not be empty']);
-        $this->assertEquals($expected, $result);
+        $this->assertEquals(
+            new ValidationRule(['name' => 'notBlank', 'callable' => Validation::class . '::' . 'notBlank', 'message' => 'Can not be empty']),
+            $result,
+        );
     }
 
     /**
@@ -66,15 +68,24 @@ class ValidationSetTest extends TestCase
 
         $rule = $set['notBlank'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
-        $this->assertEquals(new ValidationRule(['callable' => Validation::class . '::' . 'notBlank']), $rule);
+        $this->assertEquals(
+            new ValidationRule(['name' => 'notBlank', 'callable' => Validation::class . '::' . 'notBlank']),
+            $rule,
+        );
 
         $rule = $set['numeric'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
-        $this->assertEquals(new ValidationRule(['callable' => Validation::class . '::' . 'numeric']), $rule);
+        $this->assertEquals(
+            new ValidationRule(['name' => 'numeric', 'callable' => Validation::class . '::' . 'numeric']),
+            $rule,
+        );
 
         $rule = $set['other'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
-        $this->assertEquals(new ValidationRule(['callable' => Validation::class . '::' . 'email']), $rule);
+        $this->assertEquals(
+            new ValidationRule(['name' => 'other', 'callable' => Validation::class . '::' . 'email']),
+            $rule,
+        );
     }
 
     /**
@@ -105,7 +116,10 @@ class ValidationSetTest extends TestCase
         $set['other'] = ['callable' => Validation::class . '::' . 'email'];
         $rule = $set['other'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
-        $this->assertEquals(new ValidationRule(['callable' => Validation::class . '::' . 'email']), $rule);
+        $this->assertEquals(
+            new ValidationRule(['name' => 'other', 'callable' => Validation::class . '::' . 'email']),
+            $rule,
+        );
     }
 
     /**
