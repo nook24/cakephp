@@ -100,15 +100,11 @@ class ValidatorTest extends TestCase
         $validator->add('title', 'another', ['rule' => 'alphanumeric']);
         $this->assertCount(2, $set);
 
-        $validator->add('body', 'another', ['rule' => 'crazy']);
+        $validator->add('body', 'another', ['rule' => 'alphaNumeric']);
         $this->assertCount(1, $validator->field('body'));
         $this->assertCount(2, $validator);
 
-        $validator->add('email', 'notBlank');
-        $result = $validator->field('email')->rule('notBlank')->get('callable');
-        $this->assertSame([Validation::class, 'notBlank'], $result);
-
-        $rule = new ValidationRule(['callable' => [Validation::class, 'notBlank']]);
+        $rule = new ValidationRule([Validation::class, 'notBlank']);
         $validator->add('field', 'myrule', $rule);
         $result = $validator->field('field')->rule('myrule');
         $this->assertSame($rule, $result);
@@ -157,7 +153,7 @@ class ValidatorTest extends TestCase
         $this->assertCount(1, $validator->field('user'));
 
         $rule = $validator->field('user')->rule(Validator::NESTED);
-        $this->assertSame('create', $rule->get('on'));
+        $this->assertSame('create', $rule->on);
 
         $errors = $validator->validate(['user' => 'string']);
         $this->assertArrayHasKey('user', $errors);
@@ -214,7 +210,7 @@ class ValidatorTest extends TestCase
         $this->assertCount(1, $validator->field('comments'));
 
         $rule = $validator->field('comments')->rule(Validator::NESTED);
-        $this->assertSame('create', $rule->get('on'));
+        $this->assertSame('create', $rule->on);
 
         $errors = $validator->validate(['comments' => 'string']);
         $this->assertArrayHasKey('comments', $errors);
@@ -265,14 +261,14 @@ class ValidatorTest extends TestCase
     {
         $validator = new Validator();
         $validator->add('title', 'not-blank', ['rule' => 'notBlank']);
-        $validator->add('title', 'foo', ['rule' => 'bar']);
+        $validator->add('title', 'foo', ['rule' => 'alphaNumeric']);
         $this->assertCount(2, $validator->field('title'));
         $validator->remove('title');
         $this->assertCount(0, $validator->field('title'));
         $validator->remove('title');
 
         $validator->add('title', 'not-blank', ['rule' => 'notBlank']);
-        $validator->add('title', 'foo', ['rule' => 'bar']);
+        $validator->add('title', 'foo', ['rule' => 'alphaNumeric']);
         $this->assertCount(2, $validator->field('title'));
         $validator->remove('title', 'foo');
         $this->assertCount(1, $validator->field('title'));
@@ -2954,10 +2950,9 @@ class ValidatorTest extends TestCase
 
         $rule = $validator->field('username')->rule($method);
         $this->assertNotEmpty($rule, "Rule was not found for {$method}");
-        $this->assertNotNull($rule->get('message'), 'Message is not present when it should be');
-        $this->assertNull($rule->get('on'), 'On clause is present when it should not be');
-        $this->assertSame([Validation::class, $name], $rule->get('callable'), 'Rule name does not match');
-        $this->assertEquals($pass, $rule->get('pass'), 'Passed options are different');
+        $this->assertNotNull($rule->message, 'Message is not present when it should be');
+        $this->assertNull($rule->on, 'On clause is present when it should not be');
+        $this->assertEquals($pass, $rule->pass, 'Passed options are different');
 
         $validator->remove('username', $method);
         if ($extra !== null) {
@@ -2967,8 +2962,8 @@ class ValidatorTest extends TestCase
         }
 
         $rule = $validator->field('username')->rule($method);
-        $this->assertSame('the message', $rule->get('message'), 'Error messages are not the same');
-        $this->assertSame('create', $rule->get('on'), 'On clause is wrong');
+        $this->assertSame('the message', $rule->message, 'Error messages are not the same');
+        $this->assertSame('create', $rule->on, 'On clause is wrong');
     }
 
     /**
@@ -3060,7 +3055,7 @@ class ValidatorTest extends TestCase
 
         $this->assertSame(
             $expectedMessage,
-            $validator->field($fieldName)->rule($rule)->get('message'),
+            $validator->field($fieldName)->rule($rule)->message,
         );
 
         $noI18nValidator = new NoI18nValidator();
@@ -3072,7 +3067,7 @@ class ValidatorTest extends TestCase
 
         $this->assertSame(
             $expectedMessage,
-            $noI18nValidator->field($fieldName)->rule($rule)->get('message'),
+            $noI18nValidator->field($fieldName)->rule($rule)->message,
         );
     }
 }

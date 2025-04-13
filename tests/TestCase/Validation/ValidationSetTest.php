@@ -18,6 +18,7 @@ declare(strict_types=1);
  */
 namespace Cake\Test\TestCase\Validation;
 
+use Cake\Core\Exception\CakeException;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validation;
 use Cake\Validation\ValidationRule;
@@ -38,7 +39,7 @@ class ValidationSetTest extends TestCase
         $result = $field->rule('notBlank');
         $this->assertInstanceOf(ValidationRule::class, $result);
         $this->assertEquals(
-            new ValidationRule(['name' => 'notBlank', 'callable' => Validation::class . '::' . 'notBlank', 'message' => 'Can not be empty']),
+            new ValidationRule(name: 'notBlank', callable: Validation::class . '::' . 'notBlank', message: 'Can not be empty'),
             $result,
         );
     }
@@ -69,21 +70,21 @@ class ValidationSetTest extends TestCase
         $rule = $set['notBlank'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
         $this->assertEquals(
-            new ValidationRule(['name' => 'notBlank', 'callable' => Validation::class . '::' . 'notBlank']),
+            new ValidationRule(name: 'notBlank', callable: Validation::class . '::' . 'notBlank'),
             $rule,
         );
 
         $rule = $set['numeric'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
         $this->assertEquals(
-            new ValidationRule(['name' => 'numeric', 'callable' => Validation::class . '::' . 'numeric']),
+            new ValidationRule(name: 'numeric', callable: Validation::class . '::' . 'numeric'),
             $rule,
         );
 
         $rule = $set['other'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
         $this->assertEquals(
-            new ValidationRule(['name' => 'other', 'callable' => Validation::class . '::' . 'email']),
+            new ValidationRule(name: 'other', callable: Validation::class . '::' . 'email'),
             $rule,
         );
     }
@@ -117,7 +118,7 @@ class ValidationSetTest extends TestCase
         $rule = $set['other'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
         $this->assertEquals(
-            new ValidationRule(['name' => 'other', 'callable' => Validation::class . '::' . 'email']),
+            new ValidationRule(name: 'other', callable: Validation::class . '::' . 'email'),
             $rule,
         );
     }
@@ -237,5 +238,23 @@ class ValidationSetTest extends TestCase
 
         $set->allowEmpty(false);
         $this->assertFalse($set->isEmptyAllowed());
+    }
+
+    public function testAddDuplicateName(): void
+    {
+        $rules = new ValidationSet();
+        $rules->add('myUniqueName', ['callable' => fn() => false]);
+
+        $this->expectException(CakeException::class);
+        $rules->add('myUniqueName', ['callable' => fn() => true]);
+    }
+
+    public function testHasName(): void
+    {
+        $rules = new ValidationSet();
+        $rules->add('myUniqueName', ['callable' => fn() => false]);
+
+        $this->assertTrue($rules->has('myUniqueName'));
+        $this->assertFalse($rules->has('myMadeUpName'));
     }
 }

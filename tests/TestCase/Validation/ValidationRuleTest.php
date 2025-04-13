@@ -16,12 +16,8 @@ declare(strict_types=1);
  */
 namespace Cake\Test\TestCase\Validation;
 
-use Cake\Core\Exception\CakeException;
 use Cake\TestSuite\TestCase;
-use Cake\Validation\Validation;
 use Cake\Validation\ValidationRule;
-use Cake\Validation\ValidationSet;
-use Error;
 
 /**
  * ValidationRuleTest
@@ -60,16 +56,16 @@ class ValidationRuleTest extends TestCase
         $data = 'some data';
 
         $context = ['newRecord' => true];
-        $Rule = new ValidationRule(['callable' => [$this, 'willFail']]);
+        $Rule = new ValidationRule([$this, 'willFail']);
         $this->assertFalse($Rule->process($data, $context));
 
-        $Rule = new ValidationRule(['callable' => [$this, 'willPass'], 'pass' => ['key' => 'value']]);
+        $Rule = new ValidationRule([$this, 'willPass'], pass: ['key' => 'value']);
         $this->assertTrue($Rule->process($data, $context));
 
-        $Rule = new ValidationRule(['callable' => [$this, 'willFail3']]);
+        $Rule = new ValidationRule([$this, 'willFail3']);
         $this->assertSame('string', $Rule->process($data, $context));
 
-        $Rule = new ValidationRule(['callable' => [$this, 'willFail'], 'message' => 'foo']);
+        $Rule = new ValidationRule([$this, 'willFail'], message: 'foo');
         $this->assertSame('foo', $Rule->process($data, $context));
     }
 
@@ -81,24 +77,8 @@ class ValidationRuleTest extends TestCase
         $data = 'some data';
         $context = ['field' => 'custom', 'newRecord' => true];
 
-        $rule = new ValidationRule([
-            'callable' => $this->willFail(...),
-        ]);
+        $rule = new ValidationRule($this->willFail(...));
         $this->assertFalse($rule->process($data, $context));
-    }
-
-    /**
-     * Make sure errors are triggered when validation is missing.
-     */
-    public function testCustomMethodMissingError(): void
-    {
-        $this->expectException(Error::class);
-        $this->expectExceptionMessage('Call to undefined method Cake\Test\TestCase\Validation\ValidationRuleTest::totallyMissing()');
-        $def = ['callable' => [$this, 'totallyMissing']];
-        $data = 'some data';
-
-        $Rule = new ValidationRule($def);
-        $Rule->process($data, ['newRecord' => true, 'field' => 'test']);
     }
 
     /**
@@ -108,22 +88,13 @@ class ValidationRuleTest extends TestCase
     {
         $data = 'some data';
 
-        $Rule = new ValidationRule([
-            'callable' => [$this, 'willFail'],
-            'on' => 'create',
-        ]);
+        $Rule = new ValidationRule([$this, 'willFail'], on: 'create');
         $this->assertFalse($Rule->process($data, ['newRecord' => true]));
 
-        $Rule = new ValidationRule([
-            'callable' => [$this, 'willFail'],
-            'on' => 'update',
-        ]);
+        $Rule = new ValidationRule([$this, 'willFail'], on: 'update');
         $this->assertTrue($Rule->process($data, ['newRecord' => true]));
 
-        $Rule = new ValidationRule([
-            'callable' => [$this, 'willFail'],
-            'on' => 'update',
-        ]);
+        $Rule = new ValidationRule([$this, 'willFail'], on: 'update');
         $this->assertFalse($Rule->process($data, ['newRecord' => false]));
     }
 
@@ -134,63 +105,26 @@ class ValidationRuleTest extends TestCase
     {
         $data = 'some data';
 
-        $Rule = new ValidationRule([
-            'callable' => [$this, 'willFail'],
-            'on' => function ($context) {
+        $Rule = new ValidationRule(
+            callable: [$this, 'willFail'],
+            on: function ($context) {
                 $expected = ['newRecord' => true, 'data' => []];
                 $this->assertEquals($expected, $context);
 
                 return true;
             },
-        ]);
+        );
         $this->assertFalse($Rule->process($data, ['newRecord' => true]));
 
-        $Rule = new ValidationRule([
-            'callable' => [$this, 'willFail'],
-            'on' => function ($context) {
+        $Rule = new ValidationRule(
+            [$this, 'willFail'],
+            on: function ($context) {
                 $expected = ['newRecord' => true, 'data' => []];
                 $this->assertEquals($expected, $context);
 
                 return false;
             },
-        ]);
+        );
         $this->assertTrue($Rule->process($data, ['newRecord' => true]));
-    }
-
-    /**
-     * testGet
-     */
-    public function testGet(): void
-    {
-        $Rule = new ValidationRule(['callable' => [$this, 'willFail'], 'message' => 'foo']);
-
-        $this->assertSame([$this, 'willFail'], $Rule->get('callable'));
-        $this->assertSame('foo', $Rule->get('message'));
-        $this->assertEquals([], $Rule->get('pass'));
-        $this->assertNull($Rule->get('nonexistent'));
-
-        $Rule = new ValidationRule(['callable' => [Validation::class, 'willPass'], 'pass' => ['param'], 'message' => 'bar']);
-
-        $this->assertSame([Validation::class, 'willPass'], $Rule->get('callable'));
-        $this->assertSame('bar', $Rule->get('message'));
-        $this->assertEquals(['param'], $Rule->get('pass'));
-    }
-
-    public function testAddDuplicateName(): void
-    {
-        $rules = new ValidationSet();
-        $rules->add('myUniqueName', ['callable' => fn() => false]);
-
-        $this->expectException(CakeException::class);
-        $rules->add('myUniqueName', ['callable' => fn() => true]);
-    }
-
-    public function testHasName(): void
-    {
-        $rules = new ValidationSet();
-        $rules->add('myUniqueName', ['callable' => fn() => false]);
-
-        $this->assertTrue($rules->has('myUniqueName'));
-        $this->assertFalse($rules->has('myMadeUpName'));
     }
 }
