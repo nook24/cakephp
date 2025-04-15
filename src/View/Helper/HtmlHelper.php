@@ -76,9 +76,7 @@ class HtmlHelper extends Helper
             'ol' => '<ol{{attrs}}>{{content}}</ol>',
             'li' => '<li{{attrs}}>{{content}}</li>',
             'javascriptblock' => '<script{{attrs}}>{{content}}</script>',
-            'javascriptstart' => '<script>',
             'javascriptlink' => '<script src="{{url}}"{{attrs}}></script>',
-            'javascriptend' => '</script>',
             'confirmJs' => '{{confirm}}',
         ],
     ];
