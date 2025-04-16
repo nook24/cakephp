@@ -21,6 +21,7 @@ use Cake\Validation\Validation;
 use Cake\Validation\ValidationRule;
 use Cake\Validation\ValidationSet;
 use Cake\Validation\Validator;
+use Closure;
 use InvalidArgumentException;
 use Laminas\Diactoros\UploadedFile;
 use Locale;
@@ -104,7 +105,7 @@ class ValidatorTest extends TestCase
         $this->assertCount(1, $validator->field('body'));
         $this->assertCount(2, $validator);
 
-        $rule = new ValidationRule([Validation::class, 'notBlank']);
+        $rule = new ValidationRule(Closure::fromCallable([Validation::class, 'notBlank']));
         $validator->add('field', 'myrule', $rule);
         $result = $validator->field('field')->rule('myrule');
         $this->assertSame($rule, $result);

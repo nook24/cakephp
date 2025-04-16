@@ -18,6 +18,7 @@ namespace Cake\Test\TestCase\Validation;
 
 use Cake\TestSuite\TestCase;
 use Cake\Validation\ValidationRule;
+use Closure;
 
 /**
  * ValidationRuleTest
@@ -56,16 +57,16 @@ class ValidationRuleTest extends TestCase
         $data = 'some data';
 
         $context = ['newRecord' => true];
-        $Rule = new ValidationRule([$this, 'willFail']);
+        $Rule = new ValidationRule(Closure::fromCallable([$this, 'willFail']));
         $this->assertFalse($Rule->process($data, $context));
 
-        $Rule = new ValidationRule([$this, 'willPass'], pass: ['key' => 'value']);
+        $Rule = new ValidationRule(Closure::fromCallable([$this, 'willPass']), pass: ['key' => 'value']);
         $this->assertTrue($Rule->process($data, $context));
 
-        $Rule = new ValidationRule([$this, 'willFail3']);
+        $Rule = new ValidationRule(Closure::fromCallable([$this, 'willFail3']));
         $this->assertSame('string', $Rule->process($data, $context));
 
-        $Rule = new ValidationRule([$this, 'willFail'], message: 'foo');
+        $Rule = new ValidationRule(Closure::fromCallable([$this, 'willFail']), message: 'foo');
         $this->assertSame('foo', $Rule->process($data, $context));
     }
 
@@ -88,13 +89,13 @@ class ValidationRuleTest extends TestCase
     {
         $data = 'some data';
 
-        $Rule = new ValidationRule([$this, 'willFail'], on: 'create');
+        $Rule = new ValidationRule(Closure::fromCallable([$this, 'willFail']), on: 'create');
         $this->assertFalse($Rule->process($data, ['newRecord' => true]));
 
-        $Rule = new ValidationRule([$this, 'willFail'], on: 'update');
+        $Rule = new ValidationRule(Closure::fromCallable([$this, 'willFail']), on: 'update');
         $this->assertTrue($Rule->process($data, ['newRecord' => true]));
 
-        $Rule = new ValidationRule([$this, 'willFail'], on: 'update');
+        $Rule = new ValidationRule(Closure::fromCallable([$this, 'willFail']), on: 'update');
         $this->assertFalse($Rule->process($data, ['newRecord' => false]));
     }
 
@@ -106,7 +107,7 @@ class ValidationRuleTest extends TestCase
         $data = 'some data';
 
         $Rule = new ValidationRule(
-            callable: [$this, 'willFail'],
+            callable: Closure::fromCallable(Closure::fromCallable([$this, 'willFail'])),
             on: function ($context) {
                 $expected = ['newRecord' => true, 'data' => []];
                 $this->assertEquals($expected, $context);
@@ -117,7 +118,7 @@ class ValidationRuleTest extends TestCase
         $this->assertFalse($Rule->process($data, ['newRecord' => true]));
 
         $Rule = new ValidationRule(
-            [$this, 'willFail'],
+            Closure::fromCallable(Closure::fromCallable([$this, 'willFail'])),
             on: function ($context) {
                 $expected = ['newRecord' => true, 'data' => []];
                 $this->assertEquals($expected, $context);
