@@ -32,7 +32,6 @@ abstract class StatusCodeBase extends ResponseBase
      *
      * @param array<int, int>|int $other Array of min/max status codes, or a single code
      * @return bool
-     * @psalm-suppress MoreSpecificImplementedParamType
      */
     public function matches(mixed $other): bool
     {
@@ -67,7 +66,6 @@ abstract class StatusCodeBase extends ResponseBase
      */
     protected function failureDescription(mixed $other): string
     {
-        /** @psalm-suppress InternalMethod */
         return $this->toString();
     }
 }
