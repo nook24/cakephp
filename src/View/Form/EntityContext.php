@@ -534,8 +534,8 @@ class EntityContext implements ContextInterface
 
         if ($validator->hasField($fieldName)) {
             foreach ($validator->field($fieldName)->rules() as $rule) {
-                if ($rule->get('rule') === 'maxLength') {
-                    return $rule->get('pass')[0];
+                if ($rule->name === 'maxLength' && isset($rule->pass[0])) {
+                    return $rule->pass[0];
                 }
             }
         }

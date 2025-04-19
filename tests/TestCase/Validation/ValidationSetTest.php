@@ -18,9 +18,12 @@ declare(strict_types=1);
  */
 namespace Cake\Test\TestCase\Validation;
 
+use Cake\Core\Exception\CakeException;
 use Cake\TestSuite\TestCase;
+use Cake\Validation\Validation;
 use Cake\Validation\ValidationRule;
 use Cake\Validation\ValidationSet;
+use Closure;
 
 /**
  * ValidationSetTest
@@ -33,11 +36,13 @@ class ValidationSetTest extends TestCase
     public function testGetRule(): void
     {
         $field = new ValidationSet();
-        $field->add('notBlank', ['rule' => 'notBlank', 'message' => 'Can not be empty']);
+        $field->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank'), 'message' => 'Can not be empty']);
         $result = $field->rule('notBlank');
         $this->assertInstanceOf(ValidationRule::class, $result);
-        $expected = new ValidationRule(['rule' => 'notBlank', 'message' => 'Can not be empty']);
-        $this->assertEquals($expected, $result);
+        $this->assertEquals(
+            new ValidationRule(name: 'notBlank', callable: Closure::fromCallable(Validation::class . '::' . 'notBlank'), message: 'Can not be empty'),
+            $result,
+        );
     }
 
     /**
@@ -46,7 +51,7 @@ class ValidationSetTest extends TestCase
     public function testGetRules(): void
     {
         $field = new ValidationSet();
-        $field->add('notBlank', ['rule' => 'notBlank', 'message' => 'Can not be empty']);
+        $field->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank'), 'message' => 'Can not be empty']);
 
         $result = $field->rules();
         $this->assertEquals(['notBlank'], array_keys($result));
@@ -59,21 +64,30 @@ class ValidationSetTest extends TestCase
     public function testArrayAccessGet(): void
     {
         $set = (new ValidationSet())
-            ->add('notBlank', ['rule' => 'notBlank'])
-            ->add('numeric', ['rule' => 'numeric'])
-            ->add('other', ['rule' => 'email']);
+            ->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank')])
+            ->add('numeric', ['callable' => Closure::fromCallable(Validation::class . '::' . 'numeric')])
+            ->add('other', ['callable' => Closure::fromCallable(Validation::class . '::' . 'email')]);
 
         $rule = $set['notBlank'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
-        $this->assertEquals(new ValidationRule(['rule' => 'notBlank']), $rule);
+        $this->assertEquals(
+            new ValidationRule(name: 'notBlank', callable: Closure::fromCallable(Validation::class . '::' . 'notBlank')),
+            $rule,
+        );
 
         $rule = $set['numeric'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
-        $this->assertEquals(new ValidationRule(['rule' => 'numeric']), $rule);
+        $this->assertEquals(
+            new ValidationRule(name: 'numeric', callable: Closure::fromCallable(Validation::class . '::' . 'numeric')),
+            $rule,
+        );
 
         $rule = $set['other'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
-        $this->assertEquals(new ValidationRule(['rule' => 'email']), $rule);
+        $this->assertEquals(
+            new ValidationRule(name: 'other', callable: Closure::fromCallable(Validation::class . '::' . 'email')),
+            $rule,
+        );
     }
 
     /**
@@ -82,9 +96,9 @@ class ValidationSetTest extends TestCase
     public function testArrayAccessExists(): void
     {
         $set = (new ValidationSet())
-            ->add('notBlank', ['rule' => 'notBlank'])
-            ->add('numeric', ['rule' => 'numeric'])
-            ->add('other', ['rule' => 'email']);
+            ->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank')])
+            ->add('numeric', ['callable' => Closure::fromCallable(Validation::class . '::' . 'numeric')])
+            ->add('other', ['callable' => Closure::fromCallable(Validation::class . '::' . 'email')]);
 
         $this->assertArrayHasKey('notBlank', $set);
         $this->assertArrayHasKey('numeric', $set);
@@ -98,13 +112,16 @@ class ValidationSetTest extends TestCase
     public function testArrayAccessSet(): void
     {
         $set = (new ValidationSet())
-            ->add('notBlank', ['rule' => 'notBlank']);
+            ->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank')]);
 
         $this->assertArrayNotHasKey('other', $set);
-        $set['other'] = ['rule' => 'email'];
+        $set['other'] = ['callable' => Closure::fromCallable(Validation::class . '::' . 'email')];
         $rule = $set['other'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
-        $this->assertEquals(new ValidationRule(['rule' => 'email']), $rule);
+        $this->assertEquals(
+            new ValidationRule(name: 'other', callable: Closure::fromCallable(Validation::class . '::' . 'email')),
+            $rule,
+        );
     }
 
     /**
@@ -113,9 +130,9 @@ class ValidationSetTest extends TestCase
     public function testArrayAccessUnset(): void
     {
         $set = (new ValidationSet())
-            ->add('notBlank', ['rule' => 'notBlank'])
-            ->add('numeric', ['rule' => 'numeric'])
-            ->add('other', ['rule' => 'email']);
+            ->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank')])
+            ->add('numeric', ['callable' => Closure::fromCallable(Validation::class . '::' . 'numeric')])
+            ->add('other', ['callable' => Closure::fromCallable(Validation::class . '::' . 'email')]);
 
         unset($set['notBlank']);
         $this->assertArrayNotHasKey('notBlank', $set);
@@ -133,9 +150,9 @@ class ValidationSetTest extends TestCase
     public function testIterator(): void
     {
         $set = (new ValidationSet())
-            ->add('notBlank', ['rule' => 'notBlank'])
-            ->add('numeric', ['rule' => 'numeric'])
-            ->add('other', ['rule' => 'email']);
+            ->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank')])
+            ->add('numeric', ['callable' => Closure::fromCallable(Validation::class . '::' . 'numeric')])
+            ->add('other', ['callable' => Closure::fromCallable(Validation::class . '::' . 'email')]);
 
         $i = 0;
         foreach ($set as $name => $rule) {
@@ -160,9 +177,9 @@ class ValidationSetTest extends TestCase
     public function testCount(): void
     {
         $set = (new ValidationSet())
-            ->add('notBlank', ['rule' => 'notBlank'])
-            ->add('numeric', ['rule' => 'numeric'])
-            ->add('other', ['rule' => 'email']);
+            ->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank')])
+            ->add('numeric', ['callable' => Closure::fromCallable(Validation::class . '::' . 'numeric')])
+            ->add('other', ['callable' => Closure::fromCallable(Validation::class . '::' . 'email')]);
         $this->assertCount(3, $set);
 
         unset($set['other']);
@@ -175,9 +192,9 @@ class ValidationSetTest extends TestCase
     public function testRemoveRule(): void
     {
         $set = (new ValidationSet())
-            ->add('notBlank', ['rule' => 'notBlank'])
-            ->add('numeric', ['rule' => 'numeric'])
-            ->add('other', ['rule' => 'email']);
+            ->add('notBlank', ['callable' => Closure::fromCallable(Validation::class . '::' . 'notBlank')])
+            ->add('numeric', ['callable' => Closure::fromCallable(Validation::class . '::' . 'numeric')])
+            ->add('other', ['callable' => Closure::fromCallable(Validation::class . '::' . 'email')]);
 
         $this->assertArrayHasKey('notBlank', $set);
         $set->remove('notBlank');
@@ -222,5 +239,23 @@ class ValidationSetTest extends TestCase
 
         $set->allowEmpty(false);
         $this->assertFalse($set->isEmptyAllowed());
+    }
+
+    public function testAddDuplicateName(): void
+    {
+        $rules = new ValidationSet();
+        $rules->add('myUniqueName', ['callable' => fn() => false]);
+
+        $this->expectException(CakeException::class);
+        $rules->add('myUniqueName', ['callable' => fn() => true]);
+    }
+
+    public function testHasName(): void
+    {
+        $rules = new ValidationSet();
+        $rules->add('myUniqueName', ['callable' => fn() => false]);
+
+        $this->assertTrue($rules->has('myUniqueName'));
+        $this->assertFalse($rules->has('myMadeUpName'));
     }
 }
