@@ -1514,7 +1514,6 @@ class RouterTest extends TestCase
             'plugin' => null,
             'controller' => 'Posts',
             'action' => 'view',
-            '?' => ['id' => '123', 'tab' => 'abc'],
             '_matchedRoute' => '/posts/view/*',
         ];
         $this->assertEquals($expected, $result);
@@ -1697,8 +1696,6 @@ class RouterTest extends TestCase
         return [
             ['/controller/action'],
             ['/controller/action/param'],
-            ['/controller/action?param1=value1&param2=value2'],
-            ['/controller/action/param?param1=value1'],
         ];
     }
 
@@ -1806,7 +1803,6 @@ class RouterTest extends TestCase
 
         $result = Router::parseRequest($this->makeRequest('/posts/view/1.rss?query=test', 'GET'));
         unset($result['_route']);
-        $expected['?'] = ['query' => 'test'];
         $this->assertEquals($expected, $result);
 
         Router::reload();
@@ -1832,7 +1828,6 @@ class RouterTest extends TestCase
             'controller' => 'Posts.atom',
             'action' => 'index',
             'pass' => [],
-            '?' => ['hello' => 'goodbye'],
             '_matchedRoute' => '/{controller}',
         ];
         $this->assertEquals($expected, $result);

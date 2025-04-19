@@ -155,10 +155,6 @@ class RouteCollection
                 if ($r === null) {
                     continue;
                 }
-                if ($uri->getQuery()) {
-                    parse_str($uri->getQuery(), $queryParameters);
-                    $r['?'] = array_merge($r['?'] ?? [], $queryParameters);
-                }
 
                 return $r;
             }
@@ -176,10 +172,6 @@ class RouteCollection
                 $r = $route->parseRequest($request);
                 if ($r === null) {
                     continue;
-                }
-                if ($uri->getQuery()) {
-                    parse_str($uri->getQuery(), $queryParameters);
-                    $r['?'] = $queryParameters;
                 }
 
                 return $r;

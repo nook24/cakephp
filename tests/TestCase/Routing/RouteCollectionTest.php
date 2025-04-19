@@ -25,7 +25,6 @@ use Cake\Routing\RouteCollection;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use TestApp\Routing\Route\AddQueryParamRoute;
 
 class RouteCollectionTest extends TestCase
 {
@@ -115,7 +114,6 @@ class RouteCollectionTest extends TestCase
             'pass' => [],
             'plugin' => null,
             'key' => 'value',
-            '?' => ['one' => 'two'],
             '_matchedRoute' => '/b/{id}',
         ];
         $this->assertEquals($expected, $result);
@@ -162,7 +160,6 @@ class RouteCollectionTest extends TestCase
             'pass' => ['php'],
             'plugin' => null,
             '_matchedRoute' => '/media/search/*',
-            '?' => ['one' => 'two'],
         ];
         $this->assertEquals($expected, $result);
 
@@ -175,7 +172,6 @@ class RouteCollectionTest extends TestCase
             'id' => 'thing',
             'plugin' => null,
             '_matchedRoute' => '/{id}',
-            '?' => ['one' => 'two'],
         ];
         $this->assertEquals($expected, $result);
     }
@@ -211,7 +207,6 @@ class RouteCollectionTest extends TestCase
             'pass' => [],
             'plugin' => null,
             'key' => 'value',
-            '?' => ['one' => 'two'],
             '_matchedRoute' => '/b/{id}',
         ];
         $this->assertEquals($expected, $result);
@@ -262,7 +257,6 @@ class RouteCollectionTest extends TestCase
             'action' => 'index',
             'day' => '15',
             'month' => 'октомври',
-            '?' => ['test' => 'foo'],
             '_matchedRoute' => '/ден/{day}-{month}',
         ];
         $this->assertEquals($expected, $result);
@@ -326,7 +320,6 @@ class RouteCollectionTest extends TestCase
             'pass' => ['php'],
             'plugin' => null,
             '_matchedRoute' => '/media/search/*',
-            '?' => ['one' => 'two'],
         ];
         $this->assertEquals($expected, $result);
 
@@ -340,32 +333,6 @@ class RouteCollectionTest extends TestCase
             'id' => 'thing',
             'plugin' => null,
             '_matchedRoute' => '/{id}',
-            '?' => ['one' => 'two'],
-        ];
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * Test parseRequest() handling query strings.
-     */
-    public function testParseRequestQueryStringFromRoute(): void
-    {
-        $routes = new RouteBuilder($this->collection, '/');
-        $routes->connect(
-            '/test',
-            ['controller' => 'Articles', 'action' => 'view'],
-            ['routeClass' => AddQueryParamRoute::class],
-        );
-        $request = new ServerRequest(['url' => '/test?y=2']);
-        $result = $this->collection->parseRequest($request);
-        unset($result['_route']);
-        $expected = [
-            'controller' => 'Articles',
-            'action' => 'view',
-            'pass' => [],
-            'plugin' => null,
-            '_matchedRoute' => '/test',
-            '?' => ['x' => '1', 'y' => '2'],
         ];
         $this->assertEquals($expected, $result);
     }
@@ -520,7 +487,6 @@ class RouteCollectionTest extends TestCase
             'pass' => [],
             'plugin' => null,
             'key' => 'value',
-            '?' => ['one' => 'two'],
             '_matchedRoute' => '/b/{id}',
         ];
         $this->assertEquals($expected, $result);
