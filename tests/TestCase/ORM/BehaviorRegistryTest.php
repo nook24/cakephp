@@ -289,12 +289,16 @@ class BehaviorRegistryTest extends TestCase
     /**
      * Test errors on unknown methods.
      */
+    #[WithoutErrorHandler]
     public function testCallError(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Cannot call `nope`, it does not belong to any attached behavior.');
         $this->Behaviors->load('Sluggable');
-        $this->Behaviors->call('nope');
+
+        $this->deprecated(function () {
+            $this->Behaviors->call('nope');
+        });
     }
 
     /**
@@ -339,17 +343,20 @@ class BehaviorRegistryTest extends TestCase
     /**
      * Test errors on unloaded behavior methods.
      */
+    #[WithoutErrorHandler]
     public function testUnloadBehaviorThenCall(): void
     {
-        $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Cannot call `slugify`, it does not belong to any attached behavior.');
-        $this->Behaviors->load('Sluggable');
+        $this->deprecated(function () {
+            $this->expectException(BadMethodCallException::class);
+            $this->expectExceptionMessage('Cannot call `slugify`, it does not belong to any attached behavior.');
+            $this->Behaviors->load('Sluggable');
 
-        $this->assertTrue($this->Behaviors->hasMethod('slugify'));
-        $this->Behaviors->unload('Sluggable');
+            $this->assertTrue($this->Behaviors->hasMethod('slugify'));
+            $this->Behaviors->unload('Sluggable');
 
-        $this->assertFalse($this->Behaviors->hasMethod('slugify'), 'should not have method anymore');
-        $this->Behaviors->call('slugify');
+            $this->assertFalse($this->Behaviors->hasMethod('slugify'), 'should not have method anymore');
+            $this->Behaviors->call('slugify');
+        });
     }
 
     /**
