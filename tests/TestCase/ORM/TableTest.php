@@ -2007,15 +2007,18 @@ class TableTest extends TestCase
     /**
      * Test removing a behavior from a table clears the method map for the behavior
      */
+    #[WithoutErrorHandler]
     public function testRemoveBehaviorMethodMapCleared(): void
     {
-        $table = new Table(['table' => 'articles']);
-        $table->addBehavior('Sluggable');
-        $this->assertTrue($table->behaviors()->hasMethod('slugify'), 'slugify should be mapped');
-        $this->assertSame('foo-bar', $table->slugify('foo bar'));
+        $this->deprecated(function (): void {
+            $table = new Table(['table' => 'articles']);
+            $table->addBehavior('Sluggable');
+            $this->assertTrue($table->behaviors()->hasMethod('slugify'), 'slugify should be mapped');
+            $this->assertSame('foo-bar', $table->slugify('foo bar'));
 
-        $table->removeBehavior('Sluggable');
-        $this->assertFalse($table->behaviors()->hasMethod('slugify'), 'slugify should not be callable');
+            $table->removeBehavior('Sluggable');
+            $this->assertFalse($table->behaviors()->hasMethod('slugify'), 'slugify should not be callable');
+        });
     }
 
     /**
@@ -2093,21 +2096,27 @@ class TableTest extends TestCase
     /**
      * Test mixin methods from behaviors.
      */
+    #[WithoutErrorHandler]
     public function testCallBehaviorMethod(): void
     {
-        $table = $this->getTableLocator()->get('article');
-        $table->addBehavior('Sluggable');
-        $this->assertSame('some-value', $table->slugify('some value'));
+        $this->deprecated(function (): void {
+            $table = $this->getTableLocator()->get('article');
+            $table->addBehavior('Sluggable');
+            $this->assertSame('some-value', $table->slugify('some value'));
+        });
     }
 
     /**
      * Test you can alias a behavior method
      */
+    #[WithoutErrorHandler]
     public function testCallBehaviorAliasedMethod(): void
     {
-        $table = $this->getTableLocator()->get('article');
-        $table->addBehavior('Sluggable', ['implementedMethods' => ['wednesday' => 'slugify']]);
-        $this->assertSame('some-value', $table->wednesday('some value'));
+        $this->deprecated(function (): void {
+            $table = $this->getTableLocator()->get('article');
+            $table->addBehavior('Sluggable', ['implementedMethods' => ['wednesday' => 'slugify']]);
+            $this->assertSame('some-value', $table->wednesday('some value'));
+        });
     }
 
     /**
@@ -3488,14 +3497,17 @@ class TableTest extends TestCase
     /**
      * Tests that there exists a validator defined in a behavior.
      */
+    #[WithoutErrorHandler]
     public function testValidatorBehavior(): void
     {
-        $table = new Table();
-        $table->addBehavior('Validation');
+        $this->deprecated(function () {
+            $table = new Table();
+            $table->addBehavior('Validation');
 
-        $validator = $table->getValidator('Behavior');
-        $set = $validator->field('name');
-        $this->assertArrayHasKey('behaviorRule', $set);
+            $validator = $table->getValidator('Behavior');
+            $set = $validator->field('name');
+            $this->assertArrayHasKey('behaviorRule', $set);
+        });
     }
 
     /**
