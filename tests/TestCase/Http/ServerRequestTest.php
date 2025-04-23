@@ -29,7 +29,6 @@ use InvalidArgumentException;
 use Laminas\Diactoros\UploadedFile;
 use Laminas\Diactoros\Uri;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\WithoutErrorHandler;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -1226,7 +1225,6 @@ class ServerRequestTest extends TestCase
         $this->assertSame($expected, $request->getParam($toRead));
     }
 
-    #[WithoutErrorHandler]
     public function testGetParamQueryParamsDeprecation(): void
     {
         $this->deprecated(function () {

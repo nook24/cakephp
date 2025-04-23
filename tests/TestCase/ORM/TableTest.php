@@ -2002,7 +2002,6 @@ class TableTest extends TestCase
     /**
      * Test removing a behavior from a table clears the method map for the behavior
      */
-    #[WithoutErrorHandler]
     public function testRemoveBehaviorMethodMapCleared(): void
     {
         $this->deprecated(function (): void {
@@ -2091,7 +2090,6 @@ class TableTest extends TestCase
     /**
      * Test mixin methods from behaviors.
      */
-    #[WithoutErrorHandler]
     public function testCallBehaviorMethod(): void
     {
         $this->deprecated(function (): void {
@@ -2104,7 +2102,6 @@ class TableTest extends TestCase
     /**
      * Test you can alias a behavior method
      */
-    #[WithoutErrorHandler]
     public function testCallBehaviorAliasedMethod(): void
     {
         $this->deprecated(function (): void {
@@ -3492,7 +3489,6 @@ class TableTest extends TestCase
     /**
      * Tests that there exists a validator defined in a behavior.
      */
-    #[WithoutErrorHandler]
     public function testValidatorBehavior(): void
     {
         $this->deprecated(function () {

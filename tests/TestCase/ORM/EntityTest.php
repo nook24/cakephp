@@ -1613,7 +1613,6 @@ class EntityTest extends TestCase
     /**
      * Test the isEmpty() check
      */
-    #[WithoutErrorHandler]
     public function testIsEmpty(): void
     {
         $this->deprecated(function () {
