@@ -134,6 +134,19 @@ class PaginatorHelperTest extends TestCase
     }
 
     /**
+     * Test the getTemplate() method.
+     */
+    public function testGetTemplate(): void
+    {
+        $this->Paginator->setTemplates([
+            'test' => 'val',
+        ]);
+
+        $result = $this->Paginator->getTemplate('test');
+        $this->assertSame('val', $result);
+    }
+
+    /**
      * testHasPrevious method
      */
     public function testHasPrevious(): void
