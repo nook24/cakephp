@@ -1544,7 +1544,7 @@ class ValidatorTest extends TestCase
         $thing = new class {
             public $args = [];
 
-            public function isCool($data, $a, $b, $context)
+            public function isCool($data, $a, $b, $context): string
             {
                 $this->args = [$data, $a, $b, $context];
 

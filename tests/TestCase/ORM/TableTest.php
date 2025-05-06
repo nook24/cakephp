@@ -2183,7 +2183,7 @@ class TableTest extends TestCase
             'created' => new DateTime('2013-10-10 00:00'),
             'updated' => new DateTime('2013-10-10 00:00'),
         ]);
-        $listener = function (EventInterface $event, $entity) {
+        $listener = function (EventInterface $event, $entity): void {
             $event->stopPropagation();
             $event->setResult($entity);
         };
@@ -2224,7 +2224,7 @@ class TableTest extends TestCase
             'created' => new DateTime('2013-10-10 00:00'),
             'updated' => new DateTime('2013-10-10 00:00'),
         ]);
-        $listener = function (EventInterface $event, $entity) {
+        $listener = function (EventInterface $event, $entity): void {
             $event->stopPropagation();
             $event->setResult(1);
         };
