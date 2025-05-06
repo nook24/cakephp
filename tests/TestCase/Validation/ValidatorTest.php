@@ -105,7 +105,7 @@ class ValidatorTest extends TestCase
         $this->assertCount(1, $validator->field('body'));
         $this->assertCount(2, $validator);
 
-        $rule = new ValidationRule(Closure::fromCallable([Validation::class, 'notBlank']));
+        $rule = new ValidationRule(Closure::fromCallable(Validation::notBlank(...)));
         $validator->add('field', 'myrule', $rule);
         $result = $validator->field('field')->rule('myrule');
         $this->assertSame($rule, $result);
@@ -3053,7 +3053,7 @@ class ValidatorTest extends TestCase
         $thing = new class {
             public $args = [];
 
-            public function isCool($data, $context)
+            public function isCool($data, $context): string
             {
                 $this->args = [$data, $context];
 

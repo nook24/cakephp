@@ -1788,7 +1788,7 @@ class ValidationTest extends TestCase
         $this->assertSame($expected, Validation::decimal($value, $places));
     }
 
-    public function testDecimalWithGroupingSeparator()
+    public function testDecimalWithGroupingSeparator(): void
     {
         $this->assertFalse(Validation::decimal('1,234'));
         $this->assertFalse(Validation::decimal('1,234.1'));
@@ -1810,7 +1810,7 @@ class ValidationTest extends TestCase
         $this->assertSame($expected, Validation::localizedDecimal($value, $places));
     }
 
-    public function testLocalizedDecimalWithGroupingSeparator()
+    public function testLocalizedDecimalWithGroupingSeparator(): void
     {
         $this->assertTrue(Validation::localizedDecimal('1,234'));
         $this->assertTrue(Validation::localizedDecimal('1,234.1'));
