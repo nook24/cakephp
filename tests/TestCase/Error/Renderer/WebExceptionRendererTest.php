@@ -680,17 +680,19 @@ class WebExceptionRendererTest extends TestCase
      */
     public function testExceptionNameMangling(): void
     {
-        $exceptionRenderer = new MyCustomExceptionRenderer(new MissingWidgetThing());
+        $this->deprecated(function (): void {
+            $exceptionRenderer = new MyCustomExceptionRenderer(new MissingWidgetThing());
 
-        $result = (string)$exceptionRenderer->render()->getBody();
-        $this->assertStringContainsString('widget thing is missing', $result);
+            $result = (string)$exceptionRenderer->render()->getBody();
+            $this->assertStringContainsString('widget thing is missing', $result);
 
-        // Custom method should be called even when debug is off.
-        Configure::write('debug', false);
-        $exceptionRenderer = new MyCustomExceptionRenderer(new MissingWidgetThing());
+            // Custom method should be called even when debug is off.
+            Configure::write('debug', false);
+            $exceptionRenderer = new MyCustomExceptionRenderer(new MissingWidgetThing());
 
-        $result = (string)$exceptionRenderer->render()->getBody();
-        $this->assertStringContainsString('widget thing is missing', $result);
+            $result = (string)$exceptionRenderer->render()->getBody();
+            $this->assertStringContainsString('widget thing is missing', $result);
+        });
     }
 
     /**

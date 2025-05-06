@@ -933,6 +933,33 @@ trait IntegrationTestTrait
     }
 
     /**
+     * Assert whether the response is redirecting back to the previous location.
+     *
+     * @param string $message The failure message that will be appended to the generated message.
+     * @return void
+     */
+    public function assertRedirectBack(string $message = ''): void
+    {
+        if (!$this->_response) {
+            $this->fail('No response set, cannot assert header.');
+        }
+
+        $verboseMessage = $this->extractVerboseMessage($message);
+        $this->assertThat(null, new HeaderSet($this->_response, 'Location'), $verboseMessage);
+
+        $url = $this->_request['url'] ?? null;
+        if (!$url) {
+            $this->fail('No `url` set in request, cannot assert header.');
+        }
+
+        $this->assertThat(
+            Router::url($url, true),
+            new HeaderEquals($this->_response, 'Location'),
+            $verboseMessage,
+        );
+    }
+
+    /**
      * Asserts that the Location header is correct. Comparison is made against exactly the URL provided.
      *
      * @param array|string|null $url The URL you expected the client to go to. This
