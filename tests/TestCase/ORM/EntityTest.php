@@ -1447,19 +1447,6 @@ class EntityTest extends TestCase
     }
 
     /**
-     * Tests the entity's __toString method
-     *
-     * @deprecated
-     */
-    public function testToString(): void
-    {
-        $this->deprecated(function (): void {
-            $entity = new Entity(['foo' => 1, 'bar' => 2]);
-            $this->assertEquals(json_encode($entity, JSON_PRETTY_PRINT), (string)$entity);
-        });
-    }
-
-    /**
      * Tests __debugInfo
      */
     public function testDebugInfo(): void

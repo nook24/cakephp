@@ -54,7 +54,6 @@ use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use TestApp\Controller\Admin\ErrorController as PrefixErrorController;
-use TestApp\Error\Exception\MissingWidgetThing;
 use TestApp\Error\Exception\MissingWidgetThingException;
 use TestApp\Error\Renderer\MyCustomExceptionRenderer;
 use TestApp\Error\Renderer\TestAppsExceptionRenderer;
@@ -673,26 +672,6 @@ class WebExceptionRendererTest extends TestCase
         foreach ($patterns as $pattern) {
             $this->assertMatchesRegularExpression($pattern, $body);
         }
-    }
-
-    /**
-     * Test that class names not ending in Exception are not mangled.
-     */
-    public function testExceptionNameMangling(): void
-    {
-        $this->deprecated(function (): void {
-            $exceptionRenderer = new MyCustomExceptionRenderer(new MissingWidgetThing());
-
-            $result = (string)$exceptionRenderer->render()->getBody();
-            $this->assertStringContainsString('widget thing is missing', $result);
-
-            // Custom method should be called even when debug is off.
-            Configure::write('debug', false);
-            $exceptionRenderer = new MyCustomExceptionRenderer(new MissingWidgetThing());
-
-            $result = (string)$exceptionRenderer->render()->getBody();
-            $this->assertStringContainsString('widget thing is missing', $result);
-        });
     }
 
     /**
