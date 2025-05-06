@@ -14,10 +14,10 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
     ])
 
-    ->withPhpVersion(\Rector\ValueObject\PhpVersion::PHP_81)
+    ->withPhpVersion(\Rector\ValueObject\PhpVersion::PHP_82)
 
     ->withSets([
-        LevelSetList::UP_TO_PHP_81,
+        LevelSetList::UP_TO_PHP_82,
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
         SetList::DEAD_CODE,
@@ -95,6 +95,7 @@ return RectorConfig::configure()
         \Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector::class,
         \Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromBooleanConstReturnsRector::class,
         \Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector::class,
+        \Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector::class,
         \Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromMockObjectRector::class,
         \Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector::class,
         \Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector::class,
