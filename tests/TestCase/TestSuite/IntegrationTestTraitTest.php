@@ -1208,9 +1208,27 @@ class IntegrationTestTraitTest extends TestCase
         $this->_request = [
             'url' => '/get/tasks/index',
         ];
-        $this->_response = $this->_response->withHeader('Location', 'http://localhost/get/tasks/index');
+        $this->_response = $this->_response
+            ->withStatus(302)
+            ->withHeader('Location', 'http://localhost/get/tasks/index');
 
         $this->assertRedirectBack();
+    }
+
+    /**
+     * Test the location header assertion.
+     */
+    public function testAssertRedirectBackSpecificCode(): void
+    {
+        $this->_response = new Response();
+        $this->_request = [
+            'url' => '/get/tasks/index',
+        ];
+        $this->_response = $this->_response
+            ->withStatus(301)
+            ->withHeader('Location', 'http://localhost/get/tasks/index');
+
+        $this->assertRedirectBack(301);
     }
 
     /**
@@ -1222,7 +1240,9 @@ class IntegrationTestTraitTest extends TestCase
         $this->_request = [
             'url' => '/get/tasks/edit',
         ];
-        $this->_response = $this->_response->withHeader('Location', 'http://localhost/get/tasks/index');
+        $this->_response = $this->_response
+            ->withStatus(302)
+            ->withHeader('Location', 'http://localhost/get/tasks/index');
 
         $this->expectException(AssertionFailedError::class);
 
