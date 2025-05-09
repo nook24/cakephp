@@ -18,15 +18,12 @@ namespace Cake\Test\TestCase\ORM;
 
 use BadMethodCallException;
 use Cake\Core\Exception\CakeException;
-use Cake\ORM\Behavior;
 use Cake\ORM\Behavior\TranslateBehavior;
 use Cake\ORM\BehaviorRegistry;
 use Cake\ORM\Exception\MissingBehaviorException;
-use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use LogicException;
-use Mockery;
 use TestApp\Model\Behavior\SluggableBehavior;
 use TestPlugin\Model\Behavior\PersisterOneBehavior;
 
@@ -209,57 +206,40 @@ class BehaviorRegistryTest extends TestCase
     }
 
     /**
-     * test call finder
-     *
-     * Setup a behavior, then replace it with a mock to verify methods are called.
-     * use dummy return values to verify the return value makes it back
+     * test get finder
      */
-    public function testCallFinder(): void
+    public function testGetFinder(): void
     {
         $this->Behaviors->load('Sluggable');
-        $mockedBehavior = Mockery::mock(Behavior::class)
-            ->shouldAllowMockingMethod('findNoSlug', 'implementedFinders')
-            ->makePartial();
-        $mockedBehavior->shouldReceive('implementedFinders')
-            ->once()
-            ->andReturn([
-                'noslug' => 'findNoSlug',
-            ]);
-        $this->Behaviors->set('Sluggable', $mockedBehavior);
 
-        $query = new SelectQuery($this->Table);
-        $mockedBehavior->shouldReceive('findNoSlug')
-            ->once()
-            ->with($query)
-            ->andReturn($query);
-        $return = $this->Behaviors->callFinder('noSlug', $query);
-        $this->assertSame($query, $return);
+        $return = $this->Behaviors->getFinder('noSlug');
+        $this->assertEquals($this->Behaviors->get('Sluggable')->findNoSlug(...), $return);
     }
 
     /**
      * Test errors on unknown methods.
      */
-    public function testCallFinderError(): void
+    public function testGetFinderError(): void
     {
         $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Cannot call finder `nope`');
+        $this->expectExceptionMessage('Finder `nope` not found on any behavior attached to `Cake\ORM\Table`');
         $this->Behaviors->load('Sluggable');
-        $this->Behaviors->callFinder('nope', new SelectQuery($this->Table));
+        $this->Behaviors->getFinder('nope');
     }
 
     /**
      * Test errors on unloaded behavior finders.
      */
-    public function testUnloadBehaviorThenCallFinder(): void
+    public function testUnloadBehaviorThenGetFinder(): void
     {
         $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Cannot call finder `noslug`, it does not belong to any attached behavior.');
+        $this->expectExceptionMessage('Finder `noslug` not found on any behavior attached to `Cake\ORM\Table`.');
         $this->Behaviors->load('Sluggable');
         $this->assertTrue($this->Behaviors->hasFinder('noSlug'));
         $this->Behaviors->unload('Sluggable');
 
-        $this->Behaviors->callFinder('noSlug', new SelectQuery($this->Table));
         $this->assertFalse($this->Behaviors->hasFinder('noSlug'));
+        $this->Behaviors->getFinder('noSlug');
     }
 
     /**
