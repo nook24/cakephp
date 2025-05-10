@@ -1669,14 +1669,12 @@ class HtmlHelperTest extends TestCase
         $result = $this->Html->meta('icon', 'favicon.ico');
         $expected = [
             'link' => ['href' => 'preg:/.*favicon\.ico/', 'type' => 'image/x-icon', 'rel' => 'icon'],
-            ['link' => ['href' => 'preg:/.*favicon\.ico/', 'type' => 'image/x-icon', 'rel' => 'shortcut icon']],
         ];
         $this->assertHtml($expected, $result);
 
         $result = $this->Html->meta('icon');
         $expected = [
             'link' => ['href' => 'preg:/.*favicon\.ico/', 'type' => 'image/x-icon', 'rel' => 'icon'],
-            ['link' => ['href' => 'preg:/.*favicon\.ico/', 'type' => 'image/x-icon', 'rel' => 'shortcut icon']],
         ];
         $this->assertHtml($expected, $result);
 
@@ -1687,13 +1685,6 @@ class HtmlHelperTest extends TestCase
                 'href' => $url,
                 'type' => 'image/x-icon',
                 'rel' => 'icon',
-            ],
-            [
-                'link' => [
-                    'href' => $url,
-                    'type' => 'image/x-icon',
-                    'rel' => 'shortcut icon',
-                ],
             ],
         ];
         $this->assertHtml($expected, $result);
@@ -1706,13 +1697,6 @@ class HtmlHelperTest extends TestCase
                 'type' => 'image/x-icon',
                 'rel' => 'icon',
             ],
-            [
-                'link' => [
-                    'href' => $url,
-                    'type' => 'image/x-icon',
-                    'rel' => 'shortcut icon',
-                ],
-            ],
         ];
         $this->assertHtml($expected, $result);
 
@@ -1721,7 +1705,6 @@ class HtmlHelperTest extends TestCase
         $result = $this->Html->meta('icon');
         $expected = [
             'link' => ['href' => '/testing/favicon.ico', 'type' => 'image/x-icon', 'rel' => 'icon'],
-            ['link' => ['href' => '/testing/favicon.ico', 'type' => 'image/x-icon', 'rel' => 'shortcut icon']],
         ];
         $this->assertHtml($expected, $result);
     }
@@ -1736,14 +1719,12 @@ class HtmlHelperTest extends TestCase
         $result = $this->Html->meta('icon', 'favicon.ico');
         $expected = [
             'link' => ['href' => 'preg:/.*test_theme\/favicon\.ico/', 'type' => 'image/x-icon', 'rel' => 'icon'],
-            ['link' => ['href' => 'preg:/.*test_theme\/favicon\.ico/', 'type' => 'image/x-icon', 'rel' => 'shortcut icon']],
         ];
         $this->assertHtml($expected, $result);
 
         $result = $this->Html->meta('icon');
         $expected = [
             'link' => ['href' => 'preg:/.*test_theme\/favicon\.ico/', 'type' => 'image/x-icon', 'rel' => 'icon'],
-            ['link' => ['href' => 'preg:/.*test_theme\/favicon\.ico/', 'type' => 'image/x-icon', 'rel' => 'shortcut icon']],
         ];
         $this->assertHtml($expected, $result);
 
@@ -1752,7 +1733,6 @@ class HtmlHelperTest extends TestCase
         $result = $this->Html->meta('icon');
         $expected = [
             'link' => ['href' => '/testing/test_theme/favicon.ico', 'type' => 'image/x-icon', 'rel' => 'icon'],
-            ['link' => ['href' => '/testing/test_theme/favicon.ico', 'type' => 'image/x-icon', 'rel' => 'shortcut icon']],
         ];
         $this->assertHtml($expected, $result);
     }
