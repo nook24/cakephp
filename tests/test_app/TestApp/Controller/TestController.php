@@ -25,12 +25,7 @@ class TestController extends ControllerTestAppController
      */
     protected ?string $modelClass = 'Comments';
 
-    /**
-     * beforeFilter handler
-     *
-     * @return \Cake\Http\Response|null|void
-     */
-    public function beforeFilter(EventInterface $event)
+    public function beforeFilter(EventInterface $event): void
     {
     }
 

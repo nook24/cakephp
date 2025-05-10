@@ -926,9 +926,8 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event An Event instance
      * @return void
      * @link https://book.cakephp.org/5/en/controllers.html#request-life-cycle-callbacks
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
-    public function beforeFilter(EventInterface $event)
+    public function beforeFilter(EventInterface $event): void
     {
     }
 
@@ -939,9 +938,8 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event An Event instance
      * @return void
      * @link https://book.cakephp.org/5/en/controllers.html#request-life-cycle-callbacks
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
-    public function beforeRender(EventInterface $event)
+    public function beforeRender(EventInterface $event): void
     {
     }
 
@@ -960,9 +958,8 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @param \Cake\Http\Response $response The response object.
      * @return void
      * @link https://book.cakephp.org/5/en/controllers.html#request-life-cycle-callbacks
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
-    public function beforeRedirect(EventInterface $event, UriInterface|array|string $url, Response $response)
+    public function beforeRedirect(EventInterface $event, UriInterface|array|string $url, Response $response): void
     {
     }
 
@@ -972,9 +969,8 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event An Event instance
      * @return void
      * @link https://book.cakephp.org/5/en/controllers.html#request-life-cycle-callbacks
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
-    public function afterFilter(EventInterface $event)
+    public function afterFilter(EventInterface $event): void
     {
     }
 }
