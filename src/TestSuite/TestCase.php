@@ -214,6 +214,23 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * This method is called between test and tearDown().
+     *
+     * Gets the count of expectations on the mocks produced through Mockery.
+     *
+     * @return void
+     */
+    protected function assertPostConditions(): void
+    {
+        parent::assertPostConditions();
+
+        if (class_exists(Mockery::class)) {
+            // @phpstan-ignore method.internal
+            $this->addToAssertionCount(Mockery::getContainer()->mockery_getExpectationCount());
+        }
+    }
+
+    /**
      * Setup the test case, backup the static object values so they can be restored.
      * Specifically backs up the contents of Configure and paths in App if they have
      * not already been backed up.
