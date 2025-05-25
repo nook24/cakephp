@@ -71,10 +71,11 @@ class PostgresTest extends TestCase
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ];
 
-        $connection = Mockery::mock('PDO');
+        $connection = Mockery::mock(PDO::class);
 
         $connection->shouldReceive('quote')
-            ->andReturnArg(0);
+            ->andReturnArg(0)
+            ->twice();
 
         $connection->shouldReceive('exec')->with('SET NAMES utf8')->once();
         $connection->shouldReceive('exec')->with('SET search_path TO public')->once();
@@ -123,10 +124,11 @@ class PostgresTest extends TestCase
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ];
 
-        $connection = Mockery::mock('PDO');
+        $connection = Mockery::mock(PDO::class);
 
         $connection->shouldReceive('quote')
-            ->andReturnArg(0);
+            ->andReturnArg(0)
+            ->times(3);
 
         $connection->shouldReceive('exec')->with('SET NAMES a-language')->once();
         $connection->shouldReceive('exec')->with('SET search_path TO fooblic')->once();
