@@ -334,4 +334,22 @@ class QueryTest extends TestCase
         $this->query->optimizerHint(['array_hint()', 'array_hint()'], true);
         $this->assertSame(['array_hint()', 'array_hint()'], $this->query->clause('optimizerHint'));
     }
+
+    public function testWithClause(): void
+    {
+        $cte1 = new CommonTableExpression();
+        $cte2 = new CommonTableExpression();
+
+        $this->query->with($cte1);
+        $this->assertSame([$cte1], $this->query->clause('with'));
+
+        $this->query->with([$cte2, fn($query) => $cte1]);
+        $this->assertSame([$cte1, $cte2, $cte1], $this->query->clause('with'));
+
+        $this->query->with($cte1, true);
+        $this->assertSame([$cte1], $this->query->clause('with'));
+
+        $this->query->with([$cte2, fn($query) => $cte1], true);
+        $this->assertSame([$cte2, $cte1], $this->query->clause('with'));
+    }
 }
