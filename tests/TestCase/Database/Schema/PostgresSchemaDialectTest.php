@@ -218,10 +218,6 @@ SQL;
                 ['type' => 'UUID'],
                 ['type' => 'uuid', 'length' => null],
             ],
-            [
-                ['type' => 'INET'],
-                ['type' => 'string', 'length' => 39],
-            ],
             // Text
             [
                 ['type' => 'TEXT'],
@@ -266,6 +262,19 @@ SQL;
             [
                 ['type' => 'GEOGRAPHY(POLYGON, 4326)'],
                 ['type' => 'polygon', 'length' => null, 'srid' => 4326],
+            ],
+            // network addresses
+            [
+                ['type' => 'CIDR'],
+                ['type' => 'cidr', 'length' => null],
+            ],
+            [
+                ['type' => 'inet'],
+                ['type' => 'inet', 'length' => null],
+            ],
+            [
+                ['type' => 'macaddr'],
+                ['type' => 'macaddr', 'length' => null],
             ],
         ];
     }
@@ -1106,6 +1115,22 @@ SQL;
                 'p',
                 ['type' => 'polygon', 'null' => false, 'srid' => 4326],
                 '"p" GEOGRAPHY(POLYGON, 4326) NOT NULL',
+            ],
+            // Network address types
+            [
+                'network',
+                ['type' => 'cidr', 'null' => false],
+                '"network" CIDR NOT NULL',
+            ],
+            [
+                'network',
+                ['type' => 'inet', 'null' => false],
+                '"network" INET NOT NULL',
+            ],
+            [
+                'network',
+                ['type' => 'macaddr', 'null' => false],
+                '"network" MACADDR NOT NULL',
             ],
         ];
     }
