@@ -78,6 +78,7 @@ published BOOLEAN DEFAULT false,
 views SMALLINT DEFAULT 0,
 readingtime TIME,
 data JSONB,
+valid_period INTERVAL,
 average_note DECIMAL(4,2),
 average_income NUMERIC(10,2),
 created TIMESTAMP,
@@ -141,6 +142,10 @@ SQL;
             [
                 ['type' => 'TIME WITHOUT TIME ZONE'],
                 ['type' => 'time', 'length' => null],
+            ],
+            [
+                ['type' => 'INTERVAL'],
+                ['type' => 'interval', 'length' => null],
             ],
             // Integer
             [
@@ -442,6 +447,14 @@ SQL;
                 'precision' => null,
                 'comment' => null,
             ],
+            'valid_period' => [
+                'type' => 'interval',
+                'null' => true,
+                'default' => null,
+                'length' => null,
+                'precision' => null,
+                'comment' => null,
+            ],
             'average_note' => [
                 'type' => 'decimal',
                 'null' => true,
@@ -539,6 +552,41 @@ SQL;
         $this->assertEquals(['id', 'site_id'], $result->getPrimaryKey());
         $this->assertTrue($result->getColumn('id')['autoIncrement'], 'id should be autoincrement');
         $this->assertNull($result->getColumn('site_id')['autoIncrement'], 'site_id should not be autoincrement');
+    }
+
+    /**
+     * Test describing a table with citext columns
+     */
+    public function testDescribeTableCiText(): void
+    {
+        $this->_needsConnection();
+        $connection = ConnectionManager::get('test');
+
+        $sql = 'CREATE EXTENSION IF NOT EXISTS citext';
+        $connection->execute($sql);
+
+        $sql = <<<SQL
+CREATE TABLE schema_citext (
+    "id" SERIAL,
+    "slug" CITEXT NOT NULL,
+    "name" VARCHAR(255),
+    PRIMARY KEY("id")
+);
+SQL;
+        $connection->execute($sql);
+        $schema = new SchemaCollection($connection);
+        $result = $schema->describe('schema_citext');
+        $connection->execute('DROP TABLE schema_citext');
+
+        $expected = [
+            'type' => 'citext',
+            'null' => false,
+            'default' => null,
+            'comment' => null,
+            'length' => null,
+            'precision' => null,
+        ];
+        $this->assertEquals($expected, $result->getColumn('slug'));
     }
 
     /**
@@ -889,6 +937,11 @@ SQL;
                 'title',
                 ['type' => 'string', 'length' => 255, 'null' => false, 'collate' => 'C'],
                 '"title" VARCHAR(255) COLLATE "C" NOT NULL',
+            ],
+            [
+                'slug',
+                ['type' => 'citext', 'length' => null],
+                '"slug" CITEXT',
             ],
             // Text
             [
