@@ -1376,7 +1376,7 @@ SQL;
         $connection = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('getWriteDriver')
             ->willReturn($driver);
 
         $table = (new TableSchema('posts'))
@@ -1425,7 +1425,7 @@ SQL;
         $connection = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('getWriteDriver')
             ->willReturn($driver);
 
         $table = (new TableSchema('posts'))
@@ -1507,7 +1507,7 @@ SQL;
         $connection = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('getWriteDriver')
             ->willReturn($driver);
 
         $table = (new TableSchema('posts'))->addColumn('id', [
@@ -1570,7 +1570,7 @@ SQL;
             ->disableOriginalConstructor()
             ->getMock();
         $connection->expects($this->any())
-            ->method('getDriver')
+            ->method('getWriteDriver')
             ->willReturn($driver);
 
         $this->pdo
@@ -1616,7 +1616,7 @@ SQL;
         $connection = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('getWriteDriver')
             ->willReturn($driver);
         $table = (new TableSchema('schema_articles'))->addColumn('id', [
             'type' => 'integer',
@@ -1636,7 +1636,7 @@ SQL;
         $connection = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('getWriteDriver')
             ->willReturn($driver);
 
         $table = (new TableSchema('articles_tags'))
@@ -1700,7 +1700,7 @@ SQL;
         $connection = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('getWriteDriver')
             ->willReturn($driver);
 
         $table = new TableSchema('articles');
@@ -1718,7 +1718,7 @@ SQL;
         $connection = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('getWriteDriver')
             ->willReturn($driver);
 
         $table = new TableSchema('articles');
