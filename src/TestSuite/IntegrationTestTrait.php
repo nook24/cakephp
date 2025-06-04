@@ -513,6 +513,7 @@ trait IntegrationTestTrait
             $this->_requestSession = $request['session'];
             if ($this->_retainFlashMessages && $this->_flashMessages) {
                 $_SESSION['Flash'] = $this->_flashMessages;
+                $this->_requestSession->write($_SESSION);
             }
             $this->_response = $response;
         } catch (PHPUnitException | DatabaseException $e) {
