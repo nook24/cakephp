@@ -933,6 +933,36 @@ HTML;
         $this->assertSame($expected, $this->message->getAttachments());
     }
 
+    public function testAddAttachment(): void
+    {
+        $uploadedFile = new UploadedFile(
+            __FILE__,
+            filesize(__FILE__),
+            UPLOAD_ERR_OK,
+            'MessageTest.php',
+            'text/x-php',
+        );
+
+        $this->message->addAttachment(CAKE . 'Mailer' . DS . 'Message.php', mimetype: 'text/plain', contentId: 'attached');
+        $this->message->addAttachment($uploadedFile, contentDisposition: false);
+
+        $expected = [
+            'Message.php' => [
+                'file' => CAKE . 'Mailer' . DS . 'Message.php',
+                'mimetype' => 'text/plain',
+                'contentId' => 'attached',
+                'contentDisposition' => null,
+            ],
+            'MessageTest.php' => [
+                'file' => $uploadedFile,
+                'mimetype' => 'text/x-php',
+                'contentId' => null,
+                'contentDisposition' => false,
+            ],
+        ];
+        $this->assertSame($expected, $this->message->getAttachments());
+    }
+
     public function testSetAttachmentInvalidFile(): void
     {
         $this->expectException(InvalidArgumentException::class);

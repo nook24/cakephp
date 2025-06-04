@@ -58,18 +58,6 @@ class ArticlesTable extends Table
         return $query->contain('Authors');
     }
 
-    /**
-     * Finder for testing named parameter compatibility
-     */
-    public function findTitled(SelectQuery $query, array $options): SelectQuery
-    {
-        if (!empty($options['title'])) {
-            $query->where(['Articles.title' => $options['title']]);
-        }
-
-        return $query;
-    }
-
     public function findSlugged(SelectQuery $query): SelectQuery
     {
         return $query->formatResults(function ($results) {
