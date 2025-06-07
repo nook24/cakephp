@@ -83,6 +83,19 @@ class TreeHelperTest extends TestCase
         ], $this->stub->messages());
     }
 
+    public function testTwoDimensionArray(): void
+    {
+        $this->helper->output(['one', 'key' => ['two' => 'two_1', 'three' => 'three_1']]);
+        $this->assertEquals([
+            'one',
+            'key',
+            '├── two',
+            '│   └── two_1',
+            '└── three',
+            '    └── three_1',
+        ], $this->stub->messages());
+    }
+
     public function testTwoDimensionValue(): void
     {
         $this->helper->output([
@@ -171,14 +184,28 @@ class TreeHelperTest extends TestCase
         ], $this->stub->messages());
     }
 
-    public function testInitialIndent(): void
+    public function testBaseIndent(): void
     {
-        $this->helper->setConfig('initialIndent', 5);
+        $this->helper->setConfig('baseIndent', 5);
         $this->helper->output(['one', 'two' => ['two_1']]);
         $this->assertEquals([
             '     one',
             '     two',
             '     └── two_1',
+        ], $this->stub->messages());
+    }
+
+    public function testElementIndent(): void
+    {
+        $this->helper->setConfig(['baseIndent' => 1, 'elementIndent' => 2]);
+        $this->helper->output(['one', 'two' => ['two_1' => ['two_1_1'], 'two_2' => ['two_2_1']]]);
+        $this->assertEquals([
+            ' one',
+            ' two',
+            '   ├── two_1',
+            '   │     └── two_1_1',
+            '   └── two_2',
+            '         └── two_2_1',
         ], $this->stub->messages());
     }
 }
