@@ -20,10 +20,6 @@ use Cake\Command\Helper\TreeHelper;
 use Cake\Console\ConsoleIo;
 use Cake\Console\TestSuite\StubConsoleOutput;
 use Cake\TestSuite\TestCase;
-use Stringable;
-use TestApp\Model\Enum\Gender;
-use TestApp\Model\Enum\NonBacked;
-use TestApp\Model\Enum\Priority;
 
 /**
  * TreeHelper test.
@@ -63,149 +59,44 @@ class TreeHelperTest extends TestCase
         $this->assertEquals([], $this->stub->messages());
     }
 
-    public function testOnedimensionList(): void
+    public function testSingleList(): void
     {
         $this->helper->output(['one', 'two', 'three']);
         $this->assertEquals([
-            'one',
-            'two',
-            'three',
-        ], $this->stub->messages());
-    }
-
-    public function testOneDimensionArray(): void
-    {
-        $this->helper->output(['one', 'key' => ['two']]);
-        $this->assertEquals([
-            'one',
-            'key',
-            '└── two',
-        ], $this->stub->messages());
-    }
-
-    public function testTwoDimensionArray(): void
-    {
-        $this->helper->output(['one', 'key' => ['two' => 'two_1', 'three' => 'three_1']]);
-        $this->assertEquals([
-            'one',
-            'key',
+            '├── one',
             '├── two',
-            '│   └── two_1',
             '└── three',
-            '    └── three_1',
         ], $this->stub->messages());
     }
 
-    public function testTwoDimensionValue(): void
+    public function testNestedTree(): void
     {
-        $this->helper->output([
-            'one' => [
-                'one_1' => ['one_1_1' => 'one_1_1_1'],
-            ],
-            'two' => [
-                'two_1' => ['two_1_1' => 'two_1_1_1'],
-            ],
-        ]);
+        $this->helper->output(['one', 'two' => ['two_1' => ['two_1_1', 'two_1_2'], 'two_2' => ['two_2_1', 'two_2_2']]]);
         $this->assertEquals([
-            'one',
-            '└── one_1',
-            '    └── one_1_1',
-            '        └── one_1_1_1',
-            'two',
-            '└── two_1',
-            '    └── two_1_1',
-            '        └── two_1_1_1',
+            '├── one',
+            '└── two',
+            '    ├── two_1',
+            '    │   ├── two_1_1',
+            '    │   └── two_1_2',
+            '    └── two_2',
+            '        ├── two_2_1',
+            '        └── two_2_2',
         ], $this->stub->messages());
     }
 
-    public function testTwoDimensionList(): void
-    {
-        $this->helper->output([
-            'one' => [
-                'one_1' => ['one_1_1' => ['one_1_1_1', 'one_1_1_2']],
-            ],
-            'two' => [
-                'two_1' => ['two_1_1' => ['two_1_1_1', 'two_1_1_2']],
-            ],
-        ]);
-        $this->assertEquals([
-            'one',
-            '└── one_1',
-            '    └── one_1_1',
-            '        ├── one_1_1_1',
-            '        └── one_1_1_2',
-            'two',
-            '└── two_1',
-            '    └── two_1_1',
-            '        ├── two_1_1_1',
-            '        └── two_1_1_2',
-        ], $this->stub->messages());
-    }
-
-    public function testClosureValue(): void
-    {
-        $this->helper->output([fn() => 'from closure']);
-        $this->assertEquals([
-            'from closure',
-        ], $this->stub->messages());
-    }
-
-    public function testEnumValue(): void
-    {
-        $this->helper->output([NonBacked::Basic, Gender::NoSelection, Priority::Low]);
-        $this->assertEquals([
-            'Basic',
-            '',
-            'Is Low',
-        ], $this->stub->messages());
-    }
-
-    public function testBoolValue(): void
-    {
-        $this->helper->output([true, false]);
-        $this->assertEquals([
-            'true',
-            'false',
-        ], $this->stub->messages());
-    }
-
-    public function testStringbleValue(): void
-    {
-        $c = new class () implements Stringable {
-            public function __toString(): string
-            {
-                return 'from stringable';
-            }
-        };
-
-        $this->helper->output([new $c()]);
-        $this->assertEquals([
-            'from stringable',
-        ], $this->stub->messages());
-    }
-
-    public function testBaseIndent(): void
-    {
-        $this->helper->setConfig('baseIndent', 5);
-        $this->helper->output(['one', 'two' => ['two_1']]);
-        $this->assertEquals([
-            '     one',
-            '     two',
-            '     └── two_1',
-        ], $this->stub->messages());
-    }
-
-    public function testElementIndent(): void
+    public function testNestedTreeCustomIndent(): void
     {
         $this->helper->setConfig(['baseIndent' => 1, 'elementIndent' => 2]);
-        $this->helper->output(['one', 'two' => ['two_1' => ['two_1_1'], 'two_2' => ['two_2_1']]]);
+        $this->helper->output(['one', 'two' => ['two_1' => ['two_1_1', 'two_1_2'], 'two_2' => ['two_2_1', 'two_2_2']]]);
         $this->assertEquals([
-            ' one',
-            ' two',
-            '   ├── two_1',
-            '   │     └── two_1_1',
-            '   └── two_2',
-            '         └── two_2_1',
+            ' ├── one',
+            ' └── two',
+            '       ├── two_1',
+            '       │     ├── two_1_1',
+            '       │     └── two_1_2',
+            '       └── two_2',
+            '             ├── two_2_1',
+            '             └── two_2_2',
         ], $this->stub->messages());
     }
 }

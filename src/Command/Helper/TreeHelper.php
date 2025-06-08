@@ -46,9 +46,7 @@ class TreeHelper extends Helper
     public function output(array $args): void
     {
         $prefix = str_repeat(' ', $this->_config['baseIndent']);
-        foreach ($args as $key => $value) {
-            $this->outputElement($key, $value, $prefix, '', '');
-        }
+        $this->outputArray($args, $prefix, topLevel: true);
     }
 
     /**
@@ -56,13 +54,14 @@ class TreeHelper extends Helper
      *
      * @param array $array
      * @param string $prefix
+     * @param bool $topLevel
      * @return void
      */
-    protected function outputArray(array $array, string $prefix): void
+    protected function outputArray(array $array, string $prefix, bool $topLevel): void
     {
         $i = 1;
         $numValues = count($array);
-        $elementPrefix = str_repeat(' ', $this->_config['elementIndent']);
+        $elementPrefix = $topLevel ? '' : str_repeat(' ', $this->_config['elementIndent']);
         foreach ($array as $key => $value) {
             $isLast = $i++ === $numValues;
             $marker = $isLast ? '└── ' : '├── ';
@@ -90,7 +89,7 @@ class TreeHelper extends Helper
     ): void {
         if (is_array($value)) {
             $this->_io->out($prefix . $marker . $key);
-            $this->outputArray($value, $prefix . $indent);
+            $this->outputArray($value, $prefix . $indent, topLevel: false);
         } elseif (is_string($key)) {
             $this->_io->out($prefix . $marker . $key);
             $this->outputValue($value, $prefix . $indent . '└── ');
