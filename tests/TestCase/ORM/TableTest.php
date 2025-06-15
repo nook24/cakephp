@@ -1303,7 +1303,7 @@ class TableTest extends TestCase
             ->find('withIdArgument', 2)
             ->find('custom', id: [1, 2], second: false);
 
-        $this->assertSame([2, 'id' => [1, 2], 'second' => false], $query->getOptions());
+        $this->assertSame(['id' => [1, 2], 'second' => false], $query->getOptions());
 
         $query = $this->getTableLocator()->get('Authors')
             ->find('withIdArgument', id: 2)

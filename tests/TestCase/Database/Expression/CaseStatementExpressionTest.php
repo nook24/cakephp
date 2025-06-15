@@ -1920,7 +1920,7 @@ class CaseStatementExpressionTest extends TestCase
                 function (): void {
                 },
             ],
-            [$res, 'resource (closed)'],
+            [$res], // resource (closed)
         ];
     }
 
@@ -1982,11 +1982,13 @@ class CaseStatementExpressionTest extends TestCase
             [1.0],
             [new stdClass()],
             [
+                // Closure
                 function (): void {
                 },
-                'Closure',
             ],
-            [$res, 'resource (closed)'],
+            [
+                $res, //resource (closed)
+            ],
         ];
     }
 
