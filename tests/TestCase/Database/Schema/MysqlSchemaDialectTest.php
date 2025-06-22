@@ -529,7 +529,7 @@ SQL;
             // https://mariadb.com/kb/en/json/
             $expected['config']['type'] = 'text';
             $expected['config']['length'] = 4294967295;
-            $expected['comment'] = '';
+            $expected['config']['comment'] = '';
             $expected['config']['collate'] = 'utf8mb4_bin';
         }
         if ($driver->isMariaDb() || version_compare($driver->version(), '8.0.30', '>=')) {
@@ -544,6 +544,30 @@ SQL;
                 $result->getColumn($field),
                 'Field definition does not match for ' . $field,
             );
+
+            // Integration test for column() method.
+            $col = $result->column($field);
+            $this->assertEquals($definition['type'], $col->getType());
+            $this->assertEquals($definition['null'], $col->getNull());
+            $this->assertEquals($definition['length'], $col->getLength());
+            $this->assertEquals($definition['default'], $col->getDefault());
+            $this->assertEquals($definition['precision'], $col->getPrecision());
+            $this->assertEquals($definition['comment'], $col->getComment());
+            if (isset($definition['onUpdate'])) {
+                $this->assertEquals($definition['onUpdate'], $col->getOnUpdate());
+            } else {
+                $this->assertNull($col->getOnUpdate());
+            }
+            if (isset($definition['collate'])) {
+                $this->assertEquals($definition['collate'], $col->getCollate());
+            } else {
+                $this->assertNull($col->getCollate());
+            }
+            if (isset($definition['autoIncrement'])) {
+                $this->assertEquals($definition['autoIncrement'], $col->getIdentity());
+            } else {
+                $this->assertFalse($col->getIdentity());
+            }
         }
 
         $columns = $dialect->describeColumns('schema_articles');
