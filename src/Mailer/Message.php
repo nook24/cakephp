@@ -25,6 +25,7 @@ use Closure;
 use InvalidArgumentException;
 use JsonSerializable;
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use SimpleXMLElement;
 use function Cake\Core\env;
 
@@ -1622,10 +1623,20 @@ class Message implements JsonSerializable
         }
 
         if ($this->appCharset === null) {
-            return mb_convert_encoding($text, $charset);
+            $encoded = mb_convert_encoding($text, $charset);
+            if ($encoded === false) {
+                throw new RuntimeException('mb_convert_encoding failed.');
+            }
+
+            return $encoded;
         }
 
-        return mb_convert_encoding($text, $charset, $this->appCharset);
+        $encoded = mb_convert_encoding($text, $charset, $this->appCharset);
+        if ($encoded === false) {
+            throw new RuntimeException('mb_convert_encoding failed.');
+        }
+
+        return $encoded;
     }
 
     /**
