@@ -110,6 +110,20 @@ class TableSchemaTest extends TestCase
         $this->assertFalse($schema->hasColumn('body'));
     }
 
+    public function testGetColumnMissing(): void
+    {
+        $table = new TableSchema('articles');
+        $table->addColumn('title', [
+            'type' => 'string',
+            'length' => 25,
+            'null' => false,
+        ]);
+        $this->assertNull($table->getColumn('not there'));
+
+        $this->expectException(DatabaseException::class);
+        $table->column('not there');
+    }
+
     /**
      * Test removing columns.
      */
@@ -326,9 +340,14 @@ class TableSchemaTest extends TestCase
         $result = $table->addConstraint('primary', [
             'type' => 'primary',
             'columns' => ['id'],
+            'constraint' => 'postgres_name',
         ]);
         $this->assertSame($result, $table);
         $this->assertEquals(['primary'], $table->constraints());
+
+        // TODO make the constraint name work for postgres_name too.
+        $primary = $table->constraint('primary');
+        $this->assertEquals('postgres_name', $primary->getName(), 'constraint objects should preserve the name');
     }
 
     /**
@@ -549,6 +568,20 @@ class TableSchemaTest extends TestCase
 
         $expectedSubstring = "CONSTRAINT <{$name}> FOREIGN KEY \\(<tag_id>\\) REFERENCES <tags> \\(<id>\\)";
         $this->assertQuotedQuery($expectedSubstring, $table->getSchema()->createSql(ConnectionManager::get('test'))[0]);
+    }
+
+    /**
+     * Test the behavior of getConstraint() and constraint() when the constraint is not defined.
+     */
+    public function testGetConstraintMissing(): void
+    {
+        $table = new TableSchema('articles');
+        $table->addColumn('author_id', 'integer');
+
+        $this->assertNull($table->getConstraint('not there'));
+
+        $this->expectException(DatabaseException::class);
+        $table->constraint('not there');
     }
 
     /**

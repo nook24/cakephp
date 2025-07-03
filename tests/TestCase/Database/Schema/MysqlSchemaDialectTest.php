@@ -21,6 +21,7 @@ use Cake\Database\Driver;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\DriverFeatureEnum;
 use Cake\Database\Schema\Collection as SchemaCollection;
+use Cake\Database\Schema\ForeignKey;
 use Cake\Database\Schema\MysqlSchemaDialect;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
@@ -729,13 +730,26 @@ SQL;
         ];
 
         $this->assertEquals($expected['primary'], $result->getConstraint('primary'));
+        $primary = $result->constraint('primary');
+        $this->assertEquals($expected['primary']['columns'], $primary->getColumns());
+        $this->assertEquals('primary', $primary->getName());
+
         $this->assertEquals($expected['length_idx'], $result->getConstraint('length_idx'));
+        $key = $result->constraint('length_idx');
+        $this->assertEquals('length_idx', $key->getName());
+        $this->assertEquals($expected['length_idx']['columns'], $key->getColumns());
+        $this->assertEquals(['title' => 4], $key->getLength());
+
         if (ConnectionManager::get('test')->getDriver()->isMariadb()) {
             $this->assertEquals($expected['schema_articles_ibfk_1'], $result->getConstraint('author_idx'));
         } else {
             $this->assertEquals($expected['schema_articles_ibfk_1'], $result->getConstraint('schema_articles_ibfk_1'));
         }
         $this->assertEquals($expected['unique_id_idx'], $result->getConstraint('unique_id_idx'));
+        $key = $result->constraint('unique_id_idx');
+        $this->assertEquals('unique_id_idx', $key->getName());
+        $this->assertEquals($expected['unique_id_idx']['columns'], $key->getColumns());
+        $this->assertSame([], $key->getLength(), 'length should be an empty array as it has been set.');
 
         $this->assertCount(1, $result->indexes());
         $this->assertEquals($expected['author_idx'], $result->getIndex('author_idx'));
@@ -755,13 +769,13 @@ SQL;
             $this->assertEquals($expectedFields, $resultFields);
 
             // describeIndexes will return primary keys, and unique indexes which are
-            // available under `constraint() in the future.`
-            if (!in_array($index['type'], [TableSchema::INDEX_INDEX, TableSchema::INDEX_FULLTEXT], true)) {
-                // TODO implement alongside constraint()
-                continue;
+            if (in_array($index['type'], [TableSchema::INDEX_INDEX, TableSchema::INDEX_FULLTEXT], true)) {
+                // Compare with the index() method as well.
+                $indexObject = $result->index($index['name']);
+            } else {
+                // Compare with the constraint() method as well.
+                $indexObject = $result->constraint($index['name']);
             }
-            // Compare with the index() method as well.
-            $indexObject = $result->index($index['name']);
             foreach ($expectedFields as $key => $value) {
                 $this->assertEquals($value, $indexObject->{'get' . ucfirst($key)}());
             }
@@ -785,6 +799,18 @@ SQL;
 
             $this->assertNotEmpty($resultFields);
             $this->assertEquals($expectedFields, $resultFields);
+
+            // Compare with the constraint() method as well.
+            $indexObject = $result->constraint($foreignKey['name']);
+            foreach ($expectedItem as $key => $value) {
+                $this->assertInstanceOf(ForeignKey::class, $indexObject);
+                if ($key == 'references') {
+                    $this->assertEquals($value[0], $indexObject->getReferencedTable());
+                    $this->assertEquals((array)$value[1], $indexObject->getReferencedColumns());
+                    continue;
+                }
+                $this->assertEquals($value, $indexObject->{'get' . ucfirst($key)}());
+            }
         }
     }
 
