@@ -574,7 +574,6 @@ SQL;
             'primary' => [
                 'type' => 'primary',
                 'columns' => ['id'],
-                'length' => [],
             ],
             'title_idx' => [
                 'type' => 'unique',
@@ -585,7 +584,6 @@ SQL;
                 'type' => 'foreign',
                 'columns' => ['author_id'],
                 'references' => ['schema_authors', 'id'],
-                'length' => [],
                 'update' => 'cascade',
                 'delete' => 'restrict',
                 'deferrable' => null,
@@ -778,10 +776,7 @@ SQL;
         $expected = [
             'primary' => [
                 'type' => 'primary',
-                'columns' => [
-                    'id',
-                ],
-                'length' => [],
+                'columns' => ['id'],
             ],
             'multi_col_author_fk' => [
                 'type' => 'foreign',
@@ -789,28 +784,26 @@ SQL;
                     'author_id',
                     'author_name',
                 ],
+                'delete' => 'noAction',
+                'update' => 'cascade',
+                'deferrable' => null,
                 'references' => [
                     'schema_authors',
                     ['id', 'name'],
                 ],
-                'update' => 'cascade',
-                'delete' => 'noAction',
-                'length' => [],
-                'deferrable' => null,
             ],
             'author_fk' => [
                 'type' => 'foreign',
                 'columns' => [
                     'author_id',
                 ],
+                'delete' => 'restrict',
+                'update' => 'cascade',
+                'deferrable' => null,
                 'references' => [
                     'schema_authors',
                     'id',
                 ],
-                'update' => 'cascade',
-                'delete' => 'restrict',
-                'length' => [],
-                'deferrable' => null,
             ],
         ];
         foreach ($expected as $name => $constraint) {

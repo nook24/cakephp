@@ -564,7 +564,6 @@ class TableSchemaTest extends TestCase
             'references' => ['tags', 'id'],
             'update' => 'cascade',
             'delete' => 'cascade',
-            'length' => [],
             'deferrable' => null,
         ];
         // Postgres reflection always includes deferrable state.
@@ -618,7 +617,6 @@ class TableSchemaTest extends TestCase
             ],
             'update' => 'cascade',
             'delete' => 'cascade',
-            'length' => [],
             'deferrable' => null,
         ];
         $this->assertEquals($expected, $compositeConstraint);

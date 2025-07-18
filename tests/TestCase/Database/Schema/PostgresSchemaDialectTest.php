@@ -727,7 +727,6 @@ SQL;
             'primary' => [
                 'type' => 'primary',
                 'columns' => ['id'],
-                'length' => [],
                 'constraint' => 'schema_authors_pkey',
             ],
             'unique_position' => [
@@ -801,7 +800,6 @@ SQL;
             'primary' => [
                 'type' => 'primary',
                 'columns' => ['id'],
-                'length' => [],
                 'constraint' => 'schema_articles_pkey',
             ],
             'content_idx' => [
@@ -813,7 +811,6 @@ SQL;
                 'type' => 'foreign',
                 'columns' => ['author_id'],
                 'references' => ['schema_authors', 'id'],
-                'length' => [],
                 'update' => 'cascade',
                 'delete' => 'restrict',
                 'deferrable' => ForeignKey::DEFERRED,
@@ -822,7 +819,6 @@ SQL;
                 'type' => 'foreign',
                 'columns' => ['author_id'],
                 'references' => ['schema_authors', 'id'],
-                'length' => [],
                 'update' => 'cascade',
                 'delete' => 'restrict',
                 'deferrable' => ForeignKey::IMMEDIATE,
@@ -831,7 +827,6 @@ SQL;
                 'type' => 'foreign',
                 'columns' => ['author_id'],
                 'references' => ['schema_authors', 'id'],
-                'length' => [],
                 'update' => 'cascade',
                 'delete' => 'restrict',
                 'deferrable' => ForeignKey::NOT_DEFERRED,
