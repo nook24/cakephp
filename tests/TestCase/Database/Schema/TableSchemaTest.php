@@ -74,6 +74,23 @@ class TableSchemaTest extends TestCase
     }
 
     /**
+     * Test hasAutoincrement() method.
+     */
+    public function testHasAutoincrement(): void
+    {
+        $schema = new TableSchema('articles', [
+            'title' => 'string',
+        ]);
+        $this->assertFalse($schema->hasAutoincrement());
+
+        $schema->addColumn('id', [
+            'type' => 'integer',
+            'autoIncrement' => true,
+        ]);
+        $this->assertTrue($schema->hasAutoincrement());
+    }
+
+    /**
      * Test adding columns.
      */
     public function testAddColumn(): void
@@ -186,12 +203,12 @@ class TableSchemaTest extends TestCase
     {
         $table = new TableSchema('articles');
         $table->addColumn('title', [
-            'type' => 'string',
+            'type' => 'integer',
             'length' => 25,
             'null' => false,
         ]);
-        $this->assertSame('string', $table->getColumnType('title'));
-        $this->assertSame('string', $table->baseColumnType('title'));
+        $this->assertSame('integer', $table->getColumnType('title'));
+        $this->assertSame('integer', $table->baseColumnType('title'));
 
         $table->setColumnType('title', 'json');
         $this->assertSame('json', $table->getColumnType('title'));
@@ -262,10 +279,10 @@ class TableSchemaTest extends TestCase
             'precision' => null,
             'default' => null,
             'null' => null,
-            'unsigned' => null,
             'comment' => null,
-            'autoIncrement' => null,
+            'autoIncrement' => false,
             'generated' => null,
+            'unsigned' => null,
         ];
         $this->assertEquals($expected, $result);
         $column = $table->column('author_id');
@@ -283,8 +300,8 @@ class TableSchemaTest extends TestCase
             'precision' => 3,
             'default' => null,
             'null' => null,
-            'unsigned' => null,
             'comment' => null,
+            'unsigned' => null,
         ];
         $this->assertEquals($expected, $result);
         $column = $table->column('amount');

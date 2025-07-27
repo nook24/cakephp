@@ -6,8 +6,11 @@ namespace Cake\Test\TestCase\Database\Schema;
 use Cake\Database\Schema\Column;
 use Cake\Database\Schema\PostgresSchemaDialect;
 use Cake\Database\Schema\TableSchemaInterface;
+use Cake\Database\TypeFactory;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
+use TestApp\Database\Type\IntType;
 
 class ColumnTest extends TestCase
 {
@@ -34,6 +37,26 @@ class ColumnTest extends TestCase
         $this->assertSame('imaginary', $column->getType());
     }
 
+    public function testSetBaseTypeExplicit(): void
+    {
+        $column = new Column('body', 'string');
+        $this->assertEquals(TableSchemaInterface::TYPE_STRING, $column->getBaseType());
+
+        $column
+            ->setType('fancy-int')
+            ->setBaseType('integer');
+        $this->assertSame('fancy-int', $column->getType());
+        $this->assertSame('integer', $column->getBaseType());
+    }
+
+    public function testGetBaseTypeInferredFromTypeFactory(): void
+    {
+        TypeFactory::map('int', IntType::class);
+        $column = new Column('int_val', 'int');
+        $this->assertEquals(TableSchemaInterface::TYPE_INTEGER, $column->getBaseType());
+        $this->assertEquals('int', $column->getType());
+    }
+
     public function testSetLength(): void
     {
         $column = new Column('body', 'string');
@@ -46,8 +69,8 @@ class ColumnTest extends TestCase
     public function testSetNull(): void
     {
         $column = new Column('body', 'string');
-        $this->assertTrue($column->isNull());
-        $this->assertTrue($column->getNull());
+        $this->assertFalse($column->isNull());
+        $this->assertNull($column->getNull());
 
         $column->setNull(false);
         $this->assertFalse($column->isNull());
@@ -69,11 +92,14 @@ class ColumnTest extends TestCase
 
     public function testSetGenerated(): void
     {
-        $column = new Column('body', 'string');
-        $this->assertEquals(PostgresSchemaDialect::GENERATED_BY_DEFAULT, $column->getGenerated());
+        $column = new Column('body', 'integer');
+        $this->assertNull($column->getGenerated());
 
         $column->setGenerated('by default');
         $this->assertEquals('by default', $column->getGenerated());
+
+        $column->setGenerated(PostgresSchemaDialect::GENERATED_BY_DEFAULT);
+        $this->assertEquals(PostgresSchemaDialect::GENERATED_BY_DEFAULT, $column->getGenerated());
     }
 
     public function testSetIdentity(): void
@@ -129,8 +155,8 @@ class ColumnTest extends TestCase
 
     public function testSetUnsigned(): void
     {
-        $column = new Column('body', 'string');
-        $this->assertTrue($column->getUnsigned());
+        $column = new Column('body', 'integer');
+        $this->assertNull($column->getUnsigned());
 
         $column->setUnsigned(false);
         $this->assertFalse($column->getUnsigned());
@@ -144,7 +170,7 @@ class ColumnTest extends TestCase
     public function testSetAttributesIdentity(): void
     {
         $column = new Column('body', 'string');
-        $this->assertTrue($column->isNull());
+        $this->assertFalse($column->isNull());
         $this->assertFalse($column->isIdentity());
 
         $column->setAttributes(['identity' => true]);
@@ -186,5 +212,27 @@ class ColumnTest extends TestCase
         $this->assertFalse($column->isNull());
         $this->assertSame('default_value', $column->getDefault());
         $this->assertSame('utf8mb4_general_ci', $column->getCollate());
+    }
+
+    public static function toArrayDataProvider(): array
+    {
+        return [
+            'datetime null' => ['datetime', null, 'datetime'],
+            'datetime' => ['datetime', 0, 'datetime'],
+            'datetimefractional' => ['datetime', 6, 'datetimefractional'],
+            'timestamp null' => ['timestamp', null, 'timestamp'],
+            'timestamp' => ['timestamp', 0, 'timestamp'],
+            'timestampfractional' => ['timestamp', 6, 'timestampfractional'],
+        ];
+    }
+
+    #[DataProvider('toArrayDataProvider')]
+    public function testToArrayDatetimeToDatetimeFractional(string $inType, $precision, $outType): void
+    {
+        $column = new Column('created', $inType, precision: $precision);
+        $result = $column->toArray();
+
+        $this->assertSame($outType, $result['type']);
+        $this->assertSame($precision, $result['precision']);
     }
 }
