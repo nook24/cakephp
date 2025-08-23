@@ -109,7 +109,7 @@ class ValidationRuleTest extends TestCase
         $Rule = new ValidationRule(
             callable: Closure::fromCallable(Closure::fromCallable($this->willFail(...))),
             on: function ($context) {
-                $expected = ['newRecord' => true, 'data' => [], 'providers' => ['newRecord' => true]];
+                $expected = ['newRecord' => true, 'data' => []];
                 $this->assertEquals($expected, $context);
 
                 return true;
@@ -120,7 +120,7 @@ class ValidationRuleTest extends TestCase
         $Rule = new ValidationRule(
             Closure::fromCallable(Closure::fromCallable($this->willFail(...))),
             on: function ($context) {
-                $expected = ['newRecord' => true, 'data' => [], 'providers' => ['newRecord' => true]];
+                $expected = ['newRecord' => true, 'data' => []];
                 $this->assertEquals($expected, $context);
 
                 return false;
