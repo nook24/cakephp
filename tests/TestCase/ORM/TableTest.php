@@ -54,6 +54,7 @@ use Cake\ORM\Query\UpdateQuery;
 use Cake\ORM\ResultSet;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
@@ -2962,6 +2963,53 @@ class TableTest extends TestCase
         $this->expectException(PersistenceFailedException::class);
 
         $table->saveManyOrFail($entities);
+    }
+
+    public function testSaveWithBuildRulesFailWithErrorMessage(): void
+    {
+        $Articles = new class extends Table {
+            public function initialize(array $config): void
+            {
+                $this->setAlias('Articles');
+                $this->setTable('articles');
+                $this->hasMany('Comments');
+            }
+        };
+        $Comments = new class extends Table {
+            public function initialize(array $config): void
+            {
+                $this->setAlias('Comments');
+                $this->setTable('comments');
+            }
+
+            public function buildRules(RulesChecker $rules): RulesChecker
+            {
+                return $rules->add(function () {
+                    return 'Xyz';
+                });
+            }
+        };
+        TableRegistry::getTableLocator()->set('Comments', $Comments);
+
+        $article = $Articles->newEntity([
+            'title' => 'First Article',
+            'body' => 'First Article Body',
+            'published' => 'Y',
+            'comments' => [
+                '_ids' => [1],
+            ],
+        ]);
+
+        $result = $Articles->save($article, ['associated' => ['Comments']]);
+        $this->assertFalse($result);
+
+        // There should be errors here, due to comment not being savable.
+        $errors = $article->getErrors();
+        $this->assertNotEmpty($errors);
+        $this->assertArrayHasKey('comments', $errors);
+        $this->assertArrayHasKey(0, $errors['comments']);
+        $this->assertArrayHasKey('_rule', $errors['comments'][0]);
+        $this->assertSame(['Xyz'], $errors['comments'][0]['_rule']);
     }
 
     /**
@@ -6180,6 +6228,32 @@ class TableTest extends TestCase
 
         $expected = $table->get(2, contain: ['Authors']);
         $this->assertEquals($expected, $entity);
+    }
+
+    /**
+     * Tests loadInto() with a belongsTo association with a join and contain on the same table
+     */
+    public function testLoadBelongsToDoubleJoin(): void
+    {
+        $table = $this->getTableLocator()->get('Comments');
+        $table->belongsTo('Articles');
+
+        $entity = $table->get(2);
+        $result = $table->loadInto($entity, [
+            'Articles' => function (SelectQuery $q) {
+                return $q->innerJoinWith('Authors', function ($q) {
+                    return $q->where(['Authors.name' => 'mariano']);
+                });
+            },
+            'Articles.Authors',
+        ]);
+
+        $this->assertSame($entity, $result);
+
+        $expected = $table->get(2, contain: ['Articles.Authors']);
+        $this->assertEquals($expected, $entity);
+        $this->assertEquals($expected->article, $entity->article);
+        $this->assertEquals($expected->article->author, $entity->article->author);
     }
 
     /**

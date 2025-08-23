@@ -43,6 +43,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 use function Cake\Core\pluginSplit;
 
 /**

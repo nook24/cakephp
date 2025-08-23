@@ -165,7 +165,7 @@ class Debugger
      *
      * ### Example
      *
-     * Debugger::setOutputMask(['password' => '[*************]');
+     * Debugger::setOutputMask(['password' => '[*************]']);
      *
      * @param array<string, string> $value An array where keys are replaced by their values in output.
      * @param bool $merge Whether to recursively merge or overwrite existing config, defaults to true.
@@ -751,8 +751,6 @@ class Debugger
             foreach ($filters as $filter => $visibility) {
                 $reflectionProperties = $ref->getProperties($filter);
                 foreach ($reflectionProperties as $reflectionProperty) {
-                    $reflectionProperty->setAccessible(true);
-
                     if (
                         method_exists($reflectionProperty, 'isInitialized') &&
                         !$reflectionProperty->isInitialized($var)
