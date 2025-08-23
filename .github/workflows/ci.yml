@@ -82,7 +82,7 @@ jobs:
         mysql database: 'cakephp'
         mysql root password: 'root'
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
 
@@ -146,7 +146,7 @@ jobs:
       PHP_VERSION: '8.2'
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
 
@@ -210,7 +210,7 @@ jobs:
       PHPSTAN_TESTS: 1
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
 
