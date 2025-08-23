@@ -36,6 +36,10 @@ jobs:
           - php-version: '8.4'
             db-type: 'mysql'
             dependencies: highest
+          - php-version: '8.5'
+            db-type: 'sqlite'
+            dependencies: highest
+            composer-options: '--ignore-platform-req=php'
 
     services:
       redis:
