@@ -1531,6 +1531,10 @@ class ValidatorTest extends TestCase
                 'title' => 'bar',
             ],
             'field' => 'title',
+            'providers' => [
+                'default' => Validation::class,
+                'thing' => $thing,
+            ],
         ];
         $this->assertEquals($expected, $context);
     }
@@ -1576,6 +1580,10 @@ class ValidatorTest extends TestCase
                 'title' => 'bar',
             ],
             'field' => 'title',
+            'providers' => [
+                'default' => Validation::class,
+                'thing' => $thing,
+            ],
         ];
         $this->assertEquals($expected, $context);
     }

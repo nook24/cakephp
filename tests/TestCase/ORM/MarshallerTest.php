@@ -2813,7 +2813,7 @@ class MarshallerTest extends TestCase
             'author_id' => 2,
         ]);
 
-        $entity->setAccess('*', false);
+        $entity->setPatchable('*', false);
         $entity->setNew(false);
         $entity->clean();
         $result = $marshall->merge($entity, $data, ['fields' => ['body']]);
@@ -2826,7 +2826,7 @@ class MarshallerTest extends TestCase
 
         $this->assertSame($entity, $result);
         $this->assertEquals($expected, $result->toArray());
-        $this->assertFalse($entity->isAccessible('*'));
+        $this->assertFalse($entity->isPatchable('*'));
         // We have validation errors though
         $this->assertNotEmpty($entity->getErrors());
 
@@ -2836,14 +2836,14 @@ class MarshallerTest extends TestCase
             'author_id' => 2,
         ]);
 
-        $entity->setAccess('*', false);
+        $entity->setPatchable('*', false);
         $entity->setNew(false);
         $entity->clean();
         $result = $marshall->merge($entity, $data, ['fields' => ['body'], 'strictFields' => true]);
 
         $this->assertSame($entity, $result);
         $this->assertEquals($expected, $result->toArray());
-        $this->assertFalse($entity->isAccessible('*'));
+        $this->assertFalse($entity->isPatchable('*'));
         // We only validate fields list now
         $this->assertEmpty($entity->getErrors());
     }

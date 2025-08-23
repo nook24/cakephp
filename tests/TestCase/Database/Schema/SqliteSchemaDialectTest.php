@@ -610,6 +610,7 @@ SQL;
         );
         $expectedAuthorIdFk = $expected['author_fk'];
         $expectedAuthorIdFk['name'] = 'author_fk';
+        $expectedAuthorIdFk['length'] = [];
         $this->assertEquals($expectedAuthorIdFk, $foreignKeys[0]);
 
         $foreignKey = $result->constraint('author_fk');
@@ -816,6 +817,7 @@ SQL;
         foreach ($foreignKeys as $foreignKey) {
             $expectedForeignKey = $expected[$foreignKey['name']];
             $expectedForeignKey['name'] = $foreignKey['name'];
+            $expectedForeignKey['length'] = [];
             $this->assertEquals($expectedForeignKey, $foreignKey);
 
             $key = $result->constraint($foreignKey['name']);
