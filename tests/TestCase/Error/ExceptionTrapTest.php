@@ -399,6 +399,8 @@ class ExceptionTrapTest extends TestCase
     }
 
     #[DataProvider('initialMemoryProvider')]
+    #[PreserveGlobalState(false)]
+    #[RunInSeparateProcess]
     public function testIncreaseMemoryLimit($initial): void
     {
         ini_set('memory_limit', $initial);
