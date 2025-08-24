@@ -816,9 +816,8 @@ class FormHelper extends Helper
      *
      * ### Options
      *
-     * - `for` - Set the for attribute, if its not defined the for attribute
-     *   will be generated from the $fieldName parameter using
-     *   FormHelper::_domId().
+     * - `for` - Set the for attribute. If it is not defined, the for attribute
+     *   will be generated from the $fieldName parameter using FormHelper::_domId().
      * - `escape` - Set to `false` to turn off escaping of label text.
      *   Defaults to `true`.
      *
@@ -2137,17 +2136,17 @@ class FormHelper extends Helper
      *
      * ```
      * $options = [1 => 'one', 2 => 'two'];
-     * $this->Form->select('Model.field', $options));
+     * $this->Form->select('Model.field', $options);
      * ```
      *
      * While a nested options array will create optgroups with options inside them.
      * ```
      * $options = [
-     *  1 => 'bill',
+     *     1 => 'bill',
      *     'fred' => [
      *         2 => 'fred',
-     *         3 => 'fred jr.'
-     *     ]
+     *         3 => 'fred jr.',
+     *     ],
      * ];
      * $this->Form->select('Model.field', $options);
      * ```
@@ -2514,7 +2513,7 @@ class FormHelper extends Helper
             if (is_array($first)) {
                 $disabled = array_filter(
                     $options['options'],
-                    fn($i) => in_array($i['value'], $options['disabled'], true),
+                    fn(array $i) => in_array($i['value'], $options['disabled'], true),
                 );
 
                 return $disabled !== [];
@@ -2678,8 +2677,8 @@ class FormHelper extends Helper
         $diff = array_diff($sources, $this->supportedValueSources);
 
         if ($diff) {
-            array_walk($diff, fn(&$x) => $x = "`{$x}`");
-            array_walk($this->supportedValueSources, fn(&$x) => $x = "`{$x}`");
+            array_walk($diff, fn(string &$x) => $x = "`{$x}`");
+            array_walk($this->supportedValueSources, fn(string &$x) => $x = "`{$x}`");
             throw new InvalidArgumentException(sprintf(
                 'Invalid value source(s): %s. Valid values are: %s.',
                 implode(', ', $diff),

@@ -19,6 +19,8 @@ parameters:
 			identifier: include.fileNotFound
 		-
 			identifier: unset.possiblyHookedProperty
+		-
+			identifier: method.internalClass
 
 services:
 	-

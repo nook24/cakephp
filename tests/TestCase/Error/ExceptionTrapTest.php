@@ -38,10 +38,7 @@ use Throwable;
 
 class ExceptionTrapTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $memoryLimit;
+    private string $memoryLimit;
 
     private $triggered = false;
 
@@ -402,6 +399,8 @@ class ExceptionTrapTest extends TestCase
     }
 
     #[DataProvider('initialMemoryProvider')]
+    #[PreserveGlobalState(false)]
+    #[RunInSeparateProcess]
     public function testIncreaseMemoryLimit($initial): void
     {
         ini_set('memory_limit', $initial);

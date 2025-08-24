@@ -40,7 +40,7 @@ class ValidationSetTest extends TestCase
         $result = $field->rule('notBlank');
         $this->assertInstanceOf(ValidationRule::class, $result);
         $this->assertEquals(
-            new ValidationRule(name: 'notBlank', callable: Closure::fromCallable(Validation::class . '::' . 'notBlank'), message: 'Can not be empty'),
+            new ValidationRule(callable: Closure::fromCallable(Validation::class . '::' . 'notBlank'), name: 'notBlank', message: 'Can not be empty'),
             $result,
         );
     }
@@ -71,21 +71,21 @@ class ValidationSetTest extends TestCase
         $rule = $set['notBlank'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
         $this->assertEquals(
-            new ValidationRule(name: 'notBlank', callable: Closure::fromCallable(Validation::class . '::' . 'notBlank')),
+            new ValidationRule(callable: Closure::fromCallable(Validation::class . '::' . 'notBlank'), name: 'notBlank'),
             $rule,
         );
 
         $rule = $set['numeric'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
         $this->assertEquals(
-            new ValidationRule(name: 'numeric', callable: Closure::fromCallable(Validation::class . '::' . 'numeric')),
+            new ValidationRule(callable: Closure::fromCallable(Validation::class . '::' . 'numeric'), name: 'numeric'),
             $rule,
         );
 
         $rule = $set['other'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
         $this->assertEquals(
-            new ValidationRule(name: 'other', callable: Closure::fromCallable(Validation::class . '::' . 'email')),
+            new ValidationRule(callable: Closure::fromCallable(Validation::class . '::' . 'email'), name: 'other'),
             $rule,
         );
     }
@@ -119,7 +119,7 @@ class ValidationSetTest extends TestCase
         $rule = $set['other'];
         $this->assertInstanceOf(ValidationRule::class, $rule);
         $this->assertEquals(
-            new ValidationRule(name: 'other', callable: Closure::fromCallable(Validation::class . '::' . 'email')),
+            new ValidationRule(callable: Closure::fromCallable(Validation::class . '::' . 'email'), name: 'other'),
             $rule,
         );
     }

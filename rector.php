@@ -84,8 +84,6 @@ return RectorConfig::configure()
         \Rector\Php73\Rector\String_\SensitiveHereNowDocRector::class,
         \Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector::class,
         \Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector::class,
-        \Rector\Php80\Rector\FunctionLike\MixedTypeRector::class,
-        \Rector\Php81\Rector\ClassMethod\NewInInitializerRector::class,
         \Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector::class,
         \Rector\Php81\Rector\Property\ReadOnlyPropertyRector::class,
         \Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector::class,
