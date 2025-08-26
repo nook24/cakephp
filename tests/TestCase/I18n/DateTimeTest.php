@@ -847,18 +847,6 @@ class DateTimeTest extends TestCase
     }
 
     /**
-     * Test toQuarter with deprecated range parameter
-     */
-    public function testToQuarterWithRange(): void
-    {
-        $this->deprecated(function (): void {
-            $date = new DateTime('2007-12-25');
-            $result = $date->toQuarter(true);
-            $this->assertEquals(['2007-10-01', '2007-12-31'], $result);
-        });
-    }
-
-    /**
      * Test toQuarterRange method
      */
     public function testToQuarterRange(): void

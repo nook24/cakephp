@@ -139,9 +139,8 @@ return [
 PHP;
         file_put_contents($this->pluginsConfigPath, $config);
 
-        $this->deprecated(function (): void {
-            $this->exec('plugin list');
-        });
+        $this->exec('plugin list');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
         $this->assertOutputContains('TestPlugin');
         $this->assertOutputContains('OtherPlugin');
@@ -177,40 +176,5 @@ PHP;
         $this->expectExceptionMessage('Plugin `Unknown` could not be found.');
 
         $this->exec('plugin list');
-    }
-
-    /**
-     * Test listing vendor plugins with versions
-     */
-    public function testListWithVersions(): void
-    {
-        $file = <<<PHP
-<?php
-declare(strict_types=1);
-return [
-    'plugins' => [
-        'Chronos' => ROOT . '/vendor/cakephp/chronos',
-        'CodeSniffer' => ROOT . '/vendor/cakephp/cakephp-codesniffer'
-    ]
-];
-PHP;
-        file_put_contents($this->pluginsListPath, $file);
-
-        $config = <<<PHP
-<?php
-declare(strict_types=1);
-return [
-    'Chronos',
-    'CodeSniffer'
-];
-PHP;
-        file_put_contents($this->pluginsConfigPath, $config);
-
-        $path = ROOT . DS . 'tests' . DS . 'composer.lock';
-        $this->deprecated(function () use ($path): void {
-            $this->exec(sprintf('plugin list --composer-path="%s"', $path));
-        });
-        $this->assertOutputContains('| Chronos     | X         |            |          |          | 3.0.4   |');
-        $this->assertOutputContains('| CodeSniffer | X         |            |          |          | 5.1.1   |');
     }
 }
