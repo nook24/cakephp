@@ -37,14 +37,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 class RoutingMiddleware implements MiddlewareInterface
 {
     /**
-     * Key used to store the route collection in the cache engine
-     *
-     * @var string
-     * @deprecated 5.3.0 This constant is no longer used.
-     */
-    public const string ROUTE_COLLECTION_CACHE_KEY = 'routeCollection';
-
-    /**
      * The application that will have its routing hook invoked.
      *
      * @var \Cake\Routing\RoutingApplicationInterface

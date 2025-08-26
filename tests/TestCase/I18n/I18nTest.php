@@ -218,13 +218,10 @@ class I18nTest extends TestCase
      */
     public function testPluginOverride(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->loadPlugins([
-                'TestTheme' => [],
-                'TestPluginTwo' => [],
-            ]);
-        });
+        $this->loadPlugins([
+            'TestTheme' => [],
+            'TestPluginTwo' => [],
+        ]);
 
         $translator = I18n::getTranslator('test_theme');
         $this->assertSame(

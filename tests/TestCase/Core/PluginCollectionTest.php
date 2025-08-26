@@ -161,20 +161,6 @@ class PluginCollectionTest extends TestCase
         $this->assertSame('TestTheme', $plugin->getName());
     }
 
-    /**
-     * @deprecated
-     */
-    public function testCreateDeprecationMessage(): void
-    {
-        $this->expectDeprecationMessageMatches(
-            '#You can create the missing class using `bin/cake bake plugin TestPluginTwo --class-only`#',
-            function (): void {
-                $plugins = new PluginCollection();
-                $plugins->create('TestPluginTwo');
-            },
-        );
-    }
-
     public function testCreateException(): void
     {
         $this->expectException(CakeException::class);

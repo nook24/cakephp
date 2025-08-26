@@ -349,10 +349,7 @@ class TableLocatorTest extends TestCase
      */
     public function testGetMultiplePlugins(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPlugin
-        $this->deprecated(function (): void {
-            $this->loadPlugins(['TestPlugin', 'TestPluginTwo']);
-        });
+        $this->loadPlugins(['TestPlugin', 'TestPluginTwo']);
 
         $app = $this->_locator->get('Comments');
         $plugin1 = $this->_locator->get('TestPlugin.Comments');
@@ -546,10 +543,7 @@ class TableLocatorTest extends TestCase
      */
     public function testRemovePlugin(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->loadPlugins(['TestPlugin', 'TestPluginTwo']);
-        });
+        $this->loadPlugins(['TestPlugin', 'TestPluginTwo']);
 
         $app = $this->_locator->get('Comments');
         $this->_locator->get('TestPlugin.Comments');

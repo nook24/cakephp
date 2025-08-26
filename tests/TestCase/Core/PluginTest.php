@@ -15,7 +15,6 @@ declare(strict_types=1);
  */
 namespace Cake\Test\TestCase\Core;
 
-use Cake\Core\BasePlugin;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
@@ -55,20 +54,6 @@ class PluginTest extends TestCase
     }
 
     /**
-     * Tests loading a plugin without a class
-     *
-     * @deprecated
-     */
-    public function testLoadDynamicClass(): void
-    {
-        $this->deprecated(function (): void {
-            $this->loadPlugins(['TestPluginTwo']);
-            $instance = Plugin::getCollection()->get('TestPluginTwo');
-            $this->assertSame(BasePlugin::class, $instance::class);
-        });
-    }
-
-    /**
      * Tests that Plugin::path() returns the correct path for the loaded plugins
      */
     public function testPath(): void
@@ -80,11 +65,9 @@ class PluginTest extends TestCase
         $expected = TEST_APP . 'Plugin' . DS . 'Company' . DS . 'TestPluginThree' . DS;
         $this->assertPathEquals(Plugin::path('Company/TestPluginThree'), $expected);
 
-        $this->deprecated(function (): void {
-            $this->loadPlugins(['TestPluginTwo']);
-            $expected = TEST_APP . 'Plugin' . DS . 'TestPluginTwo' . DS;
-            $this->assertPathEquals(Plugin::path('TestPluginTwo'), $expected);
-        });
+        $this->loadPlugins(['TestPluginTwo']);
+        $expected = TEST_APP . 'Plugin' . DS . 'TestPluginTwo' . DS;
+        $this->assertPathEquals(Plugin::path('TestPluginTwo'), $expected);
     }
 
     /**
@@ -108,11 +91,9 @@ class PluginTest extends TestCase
         $expected = TEST_APP . 'Plugin' . DS . 'Company' . DS . 'TestPluginThree' . DS . 'src' . DS;
         $this->assertPathEquals(Plugin::classPath('Company/TestPluginThree'), $expected);
 
-        $this->deprecated(function (): void {
-            $this->loadPlugins(['TestPluginTwo']);
-            $expected = TEST_APP . 'Plugin' . DS . 'TestPluginTwo' . DS . 'src' . DS;
-            $this->assertPathEquals(Plugin::classPath('TestPluginTwo'), $expected);
-        });
+        $this->loadPlugins(['TestPluginTwo']);
+        $expected = TEST_APP . 'Plugin' . DS . 'TestPluginTwo' . DS . 'src' . DS;
+        $this->assertPathEquals(Plugin::classPath('TestPluginTwo'), $expected);
     }
 
     /**
@@ -127,11 +108,9 @@ class PluginTest extends TestCase
         $expected = TEST_APP . 'Plugin' . DS . 'Company' . DS . 'TestPluginThree' . DS . 'templates' . DS;
         $this->assertPathEquals(Plugin::templatePath('Company/TestPluginThree'), $expected);
 
-        $this->deprecated(function (): void {
-            $this->loadPlugins(['TestPluginTwo']);
-            $expected = TEST_APP . 'Plugin' . DS . 'TestPluginTwo' . DS . 'templates' . DS;
-            $this->assertPathEquals(Plugin::templatePath('TestPluginTwo'), $expected);
-        });
+        $this->loadPlugins(['TestPluginTwo']);
+        $expected = TEST_APP . 'Plugin' . DS . 'TestPluginTwo' . DS . 'templates' . DS;
+        $this->assertPathEquals(Plugin::templatePath('TestPluginTwo'), $expected);
     }
 
     /**

@@ -19,7 +19,6 @@ namespace Cake\Test\TestCase\Http;
 use Cake\Console\CommandRunner;
 use Cake\Console\ConsoleIo;
 use Cake\Console\TestSuite\StubConsoleOutput;
-use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\Container;
 use Cake\Core\ContainerInterface;
@@ -101,33 +100,6 @@ class BaseApplicationTest extends TestCase
         $container = $app->getContainer();
         $this->assertSame($request, $container->get(ServerRequest::class));
         $this->assertSame($container, $container->get(ContainerInterface::class));
-    }
-
-    /**
-     * Ensure that plugins with no plugin class can be loaded.
-     * This makes adopting the new API easier
-     *
-     * @deprecated
-     */
-    public function testAddPluginUnknownClass(): void
-    {
-        $app = $this->app;
-        $app->addPlugin('PluginJs');
-        $plugin = $app->getPlugins()->get('PluginJs');
-        $this->assertInstanceOf(BasePlugin::class, $plugin);
-
-        $this->assertSame(
-            TEST_APP . 'Plugin' . DS . 'PluginJs' . DS,
-            $plugin->getPath(),
-        );
-        $this->assertSame(
-            TEST_APP . 'Plugin' . DS . 'PluginJs' . DS . 'config' . DS,
-            $plugin->getConfigPath(),
-        );
-        $this->assertSame(
-            TEST_APP . 'Plugin' . DS . 'PluginJs' . DS . 'src' . DS,
-            $plugin->getClassPath(),
-        );
     }
 
     public function testAddPluginValidShortName(): void
@@ -212,10 +184,8 @@ class BaseApplicationTest extends TestCase
     {
         $app = $this->app;
         $app->addPlugin('Named');
-        // Remove the deprecated() wrapping once plugin class is added to TestPluginTwo
-        $this->deprecated(function () use ($app): void {
-            $app->pluginBootstrap();
-        });
+        $app->pluginBootstrap();
+
         $this->assertTrue(
             Configure::check('Named.bootstrap'),
             'Plugin bootstrap should be run',

@@ -55,10 +55,7 @@ class CompletionCommandTest extends TestCase
      */
     public function testStartup(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion');
-        });
+        $this->exec('completion');
         $this->assertExitCode(CommandInterface::CODE_ERROR);
 
         $this->assertOutputNotContains('Welcome to CakePHP');
@@ -69,10 +66,7 @@ class CompletionCommandTest extends TestCase
      */
     public function testCommands(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion commands');
-        });
+        $this->exec('completion commands');
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = [
@@ -105,10 +99,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testOptionsNoArguments(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion options');
-        });
+        $this->exec('completion options');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
         $this->assertOutputEmpty();
     }
@@ -118,10 +110,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testOptionsNonExistentCommand(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion options foo');
-        });
+        $this->exec('completion options foo');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
         $this->assertOutputEmpty();
     }
@@ -131,10 +121,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testOptionsCommand(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion options schema_cache');
-        });
+        $this->exec('completion options schema_cache');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = [
@@ -153,10 +141,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testOptionsSubCommand(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion options cache list');
-        });
+        $this->exec('completion options cache list');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = [
@@ -174,10 +160,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testOptionsNestedCommand(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion options i18n extract');
-        });
+        $this->exec('completion options i18n extract');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = [
@@ -194,10 +178,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsCorePlugin(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands schema_cache');
-        });
+        $this->exec('completion subcommands schema_cache');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = 'build clear';
@@ -209,10 +191,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsAppPlugin(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands sample');
-        });
+        $this->exec('completion subcommands sample');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
         $this->assertOutputContains('sub');
     }
@@ -222,10 +202,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsCoreMultiwordCommand(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands cache');
-        });
+        $this->exec('completion subcommands cache');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = [
@@ -242,10 +220,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsPlugin(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands welcome');
-        });
+        $this->exec('completion subcommands welcome');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = 'say_hello';
@@ -257,10 +233,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsPluginDotNotationBackwardCompatibility(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands test_plugin_two.welcome');
-        });
+        $this->exec('completion subcommands test_plugin_two.welcome');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = 'say_hello';
@@ -273,10 +247,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsAppDuplicatePluginNoDot(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands sample');
-        });
+        $this->exec('completion subcommands sample');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
         $this->assertOutputContains('sub');
     }
@@ -286,10 +258,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsPluginDuplicateApp(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands test_plugin.sample');
-        });
+        $this->exec('completion subcommands test_plugin.sample');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = 'sub';
@@ -301,10 +271,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsNoArguments(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands');
-        });
+        $this->exec('completion subcommands');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $this->assertOutputEmpty();
@@ -315,10 +283,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommandsNonExistentCommand(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands foo');
-        });
+        $this->exec('completion subcommands foo');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $this->assertOutputEmpty();
@@ -329,10 +295,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testSubCommands(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion subcommands schema_cache');
-        });
+        $this->exec('completion subcommands schema_cache');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $expected = 'build clear';
@@ -344,10 +308,8 @@ class CompletionCommandTest extends TestCase
      */
     public function testHelp(): void
     {
-        // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function (): void {
-            $this->exec('completion --help');
-        });
+        $this->exec('completion --help');
+
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
 
         $this->assertOutputContains('Output a list of available commands');
