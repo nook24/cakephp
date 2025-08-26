@@ -350,7 +350,7 @@ class TableLocatorTest extends TestCase
     public function testGetMultiplePlugins(): void
     {
         // Removed the deprecated() wrapping when plugin class is added to TestPlugin
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->loadPlugins(['TestPlugin', 'TestPluginTwo']);
         });
 
@@ -547,7 +547,7 @@ class TableLocatorTest extends TestCase
     public function testRemovePlugin(): void
     {
         // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->loadPlugins(['TestPlugin', 'TestPluginTwo']);
         });
 

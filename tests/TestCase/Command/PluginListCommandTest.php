@@ -139,7 +139,7 @@ return [
 PHP;
         file_put_contents($this->pluginsConfigPath, $config);
 
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->exec('plugin list');
         });
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
