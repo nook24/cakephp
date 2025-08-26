@@ -55,6 +55,7 @@ class AssociationTest extends TestCase
             'conditions' => ['field' => 'value'],
             'dependent' => true,
             'joinType' => 'INNER',
+            'propertyName' => 'associated',
         ];
         $this->association = $this->getMockBuilder(Association::class)
             ->onlyMethods([
@@ -375,7 +376,7 @@ class AssociationTest extends TestCase
      */
     public function testSetProperty(): void
     {
-        $this->assertSame('foo', $this->association->getProperty());
+        $this->assertSame('associated', $this->association->getProperty());
         $this->assertSame($this->association, $this->association->setProperty('thing'));
         $this->assertSame('thing', $this->association->getProperty());
     }
@@ -387,7 +388,7 @@ class AssociationTest extends TestCase
     {
         $this->expectWarningMessageMatches('/^Association property name `foo` clashes with field of same name of table `test`/', function (): void {
             $this->source->setSchema(['foo' => ['type' => 'string']]);
-            $this->assertSame('foo', $this->association->getProperty());
+            $this->association->setProperty('foo');
         });
     }
 
@@ -404,7 +405,7 @@ class AssociationTest extends TestCase
             'conditions' => ['field' => 'value'],
             'dependent' => true,
             'joinType' => 'INNER',
-            'propertyName' => 'foo',
+            'propertyName' => 'associated',
         ];
         $association = $this->getMockBuilder(Association::class)
             ->onlyMethods([
@@ -414,7 +415,7 @@ class AssociationTest extends TestCase
             ->setConstructorArgs(['Foo', $this->source, $config])
             ->getMock();
 
-        $this->assertSame('foo', $association->getProperty());
+        $this->assertSame('associated', $association->getProperty());
     }
 
     /**

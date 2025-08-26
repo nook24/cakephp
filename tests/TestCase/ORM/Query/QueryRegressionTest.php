@@ -197,7 +197,7 @@ class QueryRegressionTest extends TestCase
         ]);
         $table->Things->getTarget()->belongsTo('Stuff', [
             'foreignKey' => 'tag_id',
-            'propertyName' => 'foo',
+            'propertyName' => 'associated',
         ]);
 
         $results = $table->find()
@@ -206,12 +206,12 @@ class QueryRegressionTest extends TestCase
             ->toArray();
 
         $this->assertCount(5, $results);
-        $this->assertSame(1, $results[0]->articles_tag->foo->id);
+        $this->assertSame(1, $results[0]->articles_tag->associated->id);
         $this->assertSame(1, $results[0]->author->favorite_tag->id);
-        $this->assertSame(2, $results[1]->articles_tag->foo->id);
-        $this->assertSame(1, $results[2]->articles_tag->foo->id);
+        $this->assertSame(2, $results[1]->articles_tag->associated->id);
+        $this->assertSame(1, $results[2]->articles_tag->associated->id);
         $this->assertSame(3, $results[2]->author->favorite_tag->id);
-        $this->assertSame(3, $results[3]->articles_tag->foo->id);
+        $this->assertSame(3, $results[3]->articles_tag->associated->id);
         $this->assertSame(3, $results[3]->author->favorite_tag->id);
     }
 
