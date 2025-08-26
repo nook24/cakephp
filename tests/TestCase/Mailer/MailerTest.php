@@ -978,7 +978,7 @@ class MailerTest extends TestCase
     public function testSendRenderPlugin(): void
     {
         // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->loadPlugins(['TestPlugin', 'TestPluginTwo', 'TestTheme']);
         });
 

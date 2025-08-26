@@ -82,7 +82,7 @@ class PluginUnloadCommandTest extends TestCase
     public function testUnload($plugin): void
     {
         // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function () use ($plugin) {
+        $this->deprecated(function () use ($plugin): void {
             $this->exec('plugin unload ' . $plugin);
         });
 
@@ -113,7 +113,7 @@ class PluginUnloadCommandTest extends TestCase
     public function testUnloadUnknownPlugin(): void
     {
         // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->exec('plugin unload NopeNotThere');
         });
         $this->assertExitCode(CommandInterface::CODE_ERROR);

@@ -89,7 +89,7 @@ class PluginLoadCommandTest extends TestCase
         // Needed to not have duplicate named routes
         Router::reload();
         // Remove the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->exec('plugin load Company/TestPluginThree --only-debug --only-cli');
         });
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);

@@ -139,7 +139,7 @@ return [
 PHP;
         file_put_contents($this->pluginsConfigPath, $config);
 
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->exec('plugin list');
         });
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
@@ -207,7 +207,7 @@ PHP;
         file_put_contents($this->pluginsConfigPath, $config);
 
         $path = ROOT . DS . 'tests' . DS . 'composer.lock';
-        $this->deprecated(function () use ($path) {
+        $this->deprecated(function () use ($path): void {
             $this->exec(sprintf('plugin list --composer-path="%s"', $path));
         });
         $this->assertOutputContains('| Chronos     | X         |            |          |          | 3.0.4   |');

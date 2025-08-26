@@ -160,7 +160,7 @@ class PluginAssetsCommandsTest extends TestCase
     public function testForPluginWithoutWebroot(): void
     {
         // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->loadPlugins(['TestPluginTwo']);
             $this->exec('plugin assets symlink');
         });

@@ -169,7 +169,7 @@ class I18nTest extends TestCase
      */
     public function testCreateCustomTranslationPackage(): void
     {
-        I18n::setTranslator('custom', function () {
+        I18n::setTranslator('custom', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'Cow' => 'Le moo',
@@ -219,7 +219,7 @@ class I18nTest extends TestCase
     public function testPluginOverride(): void
     {
         // Removed the deprecated() wrapping when plugin class is added to TestPluginTwo
-        $this->deprecated(function () {
+        $this->deprecated(function (): void {
             $this->loadPlugins([
                 'TestTheme' => [],
                 'TestPluginTwo' => [],
@@ -263,7 +263,7 @@ class I18nTest extends TestCase
      */
     public function testGetTranslatorByDefaultLocale(): void
     {
-        I18n::setTranslator('custom', function () {
+        I18n::setTranslator('custom', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'Cow' => 'Le moo',
@@ -363,7 +363,7 @@ class I18nTest extends TestCase
      */
     public function testBasicDomainFunction(): void
     {
-        I18n::setTranslator('custom', function () {
+        I18n::setTranslator('custom', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'Cow' => 'Le moo',
@@ -402,7 +402,7 @@ class I18nTest extends TestCase
      */
     public function testBasicDomainPluralFunction(): void
     {
-        I18n::setTranslator('custom', function () {
+        I18n::setTranslator('custom', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'Cow' => 'Le Moo',
@@ -429,7 +429,7 @@ class I18nTest extends TestCase
      */
     public function testBasicContextFunction(): void
     {
-        I18n::setTranslator('default', function () {
+        I18n::setTranslator('default', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'letter' => [
@@ -485,7 +485,7 @@ class I18nTest extends TestCase
      */
     public function testBasicContextFunctionNoString(): void
     {
-        I18n::setTranslator('default', function () {
+        I18n::setTranslator('default', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'letter' => [
@@ -507,7 +507,7 @@ class I18nTest extends TestCase
      */
     public function testBasicContextFunctionInvalidContext(): void
     {
-        I18n::setTranslator('default', function () {
+        I18n::setTranslator('default', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'letter' => [
@@ -529,7 +529,7 @@ class I18nTest extends TestCase
      */
     public function testPluralContextFunction(): void
     {
-        I18n::setTranslator('default', function () {
+        I18n::setTranslator('default', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'letter' => [
@@ -581,7 +581,7 @@ class I18nTest extends TestCase
      */
     public function testDomainContextFunction(): void
     {
-        I18n::setTranslator('custom', function () {
+        I18n::setTranslator('custom', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'letter' => [
@@ -634,7 +634,7 @@ class I18nTest extends TestCase
      */
     public function testDomainPluralContextFunction(): void
     {
-        I18n::setTranslator('custom', function () {
+        I18n::setTranslator('custom', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'letter' => [
@@ -784,7 +784,7 @@ class I18nTest extends TestCase
      */
     public function testFallbackTranslator(): void
     {
-        I18n::setTranslator('default', function () {
+        I18n::setTranslator('default', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'Dog' => 'Le bark',
@@ -793,7 +793,7 @@ class I18nTest extends TestCase
             return $package;
         }, 'fr_FR');
 
-        I18n::setTranslator('custom', function () {
+        I18n::setTranslator('custom', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'Cow' => 'Le moo',
@@ -814,14 +814,14 @@ class I18nTest extends TestCase
     {
         I18n::useFallback(false);
 
-        I18n::setTranslator('default', function () {
+        I18n::setTranslator('default', function (): Package {
             $package = new Package('default');
             $package->setMessages(['Dog' => 'Le bark']);
 
             return $package;
         }, 'fr_FR');
 
-        I18n::setTranslator('custom', function () {
+        I18n::setTranslator('custom', function (): Package {
             $package = new Package('default');
             $package->setMessages(['Cow' => 'Le moo']);
 
@@ -839,7 +839,7 @@ class I18nTest extends TestCase
      */
     public function testFallbackTranslatorWithFactory(): void
     {
-        I18n::setTranslator('default', function () {
+        I18n::setTranslator('default', function (): Package {
             $package = new Package('default');
             $package->setMessages([
                 'Dog' => 'Le bark',
