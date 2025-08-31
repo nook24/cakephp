@@ -458,9 +458,3 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: src/View/Widget/DateTimeWidget.php
-
-		-
-			message: '#^Call to function is_numeric\(\) with int\|\(non\-empty\-string&numeric\-string\) will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/View/Widget/DateTimeWidget.php
