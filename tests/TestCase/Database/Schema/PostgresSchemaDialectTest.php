@@ -19,6 +19,7 @@ namespace Cake\Test\TestCase\Database\Schema;
 use Cake\Database\Connection;
 use Cake\Database\Driver;
 use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\Collection as SchemaCollection;
 use Cake\Database\Schema\ForeignKey;
 use Cake\Database\Schema\PostgresSchemaDialect;
@@ -1069,6 +1070,17 @@ SQL;
                 ['type' => 'text', 'null' => false, 'collate' => 'C'],
                 '"body" TEXT COLLATE "C" NOT NULL',
             ],
+            // JSON
+            [
+                'config',
+                ['type' => 'json', 'null' => false],
+                '"config" JSONB NOT NULL',
+            ],
+            [
+                'config',
+                ['type' => 'json', 'null' => false, 'default' => new QueryExpression("'{}'::jsonb")],
+                '"config" JSONB NOT NULL DEFAULT \'{}\'::jsonb',
+            ],
             // Integers
             [
                 'post_id',
@@ -1232,6 +1244,11 @@ SQL;
                 'current_timestamp',
                 ['type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP'],
                 '"current_timestamp" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP',
+            ],
+            [
+                'current_timestamp',
+                ['type' => 'timestamp', 'default' => new QueryExpression('CURRENT_TIMESTAMP')],
+                '"current_timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
             ],
             [
                 'current_timestamp_fractional',

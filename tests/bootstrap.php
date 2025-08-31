@@ -154,3 +154,10 @@ if (env('FIXTURE_SCHEMA_METADATA')) {
 }
 
 FactoryLocator::add('Table', new TableLocator());
+
+// Load test suite functions
+require_once CORE_PATH . 'src' . DS . 'TestSuite' . DS . 'functions.php';
+
+// Uncomment the following line to automatically load all plugins from plugins.php
+// for all tests in this application:
+// \Cake\TestSuite\enablePluginLoadingForTests();
