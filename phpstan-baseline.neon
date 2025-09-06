@@ -19,8 +19,8 @@ parameters:
 			path: src/Cache/Engine/RedisEngine.php
 
 		-
-			message: '#^Cannot cast int\|Redis\|false to int\.$#'
-			identifier: cast.int
+			message: "#^Call to an undefined method Redis\|RedisCluster\:\:unlink\(\)\.$#"
+			identifier: method.notFound
 			count: 2
 			path: src/Cache/Engine/RedisEngine.php
 
