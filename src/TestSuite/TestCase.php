@@ -981,7 +981,7 @@ abstract class TestCase extends BaseTestCase
     {
         $upper = $result + $margin;
         $lower = $result - $margin;
-        static::assertTrue(($expected <= $upper) && ($expected >= $lower), $message);
+        self::assertTrue(($expected <= $upper) && ($expected >= $lower), $message);
     }
 
     /**
@@ -997,7 +997,7 @@ abstract class TestCase extends BaseTestCase
     {
         $upper = $result + $margin;
         $lower = $result - $margin;
-        static::assertTrue(($expected > $upper) || ($expected < $lower), $message);
+        self::assertTrue(($expected > $upper) || ($expected < $lower), $message);
     }
 
     /**
@@ -1012,7 +1012,7 @@ abstract class TestCase extends BaseTestCase
     {
         $expected = str_replace(DIRECTORY_SEPARATOR, '/', $expected);
         $result = str_replace(DIRECTORY_SEPARATOR, '/', $result);
-        static::assertEquals($expected, $result, $message);
+        self::assertEquals($expected, $result, $message);
     }
 
     /**
