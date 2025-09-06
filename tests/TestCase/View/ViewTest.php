@@ -1138,7 +1138,7 @@ class ViewTest extends TestCase
         $View->setTemplatePath('Pages');
 
         $pluginPath = TEST_APP . 'Plugin' . DS . 'TestPlugin' . DS;
-        $result = $View->getTemplateFileName('subfolder/example');
+        $result = $View->innerGetTemplateFileName('subfolder/example');
         // The bug would have resulted in looking for 'templates/subfolder/example.php'
         // instead of 'templates/Pages/subfolder/example.php'
         $expected = $pluginPath . 'templates' . DS . 'Pages' . DS . 'subfolder' . DS . 'example.php';
