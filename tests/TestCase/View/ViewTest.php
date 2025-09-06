@@ -1116,13 +1116,32 @@ class ViewTest extends TestCase
     {
         $this->PostsController->setPlugin('TestPlugin');
         $this->PostsController->setName('Posts');
-        /** @var \TestApp\View\TestView $View */
         $View = $this->PostsController->createView(TestView::class);
         $View->setTemplatePath('element');
 
         $pluginPath = TEST_APP . 'Plugin' . DS . 'TestPlugin' . DS;
         $result = $View->innerGetTemplateFileName('sub_dir/sub_element');
         $expected = $pluginPath . 'templates' . DS . 'element' . DS . 'sub_dir' . DS . 'sub_element.php';
+        $this->assertPathEquals($expected, $result);
+    }
+
+    /**
+     * Test fix for issue #16895 - nested template paths should work correctly
+     * with plugins even when templatePath equals name property
+     */
+    public function testGetTemplateFileNameNestedPathWithPluginWhenTemplatePathEqualsName(): void
+    {
+        $this->PostsController->setPlugin('TestPlugin');
+        // Create a view where name equals templatePath (both 'Pages')
+        // This was the condition that triggered the bug in issue #16895
+        $View = $this->PostsController->createView(TestView::class);
+        $View->setTemplatePath('Pages');
+
+        $pluginPath = TEST_APP . 'Plugin' . DS . 'TestPlugin' . DS;
+        $result = $View->getTemplateFileName('subfolder/example');
+        // The bug would have resulted in looking for 'templates/subfolder/example.php'
+        // instead of 'templates/Pages/subfolder/example.php'
+        $expected = $pluginPath . 'templates' . DS . 'Pages' . DS . 'subfolder' . DS . 'example.php';
         $this->assertPathEquals($expected, $result);
     }
 

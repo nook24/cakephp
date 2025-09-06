@@ -1,25 +1,34 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Redis\\|RedisCluster\\:\\:connect\\(\\)\\.$#"
-			count: 2
-			path: src/Cache/Engine/RedisEngine.php
-
-		-
-			message: "#^Call to an undefined method Redis\\|RedisCluster\\:\\:pconnect\\(\\)\\.$#"
-			count: 2
-			path: src/Cache/Engine/RedisEngine.php
-
-		-
-			message: "#^Call to an undefined method Redis\\|RedisCluster\\:\\:unlink\\(\\)\\.$#"
-			count: 2
-			path: src/Cache/Engine/RedisEngine.php
-
-		-
 			message: '#^Call to function method_exists\(\) with Memcached and ''setSaslAuthData'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Cache/Engine/MemcachedEngine.php
+
+		-
+			message: '#^Call to an undefined method Redis\|RedisCluster\:\:connect\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Cache/Engine/RedisEngine.php
+
+		-
+			message: '#^Call to an undefined method Redis\|RedisCluster\:\:pconnect\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Cache/Engine/RedisEngine.php
+
+		-
+			message: '#^Cannot cast int\|Redis\|false to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: src/Cache/Engine/RedisEngine.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, TValue\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Collection/Collection.php
 
 		-
 			message: '#^Unsafe usage of new static\(\)\.$#'
@@ -124,10 +133,148 @@ parameters:
 			path: src/Datasource/ModelAwareTrait.php
 
 		-
+			message: '#^PHPDoc tag @return with type iterable\<TKey, TValue\> is not subtype of native type Traversable\.$#'
+			identifier: return.phpDocType
+			count: 1
+			path: src/Datasource/Paging/PaginatedInterface.php
+
+		-
+			message: '#^The @extends tag of interface Cake\\Datasource\\Paging\\PaginatedInterface describes Traversable but the interface extends\: Countable, IteratorAggregate$#'
+			identifier: generics.wrongParent
+			count: 1
+			path: src/Datasource/Paging/PaginatedInterface.php
+
+		-
+			message: '#^The @implements tag of class Cake\\Datasource\\Paging\\PaginatedResultSet describes IteratorAggregate but the class implements\: JsonSerializable, Cake\\Datasource\\Paging\\PaginatedInterface$#'
+			identifier: generics.wrongParent
+			count: 1
+			path: src/Datasource/Paging/PaginatedResultSet.php
+
+		-
 			message: '#^Template type T of method Cake\\Datasource\\QueryInterface\:\:all\(\) is not referenced in a parameter\.$#'
 			identifier: method.templateTypeNotInParameter
 			count: 1
 			path: src/Datasource/QueryInterface.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TKey of interface Cake\\Collection\\CollectionInterface as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TKey of interface Iterator as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TValue of interface Cake\\Collection\\CollectionInterface as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TValue of interface Iterator as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class IteratorIterator specifies template type TKey of interface Iterator as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 2
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class IteratorIterator specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 2
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class IteratorIterator specifies template type TValue of interface Iterator as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 2
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Class IteratorIterator specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 2
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface Cake\\Collection\\CollectionInterface specifies template type TKey of interface Iterator as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface Cake\\Collection\\CollectionInterface specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface Cake\\Collection\\CollectionInterface specifies template type TValue of interface Iterator as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface Cake\\Collection\\CollectionInterface specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface Iterator specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 7
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface Iterator specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 7
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface OuterIterator specifies template type TKey of interface Iterator as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 3
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface OuterIterator specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 3
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface OuterIterator specifies template type TValue of interface Iterator as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 3
+			path: src/Datasource/ResultSetDecorator.php
+
+		-
+			message: '#^Interface OuterIterator specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 3
+			path: src/Datasource/ResultSetDecorator.php
 
 		-
 			message: '#^Constructor of class Cake\\Error\\Renderer\\ConsoleExceptionRenderer has an unused parameter \$request\.$#'
@@ -242,6 +389,126 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: src/ORM/Query/SelectQuery.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TKey of interface Cake\\Collection\\CollectionInterface as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TKey of interface Iterator as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TValue of interface Cake\\Collection\\CollectionInterface as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TValue of interface Iterator as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class Cake\\Collection\\Collection specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class IteratorIterator specifies template type TKey of interface Iterator as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 2
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class IteratorIterator specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 2
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class IteratorIterator specifies template type TValue of interface Iterator as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 2
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Class IteratorIterator specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 2
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface Cake\\Collection\\CollectionInterface specifies template type TKey of interface Iterator as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface Cake\\Collection\\CollectionInterface specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface Cake\\Collection\\CollectionInterface specifies template type TValue of interface Iterator as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface Cake\\Collection\\CollectionInterface specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 1
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface Iterator specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 7
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface Iterator specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 7
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface OuterIterator specifies template type TKey of interface Iterator as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 3
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface OuterIterator specifies template type TKey of interface Traversable as TKey but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 3
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface OuterIterator specifies template type TValue of interface Iterator as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 3
+			path: src/ORM/ResultSet.php
+
+		-
+			message: '#^Interface OuterIterator specifies template type TValue of interface Traversable as TValue but it''s already specified as mixed\.$#'
+			identifier: generics.interfaceConflict
+			count: 3
+			path: src/ORM/ResultSet.php
 
 		-
 			message: '#^PHPDoc tag @var with type class\-string\<Cake\\Datasource\\RulesChecker\> is not subtype of native type ''Cake\\\\Datasource\\\\RulesChecker''\|class\-string\<Cake\\ORM\\RulesChecker\>\.$#'
