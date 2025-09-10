@@ -82,7 +82,7 @@ class AssetMiddleware implements MiddlewareInterface
         $file = new SplFileInfo($assetFile);
         $modifiedTime = $file->getMTime();
         if ($this->isNotModified($request, $file)) {
-            return (new Response())
+            return new Response()
                 ->withStringBody('')
                 ->withStatus(304)
                 ->withHeader(
