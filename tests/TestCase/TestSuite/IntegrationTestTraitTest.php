@@ -1369,6 +1369,76 @@ class IntegrationTestTraitTest extends TestCase
     }
 
     /**
+     * Test assertRedirect with relative URL in Location header
+     */
+    public function testAssertRedirectWithRelativeUrl(): void
+    {
+        $this->_response = new Response();
+        // Simulate authentication plugin returning relative URL
+        $this->_response = $this->_response->withHeader('Location', '/get/users/login');
+
+        // Should work with string URL
+        $this->assertRedirect('/get/users/login');
+
+        // Should work with array URL
+        $this->assertRedirect(['controller' => 'Users', 'action' => 'login']);
+    }
+
+    /**
+     * Test assertRedirectEquals with relative URL in Location header
+     */
+    public function testAssertRedirectEqualsWithRelativeUrl(): void
+    {
+        $this->_response = new Response();
+        // Simulate authentication plugin returning relative URL
+        $this->_response = $this->_response->withHeader('Location', '/get/users/login');
+
+        // Should work with string URL
+        $this->assertRedirectEquals('/get/users/login');
+
+        // Should work with array URL
+        $this->assertRedirectEquals(['controller' => 'Users', 'action' => 'login']);
+    }
+
+    /**
+     * Test assertRedirect with named routes and relative URLs
+     */
+    public function testAssertRedirectWithNamedRouteAndRelativeUrl(): void
+    {
+        Router::createRouteBuilder('/')->connect(
+            '/user/signin',
+            ['controller' => 'Users', 'action' => 'login'],
+            ['_name' => 'login:form'],
+        );
+
+        $this->_response = new Response();
+        // Simulate authentication plugin returning relative URL
+        $this->_response = $this->_response->withHeader('Location', '/user/signin');
+
+        // Should work with named route
+        $this->assertRedirect(['_name' => 'login:form']);
+        $this->assertRedirectEquals(['_name' => 'login:form']);
+    }
+
+    /**
+     * Test assertRedirect handles mixed absolute/relative URLs correctly
+     */
+    public function testAssertRedirectMixedUrlFormats(): void
+    {
+        $this->_response = new Response();
+
+        // Test with absolute URL in header, checking with relative path
+        $this->_response = $this->_response->withHeader('Location', 'http://localhost/get/tasks/view/1');
+        $this->assertRedirect('/get/tasks/view/1');
+        $this->assertRedirectEquals('/get/tasks/view/1');
+
+        // Test with relative URL in header, checking with absolute URL
+        $this->_response = $this->_response->withHeader('Location', '/get/tasks/edit/2');
+        $this->assertRedirect('http://localhost/get/tasks/edit/2');
+        $this->assertRedirectEquals('http://localhost/get/tasks/edit/2');
+    }
+
+    /**
      * Test the header assertion.
      */
     public function testAssertHeader(): void
@@ -1655,6 +1725,47 @@ class IntegrationTestTraitTest extends TestCase
     }
 
     /**
+     * Tests assertFlashMessageContains assertions.
+     *
+     * @throws \PHPUnit\Exception
+     */
+    public function testAssertFlashMessageContains(): void
+    {
+        $this->get('/posts/stacked_flash');
+
+        // Test contains assertions for exact messages
+        $this->assertFlashMessageContains('Error');
+        $this->assertFlashMessageContains('Error 1');
+        $this->assertFlashMessageContains('Error 2');
+        $this->assertFlashMessageContains('rror 1'); // partial match
+
+        // Test contains with specific key
+        $this->assertFlashMessageContains('Success', 'custom');
+        $this->assertFlashMessageContains('Success 1', 'custom');
+        $this->assertFlashMessageContains('Success 2', 'custom');
+        $this->assertFlashMessageContains('uccess 1', 'custom'); // partial match
+
+        // Test contains at specific index
+        $this->assertFlashMessageContainsAt(0, 'Error 1');
+        $this->assertFlashMessageContainsAt(0, 'rror 1'); // partial match
+        $this->assertFlashMessageContainsAt(1, 'Error 2');
+        $this->assertFlashMessageContainsAt(1, 'rror 2'); // partial match
+
+        // Test contains at specific index with custom key
+        $this->assertFlashMessageContainsAt(0, 'Success 1', 'custom');
+        $this->assertFlashMessageContainsAt(0, 'uccess 1', 'custom'); // partial match
+        $this->assertFlashMessageContainsAt(1, 'Success 2', 'custom');
+        $this->assertFlashMessageContainsAt(1, 'uccess 2', 'custom'); // partial match
+
+        // Test case-insensitive matching
+        $this->assertFlashMessageContains('error 1', 'flash', '', true);
+        $this->assertFlashMessageContains('ERROR 1', 'flash', '', true);
+        $this->assertFlashMessageContainsAt(0, 'ERROR 1', 'flash', '', true);
+        $this->assertFlashMessageContains('success 1', 'custom', '', true);
+        $this->assertFlashMessageContainsAt(0, 'SUCCESS 1', 'custom', '', true);
+    }
+
+    /**
      * Tests asserting flash messages without first sending a request
      */
     public function testAssertFlashMessageWithoutSendingRequest(): void
@@ -1665,6 +1776,19 @@ class IntegrationTestTraitTest extends TestCase
         $this->expectExceptionMessage($message);
 
         $this->assertFlashMessage('Will not work');
+    }
+
+    /**
+     * Tests asserting flash message contains without first sending a request
+     */
+    public function testAssertFlashMessageContainsWithoutSendingRequest(): void
+    {
+        $this->expectException(AssertionFailedError::class);
+        $message = 'There is no stored session data. Perhaps you need to run a request?';
+        $message .= ' Additionally, ensure `$this->enableRetainFlashMessages()` has been enabled for the test.';
+        $this->expectExceptionMessage($message);
+
+        $this->assertFlashMessageContains('Will not work');
     }
 
     /**

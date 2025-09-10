@@ -21,6 +21,8 @@ parameters:
 			identifier: unset.possiblyHookedProperty
 		-
 			identifier: method.internalClass
+		-
+			identifier: new.internalClass
 
 services:
 	-

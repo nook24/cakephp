@@ -4955,7 +4955,10 @@ class FormHelperTest extends TestCase
             EnumType::from(ArticleStatus::class),
         );
         $this->Form->create($articlesTable->newEmptyEntity());
-        $result = $this->Form->control('published', ['type' => 'radio', 'label' => false,]);
+        $result = $this->Form->control('published', [
+            'type' => 'radio',
+            'label' => false,
+        ]);
         $expected = [
             ['div' => ['class' => 'input']],
                 'input' => ['type' => 'hidden', 'name' => 'published', 'value' => '', 'id' => 'published'],
@@ -9381,5 +9384,114 @@ class FormHelperTest extends TestCase
             '/div',
         ];
         $this->assertHtml($expected, $result);
+    }
+
+    public function testNestedCheckboxAndRadioDisabled(): void
+    {
+        $articles = $this->getTableLocator()->get('Articles');
+        $articles->getSchema()->addColumn('active', ['type' => 'boolean', 'default' => null]);
+        $article = $articles->newEmptyEntity();
+
+        $this->Form->create($article);
+
+        $this->Form->setConfig('nestedCheckboxAndRadio', false);
+
+        $result = $this->Form->control('active');
+        $expected = [
+            'div' => ['class' => 'input'],
+            'input' => ['type' => 'hidden', 'name' => 'active', 'value' => '0'],
+            ['input' => ['type' => 'checkbox', 'name' => 'active', 'value' => '1', 'id' => 'active']],
+            ['label' => ['for' => 'active']],
+            'Active',
+             '/label',
+            '/div',
+        ];
+        $this->assertHtml($expected, $result);
+
+        $result = $this->Form->control('test', [
+            'multiple' => 'checkbox',
+            'options' => [
+                1 => 'A',
+                2 => 'B',
+            ],
+        ]);
+        $expected = [
+            ['div' => ['class' => 'input']],
+            ['label' => ['for' => 'test']],
+            'Test',
+            '/label',
+            ['input' => [
+                'type' => 'hidden',
+                'name' => 'test',
+                'value' => '',
+                'id' => 'test',
+            ]],
+            ['div' => ['class' => 'checkbox']],
+            ['input' => [
+                'type' => 'checkbox',
+                'name' => 'test[]',
+                'value' => 1,
+                'id' => 'test-1',
+            ]],
+            ['label' => ['for' => 'test-1']],
+            'A',
+            '/label',
+            '/div',
+            ['div' => ['class' => 'checkbox']],
+            ['input' => [
+                'type' => 'checkbox',
+                'name' => 'test[]',
+                'value' => '2',
+                'id' => 'test-2',
+            ]],
+            ['label' => ['for' => 'test-2']],
+            'B',
+            '/label',
+            '/div',
+            '/div',
+        ];
+        $this->assertHtml($expected, $result);
+
+        $result = $this->Form->control('test', [
+            'type' => 'radio',
+            'options' => [
+                1 => 'A',
+                2 => 'B',
+            ],
+        ]);
+        $expected = [
+            ['div' => ['class' => 'input']],
+            '<label',
+            'Test',
+            '/label',
+            ['input' => [
+                'type' => 'hidden',
+                'name' => 'test',
+                'value' => '',
+                'id' => 'test',
+            ]],
+            ['input' => [
+                'type' => 'radio',
+                'name' => 'test',
+                'value' => 1,
+                'id' => 'test-1',
+            ]],
+            ['label' => ['for' => 'test-1']],
+            'A',
+            '/label',
+            ['input' => [
+                'type' => 'radio',
+                'name' => 'test',
+                'value' => '2',
+                'id' => 'test-2',
+            ]],
+            ['label' => ['for' => 'test-2']],
+            'B',
+            '/label',
+            '/div',
+        ];
+        $this->assertHtml($expected, $result);
+
+        $this->Form->setConfig('nestedCheckboxAndRadio', true);
     }
 }
