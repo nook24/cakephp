@@ -183,7 +183,7 @@ class EmailTraitTest extends TestCase
      */
     public function testAssertUsingRegExpCharacters(): void
     {
-        (new Mailer())
+        new Mailer()
             ->setTo('to3@example.com')
             ->setCc('cc3@example.com')
             ->deliver('email with regexp chars $/[]');
@@ -239,7 +239,7 @@ class EmailTraitTest extends TestCase
      */
     private function sendEmails(): void
     {
-        (new Mailer())
+        new Mailer()
             ->setSender(['sender@example.com' => 'Sender'])
             ->setTo(['to@example.com' => 'Foo Bar'])
             ->addTo('alsoto@example.com')
@@ -251,13 +251,13 @@ class EmailTraitTest extends TestCase
             ->setEmailFormat(Message::MESSAGE_TEXT)
             ->deliver('text');
 
-        (new Mailer('alternate'))
+        new Mailer('alternate')
             ->setTo('to2@example.com')
             ->setCc('cc2@example.com')
             ->setEmailFormat(Message::MESSAGE_HTML)
             ->deliver('html');
 
-        (new Mailer('alternate'))
+        new Mailer('alternate')
             ->setTo(['to3@example.com' => null])
             ->deliver('html');
     }

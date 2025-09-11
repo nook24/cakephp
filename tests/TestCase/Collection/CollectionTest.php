@@ -197,7 +197,7 @@ class CollectionTest extends TestCase
     #[DataProvider('medianWithMatcherProvider')]
     public function testMedianWithMatcher(iterable $items): void
     {
-        $this->assertSame(333, (new Collection($items))->median('invoice.total'));
+        $this->assertSame(333, new Collection($items)->median('invoice.total'));
     }
 
     /**
@@ -973,7 +973,7 @@ class CollectionTest extends TestCase
     #[DataProvider('simpleProvider')]
     public function testShuffle(iterable $data): void
     {
-        $collection = (new Collection($data))->shuffle();
+        $collection = new Collection($data)->shuffle();
         $result = $collection->toArray();
         $this->assertCount(4, $result);
         $this->assertContains(1, $result);
@@ -987,7 +987,7 @@ class CollectionTest extends TestCase
      */
     public function testShuffleDuplicateKeys(): void
     {
-        $collection = (new Collection(['a' => 1]))->append(['a' => 2])->shuffle();
+        $collection = new Collection(['a' => 1])->append(['a' => 2])->shuffle();
         $result = $collection->toArray();
         $this->assertCount(2, $result);
         $this->assertEquals([0, 1], array_keys($result));
@@ -1001,7 +1001,7 @@ class CollectionTest extends TestCase
     #[DataProvider('simpleProvider')]
     public function testSample(iterable $data): void
     {
-        $result = (new Collection($data))->sample(2)->toArray();
+        $result = new Collection($data)->sample(2)->toArray();
         $this->assertCount(2, $result);
         foreach ($result as $number) {
             $this->assertContains($number, [1, 2, 3, 4]);
@@ -1065,7 +1065,7 @@ class CollectionTest extends TestCase
     #[DataProvider('simpleProvider')]
     public function testCollectionCount(iterable $list): void
     {
-        $list = (new Collection($list))->buffered();
+        $list = new Collection($list)->buffered();
         $collection = new Collection($list);
         $this->assertSame(8, $collection->append($list)->count());
     }
@@ -1076,7 +1076,7 @@ class CollectionTest extends TestCase
     #[DataProvider('simpleProvider')]
     public function testCollectionCountKeys(iterable $list): void
     {
-        $list = (new Collection($list))->buffered();
+        $list = new Collection($list)->buffered();
         $collection = new Collection($list);
         $this->assertSame(4, $collection->append($list)->countKeys());
     }
@@ -1294,7 +1294,7 @@ class CollectionTest extends TestCase
     public function testBuffered(): void
     {
         $items = new NoRewindIterator(new ArrayIterator(['a' => 4, 'b' => 5, 'c' => 6]));
-        $buffered = (new Collection($items))->buffered();
+        $buffered = new Collection($items)->buffered();
         $this->assertEquals(['a' => 4, 'b' => 5, 'c' => 6], $buffered->toArray());
         $this->assertEquals(['a' => 4, 'b' => 5, 'c' => 6], $buffered->toArray());
     }
@@ -1306,7 +1306,7 @@ class CollectionTest extends TestCase
             ['myField' => '2'],
             ['myField' => '3'],
         ];
-        $buffered = (new Collection($data))->buffered();
+        $buffered = new Collection($data)->buffered();
         // Check going forwards
         $this->assertNotEmpty($buffered->firstMatch(['myField' => '1']));
         $this->assertNotEmpty($buffered->firstMatch(['myField' => '2']));
@@ -1328,15 +1328,15 @@ class CollectionTest extends TestCase
             ['id' => 2, 'name' => 'bar', 'parent' => 'b'],
             ['id' => 3, 'name' => 'baz', 'parent' => 'a'],
         ];
-        $collection = (new Collection($items))->combine('id', 'name');
+        $collection = new Collection($items)->combine('id', 'name');
         $expected = [1 => 'foo', 2 => 'bar', 3 => 'baz'];
         $this->assertEquals($expected, $collection->toArray());
 
         $expected = ['foo' => 1, 'bar' => 2, 'baz' => 3];
-        $collection = (new Collection($items))->combine('name', 'id');
+        $collection = new Collection($items)->combine('name', 'id');
         $this->assertEquals($expected, $collection->toArray());
 
-        $collection = (new Collection($items))->combine('id', 'name', 'parent');
+        $collection = new Collection($items)->combine('id', 'name', 'parent');
         $expected = ['a' => [1 => 'foo', 3 => 'baz'], 'b' => [2 => 'bar']];
         $this->assertEquals($expected, $collection->toArray());
 
@@ -1345,7 +1345,7 @@ class CollectionTest extends TestCase
             '1-2' => ['bar-1-2' => '1-2-bar'],
             '2-3' => ['baz-2-3' => '2-3-baz'],
         ];
-        $collection = (new Collection($items))->combine(
+        $collection = new Collection($items)->combine(
             function ($value, $key) {
                 return $value['name'] . '-' . $key;
             },
@@ -1358,22 +1358,22 @@ class CollectionTest extends TestCase
         );
         $this->assertEquals($expected, $collection->toArray());
 
-        $collection = (new Collection($items))->combine('id', 'crazy');
+        $collection = new Collection($items)->combine('id', 'crazy');
         $this->assertEquals([1 => null, 2 => null, 3 => null], $collection->toArray());
 
-        $collection = (new Collection([
+        $collection = new Collection([
             ['amount' => 10, 'article_status' => ArticleStatus::from('Y')],
             ['amount' => 2, 'article_status' => ArticleStatus::from('N')],
-        ]))->combine('article_status', 'amount');
+        ])->combine('article_status', 'amount');
         $this->assertEquals(['Y' => 10, 'N' => 2], $collection->toArray());
     }
 
     public function testCombineWithNonBackedEnum(): void
     {
-        $collection = (new Collection([
+        $collection = new Collection([
             ['amount' => 10, 'type' => NonBacked::Basic],
             ['amount' => 2, 'type' => NonBacked::Advanced],
-        ]))->combine('type', 'amount');
+        ])->combine('type', 'amount');
         $this->assertEquals(['Basic' => 10, 'Advanced' => 2], $collection->toArray());
     }
 
@@ -1388,7 +1388,7 @@ class CollectionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Cannot index by path that does not exist or contains a null value');
 
-        (new Collection($items))->combine('id', 'name');
+        new Collection($items)->combine('id', 'name');
     }
 
     public function testCombineNullGroup(): void
@@ -1402,7 +1402,7 @@ class CollectionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Cannot group by path that does not exist or contains a null value');
 
-        (new Collection($items))->combine('id', 'name', 'parent');
+        new Collection($items)->combine('id', 'name', 'parent');
     }
 
     public function testCombineGroupNullKey(): void
@@ -1416,7 +1416,7 @@ class CollectionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Cannot index by path that does not exist or contains a null value');
 
-        (new Collection($items))->combine('id', 'name', 'parent');
+        new Collection($items)->combine('id', 'name', 'parent');
     }
 
     /**
@@ -1436,7 +1436,7 @@ class CollectionTest extends TestCase
             ['id' => 9, 'parent_id' => 6],
             ['id' => 10, 'parent_id' => 6],
         ];
-        $collection = (new Collection($items))->nest('id', 'parent_id');
+        $collection = new Collection($items)->nest('id', 'parent_id');
         $expected = [
             [
                 'id' => 1,
@@ -1479,7 +1479,7 @@ class CollectionTest extends TestCase
             ['id' => 9, 'parent_id' => 6],
             ['id' => 10, 'parent_id' => 6],
         ];
-        $collection = (new Collection($items))->nest('id', 'parent_id', 'nodes');
+        $collection = new Collection($items)->nest('id', 'parent_id', 'nodes');
         $expected = [
             [
                 'id' => 1,
@@ -1522,7 +1522,7 @@ class CollectionTest extends TestCase
             ['id' => 9, 'parent_id' => 6],
             ['id' => 10, 'parent_id' => 6],
         ];
-        $collection = (new Collection($items))->nest('id', 'parent_id', 'nodes');
+        $collection = new Collection($items)->nest('id', 'parent_id', 'nodes');
         $expected = [
             [
                 'id' => 1,
@@ -1580,7 +1580,7 @@ class CollectionTest extends TestCase
             ['id' => 9, 'parent_id' => 6],
             ['id' => 10, 'parent_id' => 6],
         ];
-        $collection = (new Collection($items))->nest('id', 'parent_id');
+        $collection = new Collection($items)->nest('id', 'parent_id');
         $expected = [
             [
                 'id' => 1,
@@ -1638,7 +1638,7 @@ class CollectionTest extends TestCase
             new ArrayObject(['id' => 9, 'parent_id' => 6]),
             new ArrayObject(['id' => 10, 'parent_id' => 6]),
         ];
-        $collection = (new Collection($items))->nest('id', 'parent_id');
+        $collection = new Collection($items)->nest('id', 'parent_id');
         $expected = [
             new ArrayObject([
                 'id' => 1,
@@ -1696,7 +1696,7 @@ class CollectionTest extends TestCase
             new ArrayObject(['id' => 9, 'parent_id' => 6]),
             new ArrayObject(['id' => 10, 'parent_id' => 6]),
         ];
-        $collection = (new Collection($items))->nest('id', 'parent_id', 'nodes');
+        $collection = new Collection($items)->nest('id', 'parent_id', 'nodes');
         $expected = [
             new ArrayObject([
                 'id' => 1,
@@ -1784,7 +1784,7 @@ class CollectionTest extends TestCase
             ['id' => 9, 'parent_id' => 6],
             ['id' => 10, 'parent_id' => 6],
         ];
-        $collection = (new Collection($items))->nest('id', 'parent_id')->listNested($dir);
+        $collection = new Collection($items)->nest('id', 'parent_id')->listNested($dir);
         $this->assertEquals($expected, $collection->extract('id')->toArray(false));
     }
 
@@ -1801,7 +1801,7 @@ class CollectionTest extends TestCase
             ['id' => 5, 'parent_id' => 6, 'name' => 'Clown Fish'],
             ['id' => 6, 'parent_id' => null, 'name' => 'Fish'],
         ];
-        $collection = (new Collection($items))->nest('id', 'parent_id')->listNested();
+        $collection = new Collection($items)->nest('id', 'parent_id')->listNested();
         $expected = [
             'Birds',
             '---Land Birds',
@@ -1822,7 +1822,7 @@ class CollectionTest extends TestCase
             ['id' => 1, 'stuff' => [['id' => 2, 'stuff' => [['id' => 3]]]]],
             ['id' => 4, 'stuff' => [['id' => 5]]],
         ];
-        $collection = (new Collection($items))->listNested('desc', 'stuff');
+        $collection = new Collection($items)->listNested('desc', 'stuff');
         $this->assertEquals(range(1, 5), $collection->extract('id')->toArray(false));
     }
 
@@ -1835,7 +1835,7 @@ class CollectionTest extends TestCase
             ['id' => 1, 'stuff' => [['id' => 2, 'stuff' => [['id' => 3]]]]],
             ['id' => 4, 'stuff' => [['id' => 5]]],
         ];
-        $collection = (new Collection($items))->listNested('desc', function ($item) {
+        $collection = new Collection($items)->listNested('desc', function ($item) {
             return $item['stuff'] ?? [];
         });
         $this->assertEquals(range(1, 5), $collection->extract('id')->toArray(false));
@@ -1874,7 +1874,7 @@ class CollectionTest extends TestCase
     #[DataProvider('sumOfProvider')]
     public function testSumOf(iterable $items, $expected): void
     {
-        $this->assertEquals($expected, (new Collection($items))->sumOf('invoice.total'));
+        $this->assertEquals($expected, new Collection($items)->sumOf('invoice.total'));
     }
 
     /**
@@ -1885,7 +1885,7 @@ class CollectionTest extends TestCase
     #[DataProvider('sumOfProvider')]
     public function testSumOfCallable(iterable $items, $expected): void
     {
-        $sum = (new Collection($items))->sumOf(function ($v) {
+        $sum = new Collection($items)->sumOf(function ($v) {
             return $v['invoice']['total'];
         });
         $this->assertEquals($expected, $sum);
@@ -1897,7 +1897,7 @@ class CollectionTest extends TestCase
     #[DataProvider('simpleProvider')]
     public function testStopWhenCallable(iterable $items): void
     {
-        $collection = (new Collection($items))->stopWhen(function ($v) {
+        $collection = new Collection($items)->stopWhen(function ($v) {
             return $v > 3;
         });
         $this->assertEquals(['a' => 1, 'b' => 2, 'c' => 3], $collection->toArray());
@@ -1913,7 +1913,7 @@ class CollectionTest extends TestCase
             ['foo' => 'baz'],
             ['foo' => 'foo'],
         ];
-        $collection = (new Collection($items))->stopWhen(['foo' => 'baz']);
+        $collection = new Collection($items)->stopWhen(['foo' => 'baz']);
         $this->assertEquals([['foo' => 'bar']], $collection->toArray());
     }
 
@@ -1928,14 +1928,14 @@ class CollectionTest extends TestCase
             [7, 8],
         ];
 
-        $collection = (new Collection($items))->unfold();
+        $collection = new Collection($items)->unfold();
         $this->assertEquals(range(1, 8), $collection->toArray(false));
 
         $items = [
             [1, 2],
             new Collection([3, 4]),
         ];
-        $collection = (new Collection($items))->unfold();
+        $collection = new Collection($items)->unfold();
         $this->assertEquals(range(1, 4), $collection->toArray(false));
     }
 
@@ -1945,11 +1945,11 @@ class CollectionTest extends TestCase
     public function testUnfoldEmptyLevels(): void
     {
         $items = [[], [1, 2], []];
-        $collection = (new Collection($items))->unfold();
+        $collection = new Collection($items)->unfold();
         $this->assertEquals(range(1, 2), $collection->toArray(false));
 
         $items = [];
-        $collection = (new Collection($items))->unfold();
+        $collection = new Collection($items)->unfold();
         $this->assertEmpty($collection->toArray(false));
     }
 
@@ -1959,7 +1959,7 @@ class CollectionTest extends TestCase
     public function testUnfoldWithCallable(): void
     {
         $items = [1, 2, 3];
-        $collection = (new Collection($items))->unfold(function ($item) {
+        $collection = new Collection($items)->unfold(function ($item) {
             return range($item, $item * 2);
         });
         $expected = [1, 2, 2, 3, 4, 3, 4, 5, 6];
@@ -1972,7 +1972,7 @@ class CollectionTest extends TestCase
     public function testThrough(): void
     {
         $items = [1, 2, 3];
-        $collection = (new Collection($items))->through(function ($collection) {
+        $collection = new Collection($items)->through(function ($collection) {
             return $collection->append($collection->toList());
         });
 
@@ -1985,7 +1985,7 @@ class CollectionTest extends TestCase
     public function testThroughReturnArray(): void
     {
         $items = [1, 2, 3];
-        $collection = (new Collection($items))->through(function ($collection) {
+        $collection = new Collection($items)->through(function ($collection) {
             $list = $collection->toList();
 
             return array_merge($list, $list);
@@ -2334,7 +2334,7 @@ class CollectionTest extends TestCase
             ['comments' => [['id' => 7], ['nope' => 8]]],
         ];
 
-        $extracted = (new Collection($items))->extract('comments.{*}.id');
+        $extracted = new Collection($items)->extract('comments.{*}.id');
         $this->assertEquals([1, 2, 3, 4, 7, null], $extracted->toArray());
 
         $items = [
@@ -2368,7 +2368,7 @@ class CollectionTest extends TestCase
             ],
             ['not_comments' => []],
         ];
-        $extracted = (new Collection($items))->extract('comments.{*}.voters.{*}.id');
+        $extracted = new Collection($items)->extract('comments.{*}.voters.{*}.id');
         $expected = [1, 2, 3, 4, 5, null, 6];
         $this->assertEquals($expected, $extracted->toArray());
         $this->assertEquals($expected, $extracted->toList());
@@ -2743,7 +2743,7 @@ class CollectionTest extends TestCase
     public function testLazy(): void
     {
         $items = ['a' => 1, 'b' => 2, 'c' => 3];
-        $collection = (new Collection($items))->lazy();
+        $collection = new Collection($items)->lazy();
         $callable = new class {
             public function __invoke(): never
             {
