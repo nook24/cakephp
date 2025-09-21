@@ -1488,7 +1488,7 @@ class BelongsToManyTest extends TestCase
         $result = $table
             ->find()
             ->contain(['Tags' => function (SelectQuery $q) {
-                return $q->select(['two' => $q->newExpr('1 + 1')])->enableAutoFields();
+                return $q->select(['two' => $q->expr('1 + 1')])->enableAutoFields();
             }])
             ->first();
 

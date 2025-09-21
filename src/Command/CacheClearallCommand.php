@@ -68,8 +68,7 @@ class CacheClearallCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIoInterface $io): ?int
     {
-        $engines = Cache::configured();
-        foreach ($engines as $engine) {
+        foreach (Cache::configured() as $engine) {
             $this->executeCommand(CacheClearCommand::class, [$engine], $io);
         }
 

@@ -66,8 +66,7 @@ class CacheListCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIoInterface $io): ?int
     {
-        $engines = Cache::configured();
-        foreach ($engines as $engine) {
+        foreach (Cache::configured() as $engine) {
             $io->out("- {$engine}");
         }
 
