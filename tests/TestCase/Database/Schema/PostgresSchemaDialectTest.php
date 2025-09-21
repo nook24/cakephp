@@ -1465,7 +1465,7 @@ SQL;
         $driver = $this->_getMockedDriver();
         $schema = new PostgresSchemaDialect($driver);
 
-        $table = (new TableSchema('schema_articles'))->addColumn('title', [
+        $table = new TableSchema('schema_articles')->addColumn('title', [
             'type' => 'string',
             'length' => 255,
         ])->addColumn('author_id', [
