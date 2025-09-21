@@ -352,16 +352,4 @@ class QueryTest extends TestCase
         $this->query->with([$cte2, fn($query) => $cte1], true);
         $this->assertSame([$cte2, $cte1], $this->query->clause('with'));
     }
-
-    /**
-     * Test that calling newExpr() emits a deprecation warning.
-     *
-     * @deprecated
-     */
-    public function testNewExprDeprecation(): void
-    {
-        $this->deprecated(function (): void {
-            $this->query->newExpr();
-        });
-    }
 }
