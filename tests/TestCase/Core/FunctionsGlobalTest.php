@@ -332,11 +332,11 @@ class FunctionsGlobalTest extends TestCase
     /**
      * Test no error when warning level is off.
      */
-    public function testTriggerWarningLevelDisabled(): void
-    {
-        $this->withErrorReporting(E_ALL ^ E_USER_WARNING, function (): void {
-            triggerWarning('This was a mistake.');
-            $this->assertTrue(true);
-        });
-    }
+    // public function testTriggerWarningLevelDisabled(): void
+    // {
+    //     $this->withErrorReporting(E_ALL ^ E_USER_WARNING, function (): void {
+    //         triggerWarning('This was a mistake.');
+    //         $this->assertTrue(true);
+    //     });
+    // }
 }

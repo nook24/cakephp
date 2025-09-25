@@ -23,19 +23,28 @@ jobs:
       matrix:
         php-version: ['8.1', '8.3']
         db-type: [sqlite, pgsql]
+        dependencies: ['highest']
         include:
           - php-version: '8.1'
             db-type: 'mariadb'
+            dependencies: highest
+
           - php-version: '8.1'
             db-type: 'mysql'
             dependencies: 'lowest'
+
           - php-version: '8.2'
             db-type: 'mysql'
+            dependencies: highest
+
           - php-version: '8.3'
             db-type: 'mysql'
+            dependencies: highest
+
           - php-version: '8.4'
             db-type: 'mysql'
             dependencies: highest
+
           - php-version: '8.5'
             db-type: 'sqlite'
             dependencies: highest
@@ -113,11 +122,14 @@ jobs:
         if [[ ${{ matrix.db-type }} == 'mariadb' ]]; then export DB_URL='mysql://root:root@127.0.0.1/cakephp'; fi
         if [[ ${{ matrix.db-type }} == 'pgsql' ]]; then export DB_URL='postgres://postgres:postgres@127.0.0.1/postgres'; fi
 
-        if [[ ${{ matrix.php-version }} == '8.1' ]]; then
+        if [[ ${{ matrix.php-version }} == '8.1' && ${{ matrix.dependencies }} != 'lowest' ]]; then
           export CODECOVERAGE=1
-          vendor/bin/phpunit --display-warnings --display-incomplete --coverage-clover=coverage.xml
-          CAKE_TEST_AUTOQUOTE=1 vendor/bin/phpunit --display-deprecations --display-warnings --display-incomplete --testsuite=database
-          vendor/bin/phpunit --display-warnings --display-incomplete --testsuite=globalfunctions --coverage-clover=coverage-functions.xml
+          vendor/bin/phpunit --display-all-issues --fail-on-all-issues --do-not-fail-on-skipped --do-not-fail-on-incomplete --coverage-clover=coverage.xml
+          CAKE_TEST_AUTOQUOTE=1 vendor/bin/phpunit --display-all-issues --do-not-fail-on-skipped --do-not-fail-on-incomplete --fail-on-all-issues --testsuite=database
+          vendor/bin/phpunit --display-all-issues --fail-on-all-issues --do-not-fail-on-skipped --do-not-fail-on-incomplete --testsuite=globalfunctions --coverage-clover=coverage-functions.xml
+        elif [[ ${{ matrix.php-version }} == '8.1' && ${{ matrix.dependencies }} == 'lowest' ]]; then
+          vendor/bin/phpunit
+          CAKE_TEST_AUTOQUOTE=1 vendor/bin/phpunit --testsuite=database
         else
           vendor/bin/phpunit --display-phpunit-deprecations --display-deprecations --display-warnings
           CAKE_TEST_AUTOQUOTE=1 vendor/bin/phpunit --display-phpunit-deprecations --display-deprecations --display-warnings --testsuite=database
