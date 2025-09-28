@@ -34,7 +34,9 @@
         <bootstrap class="Cake\TestSuite\Fixture\Extension\PHPUnitExtension"/>
     </extensions>
 
-    <source>
+    <source restrictDeprecations="true"
+               restrictNotices="true"
+               restrictWarnings="true">
         <include>
             <directory suffix=".php">src/</directory>
         </include>
