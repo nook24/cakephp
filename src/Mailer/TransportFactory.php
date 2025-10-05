@@ -31,7 +31,7 @@ class TransportFactory
      *
      * @var \Cake\Mailer\TransportRegistry
      */
-    protected static TransportRegistry $_registry;
+    protected static TransportRegistry $registry;
 
     /**
      * An array mapping url schemes to fully qualified Transport class names
@@ -39,7 +39,7 @@ class TransportFactory
      * @var array<string, string>
      * @phpstan-var array<string, class-string>
      */
-    protected static array $_dsnClassMap = [
+    protected static array $dsnClassMap = [
         'debug' => Transport\DebugTransport::class,
         'mail' => Transport\MailTransport::class,
         'smtp' => Transport\SmtpTransport::class,
@@ -52,7 +52,7 @@ class TransportFactory
      */
     public static function getRegistry(): TransportRegistry
     {
-        return static::$_registry ??= new TransportRegistry();
+        return static::$registry ??= new TransportRegistry();
     }
 
     /**
@@ -65,7 +65,7 @@ class TransportFactory
      */
     public static function setRegistry(TransportRegistry $registry): void
     {
-        static::$_registry = $registry;
+        static::$registry = $registry;
     }
 
     /**
@@ -77,19 +77,19 @@ class TransportFactory
      */
     protected static function buildTransport(string $name): void
     {
-        if (!isset(static::$_config[$name])) {
+        if (!isset(static::$config[$name])) {
             throw new InvalidArgumentException(
                 sprintf('The `%s` transport configuration does not exist', $name),
             );
         }
 
-        if (is_array(static::$_config[$name]) && empty(static::$_config[$name]['className'])) {
+        if (is_array(static::$config[$name]) && empty(static::$config[$name]['className'])) {
             throw new InvalidArgumentException(
                 sprintf('Transport config `%s` is invalid, the required `className` option is missing', $name),
             );
         }
 
-        static::getRegistry()->load($name, static::$_config[$name]);
+        static::getRegistry()->load($name, static::$config[$name]);
     }
 
     /**

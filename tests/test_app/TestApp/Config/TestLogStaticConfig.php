@@ -16,7 +16,7 @@ class TestLogStaticConfig
      *
      * @var array
      */
-    protected static $_dsnClassMap = [
+    protected static $dsnClassMap = [
         'console' => ConsoleLog::class,
         'file' => FileLog::class,
         'syslog' => SyslogLog::class,

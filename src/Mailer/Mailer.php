@@ -189,7 +189,7 @@ class Mailer implements EventListenerInterface
      * @var array<string, string>
      * @phpstan-var array<string, class-string>
      */
-    protected static array $_dsnClassMap = [];
+    protected static array $dsnClassMap = [];
 
     /**
      * @var array|null

@@ -16,7 +16,7 @@ class TestEmailStaticConfig
      *
      * @var array
      */
-    protected static $_dsnClassMap = [
+    protected static $dsnClassMap = [
         'debug' => DebugTransport::class,
         'mail' => MailTransport::class,
         'smtp' => SmtpTransport::class,
