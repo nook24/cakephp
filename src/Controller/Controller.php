@@ -163,7 +163,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      *
      * @var \Cake\Controller\ComponentRegistry|null
      */
-    protected ?ComponentRegistry $_components = null;
+    protected ?ComponentRegistry $components = null;
 
     /**
      * Automatically set to the name of a plugin.
@@ -226,7 +226,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
             $this->setEventManager($eventManager);
         }
         if ($components !== null) {
-            $this->_components = $components;
+            $this->components = $components;
             $components->setController($this);
         }
         if ($this->defaultTable === null) {
@@ -259,7 +259,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      */
     public function components(): ComponentRegistry
     {
-        return $this->_components ??= new ComponentRegistry($this);
+        return $this->components ??= new ComponentRegistry($this);
     }
 
     /**
