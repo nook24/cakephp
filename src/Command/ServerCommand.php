@@ -47,28 +47,28 @@ class ServerCommand extends Command
      *
      * @var string
      */
-    protected string $_host = self::DEFAULT_HOST;
+    protected string $host = self::DEFAULT_HOST;
 
     /**
      * listen port
      *
      * @var int
      */
-    protected int $_port = self::DEFAULT_PORT;
+    protected int $port = self::DEFAULT_PORT;
 
     /**
      * document root
      *
      * @var string
      */
-    protected string $_documentRoot = WWW_ROOT;
+    protected string $documentRoot = WWW_ROOT;
 
     /**
      * ini path
      *
      * @var string
      */
-    protected string $_iniPath = '';
+    protected string $iniPath = '';
 
     /**
      * The server type.
@@ -97,32 +97,32 @@ class ServerCommand extends Command
     protected function startup(Arguments $args, ConsoleIoInterface $io): void
     {
         if ($args->getOption('host')) {
-            $this->_host = (string)$args->getOption('host');
+            $this->host = (string)$args->getOption('host');
         }
         if ($args->getOption('port')) {
-            $this->_port = (int)$args->getOption('port');
+            $this->port = (int)$args->getOption('port');
         }
         if ($args->getOption('document_root')) {
-            $this->_documentRoot = (string)$args->getOption('document_root');
+            $this->documentRoot = (string)$args->getOption('document_root');
         }
         if ($args->getOption('ini_path')) {
-            $this->_iniPath = (string)$args->getOption('ini_path');
+            $this->iniPath = (string)$args->getOption('ini_path');
         }
         if ($args->getOption('frankenphp')) {
             $this->server = 'frankenphp';
         }
 
         // For Windows
-        if (substr($this->_documentRoot, -1, 1) === DIRECTORY_SEPARATOR) {
-            $this->_documentRoot = substr($this->_documentRoot, 0, strlen($this->_documentRoot) - 1);
+        if (substr($this->documentRoot, -1, 1) === DIRECTORY_SEPARATOR) {
+            $this->documentRoot = substr($this->documentRoot, 0, strlen($this->documentRoot) - 1);
         }
-        if (preg_match("/^([a-z]:)[\\\]+(.+)$/i", $this->_documentRoot, $m)) {
-            $this->_documentRoot = $m[1] . '\\' . $m[2];
+        if (preg_match("/^([a-z]:)[\\\]+(.+)$/i", $this->documentRoot, $m)) {
+            $this->documentRoot = $m[1] . '\\' . $m[2];
         }
 
-        $this->_iniPath = rtrim($this->_iniPath, DIRECTORY_SEPARATOR);
-        if (preg_match("/^([a-z]:)[\\\]+(.+)$/i", $this->_iniPath, $m)) {
-            $this->_iniPath = $m[1] . '\\' . $m[2];
+        $this->iniPath = rtrim($this->iniPath, DIRECTORY_SEPARATOR);
+        if (preg_match("/^([a-z]:)[\\\]+(.+)$/i", $this->iniPath, $m)) {
+            $this->iniPath = $m[1] . '\\' . $m[2];
         }
 
         $io->out();
@@ -130,8 +130,8 @@ class ServerCommand extends Command
         $io->hr();
         $io->out(sprintf('App : %s', Configure::read('App.dir')));
         $io->out(sprintf('Path: %s', APP));
-        $io->out(sprintf('DocumentRoot: %s', $this->_documentRoot));
-        $io->out(sprintf('Ini Path: %s', $this->_iniPath));
+        $io->out(sprintf('DocumentRoot: %s', $this->documentRoot));
+        $io->out(sprintf('Ini Path: %s', $this->iniPath));
         $io->hr();
     }
 
@@ -149,8 +149,8 @@ class ServerCommand extends Command
         $io->out(sprintf(
             '%s server is running at http://%s:%s/',
             $this->server,
-            $this->_host,
-            $this->_port,
+            $this->host,
+            $this->port,
         ));
         $io->out('You can exit with <info>`CTRL-C`</info>');
 
@@ -182,16 +182,16 @@ class ServerCommand extends Command
         $command = sprintf(
             '%s -S %s:%d -t %s',
             (string)env('PHP', 'php'),
-            $this->_host,
-            $this->_port,
-            escapeshellarg($this->_documentRoot),
+            $this->host,
+            $this->port,
+            escapeshellarg($this->documentRoot),
         );
 
-        if ($this->_iniPath) {
-            $command = sprintf('%s -c %s', $command, $this->_iniPath);
+        if ($this->iniPath) {
+            $command = sprintf('%s -c %s', $command, $this->iniPath);
         }
 
-        return sprintf('%s %s', $command, escapeshellarg($this->_documentRoot . '/index.php'));
+        return sprintf('%s %s', $command, escapeshellarg($this->documentRoot . '/index.php'));
     }
 
     /**
@@ -204,9 +204,9 @@ class ServerCommand extends Command
         return sprintf(
             '%s php-server -a -l %s:%d -r %s',
             (string)env('FRANKENPHP', 'frankenphp'),
-            $this->_host,
-            $this->_port,
-            escapeshellarg($this->_documentRoot),
+            $this->host,
+            $this->port,
+            escapeshellarg($this->documentRoot),
         );
     }
 
