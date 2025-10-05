@@ -102,6 +102,6 @@ class BannerHelper extends Helper
         $lines[] = $start . str_repeat(' ', $bannerLength) . $end;
         $lines[] = '';
 
-        $this->_io->out($lines);
+        $this->io->out($lines);
     }
 }

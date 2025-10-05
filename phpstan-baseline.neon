@@ -49,7 +49,7 @@ parameters:
 			path: src/Command/RoutesGenerateCommand.php
 
 		-
-			message: '#^Property Cake\\Console\\ConsoleInput\:\:\$_input \(resource\) in isset\(\) is not nullable\.$#'
+			message: '#^Property Cake\\Console\\ConsoleInput\:\:\$input \(resource\) in isset\(\) is not nullable\.$#'
 			identifier: isset.property
 			count: 1
 			path: src/Console/ConsoleInput.php
@@ -67,7 +67,7 @@ parameters:
 			path: src/Console/ConsoleOutput.php
 
 		-
-			message: '#^Property Cake\\Console\\ConsoleOutput\:\:\$_output \(resource\) in isset\(\) is not nullable\.$#'
+			message: '#^Property Cake\\Console\\ConsoleOutput\:\:\$output \(resource\) in isset\(\) is not nullable\.$#'
 			identifier: isset.property
 			count: 2
 			path: src/Console/ConsoleOutput.php

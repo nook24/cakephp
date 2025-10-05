@@ -9,6 +9,6 @@ class ExampleHelper extends Helper
 {
     public function output(array $args): void
     {
-        $this->_io->out('Plugins work!');
+        $this->io->out('Plugins work!');
     }
 }

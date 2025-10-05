@@ -72,7 +72,7 @@ class TableHelper extends Helper
             return mb_strwidth($text);
         }
 
-        $styles = $this->_io->styles();
+        $styles = $this->io->styles();
         $tags = implode('|', array_keys($styles));
         $text = (string)preg_replace('#</?(?:' . $tags . ')>#', '', $text);
 
@@ -92,7 +92,7 @@ class TableHelper extends Helper
             $out .= '+' . str_repeat('-', $column + 2);
         }
         $out .= '+';
-        $this->_io->out($out);
+        $this->io->out($out);
     }
 
     /**
@@ -127,7 +127,7 @@ class TableHelper extends Helper
             }
         }
         $out .= '|';
-        $this->_io->out($out);
+        $this->io->out($out);
     }
 
     /**
@@ -145,7 +145,7 @@ class TableHelper extends Helper
             return;
         }
 
-        $this->_io->setStyle('text-right', ['text' => null]);
+        $this->io->setStyle('text-right', ['text' => null]);
 
         $config = $this->getConfig();
         $widths = $this->calculateWidths($args);
