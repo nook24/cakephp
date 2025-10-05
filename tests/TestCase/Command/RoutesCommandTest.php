@@ -148,7 +148,7 @@ class RoutesCommandTest extends TestCase
 
         $this->exec('routes -s');
         $this->assertExitCode(CommandInterface::CODE_SUCCESS);
-        $this->assertOutputContains('_aRoute', $this->_out->messages()[3]);
+        $this->assertOutputContains('_aRoute', $this->out->messages()[3]);
     }
 
     /**

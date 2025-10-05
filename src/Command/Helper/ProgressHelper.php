@@ -93,12 +93,12 @@ class ProgressHelper extends Helper
 
         $callback = $args['callback'];
 
-        $this->_io->out('', 0);
+        $this->io->out('', 0);
         while ($this->progress < $this->total) {
             $callback($this);
             $this->draw();
         }
-        $this->_io->out('');
+        $this->io->out('');
     }
 
     /**
@@ -156,7 +156,7 @@ class ProgressHelper extends Helper
         $percent = ($complete * 100) . '%';
         $bar .= str_pad($percent, $numberLen, ' ', STR_PAD_LEFT);
 
-        $this->_io->overwrite($bar, 0);
+        $this->io->overwrite($bar, 0);
 
         return $this;
     }

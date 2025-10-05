@@ -88,10 +88,10 @@ class TreeHelper extends Helper
         string $indent,
     ): void {
         if (is_array($value)) {
-            $this->_io->out($prefix . $marker . $key);
+            $this->io->out($prefix . $marker . $key);
             $this->outputArray($value, $prefix . $indent, topLevel: false);
         } elseif (is_string($key)) {
-            $this->_io->out($prefix . $marker . $key);
+            $this->io->out($prefix . $marker . $key);
             $this->outputValue($value, $prefix . $indent . '└── ');
         } else {
             $this->outputValue($value, $prefix . $marker);
@@ -108,17 +108,17 @@ class TreeHelper extends Helper
     protected function outputValue(mixed $value, string $prefix): void
     {
         if ($value instanceof Closure) {
-            $this->_io->out($prefix . $value());
+            $this->io->out($prefix . $value());
         } elseif ($value instanceof EnumLabelInterface) {
-            $this->_io->out($prefix . $value->label());
+            $this->io->out($prefix . $value->label());
         } elseif ($value instanceof BackedEnum) {
-            $this->_io->out($prefix . $value->value);
+            $this->io->out($prefix . $value->value);
         } elseif ($value instanceof UnitEnum) {
-            $this->_io->out($prefix . $value->name);
+            $this->io->out($prefix . $value->name);
         } elseif (is_bool($value)) {
-            $this->_io->out($prefix . ($value ? 'true' : 'false'));
+            $this->io->out($prefix . ($value ? 'true' : 'false'));
         } else {
-            $this->_io->out($prefix . $value);
+            $this->io->out($prefix . $value);
         }
     }
 }
