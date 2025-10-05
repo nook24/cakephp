@@ -51,21 +51,21 @@ class ProgressHelper extends Helper
      *
      * @var float|int
      */
-    protected float|int $_progress = 0;
+    protected float|int $progress = 0;
 
     /**
      * The total number of 'items' to progress through.
      *
      * @var int
      */
-    protected int $_total = self::DEFAULT_TOTAL;
+    protected int $total = self::DEFAULT_TOTAL;
 
     /**
      * The width of the bar.
      *
      * @var int
      */
-    protected int $_width = self::DEFAULT_WIDTH;
+    protected int $width = self::DEFAULT_WIDTH;
 
     /**
      * Output a progress bar.
@@ -94,7 +94,7 @@ class ProgressHelper extends Helper
         $callback = $args['callback'];
 
         $this->_io->out('', 0);
-        while ($this->_progress < $this->_total) {
+        while ($this->progress < $this->total) {
             $callback($this);
             $this->draw();
         }
@@ -114,9 +114,9 @@ class ProgressHelper extends Helper
     public function init(array $args = []): static
     {
         $args += ['total' => self::DEFAULT_TOTAL, 'width' => self::DEFAULT_WIDTH];
-        $this->_progress = 0;
-        $this->_width = $args['width'];
-        $this->_total = $args['total'];
+        $this->progress = 0;
+        $this->width = $args['width'];
+        $this->total = $args['total'];
 
         return $this;
     }
@@ -129,7 +129,7 @@ class ProgressHelper extends Helper
      */
     public function increment(float|int $num = 1): static
     {
-        $this->_progress = min(max(0, $this->_progress + $num), $this->_total);
+        $this->progress = min(max(0, $this->progress + $num), $this->total);
 
         return $this;
     }
@@ -142,14 +142,14 @@ class ProgressHelper extends Helper
     public function draw(): static
     {
         $numberLen = strlen(' 100%');
-        $complete = round($this->_progress / $this->_total, 2);
-        $barLen = ($this->_width - $numberLen) * $this->_progress / $this->_total;
+        $complete = round($this->progress / $this->total, 2);
+        $barLen = ($this->width - $numberLen) * $this->progress / $this->total;
         $bar = '';
         if ($barLen > 1) {
             $bar = str_repeat('=', (int)$barLen - 1) . '>';
         }
 
-        $pad = ceil($this->_width - $numberLen - $barLen);
+        $pad = ceil($this->width - $numberLen - $barLen);
         if ($pad > 0) {
             $bar .= str_repeat(' ', (int)$pad);
         }
