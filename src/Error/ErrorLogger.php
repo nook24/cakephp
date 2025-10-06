@@ -41,7 +41,7 @@ class ErrorLogger implements ErrorLoggerInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'trace' => false,
     ];
 

@@ -27,12 +27,12 @@ class MissingRouteException extends CakeException implements HttpErrorCodeInterf
     /**
      * @inheritDoc
      */
-    protected int $_defaultCode = 404;
+    protected int $defaultCode = 404;
 
     /**
      * @inheritDoc
      */
-    protected string $_messageTemplate = 'A route matching `%s` could not be found.';
+    protected string $messageTemplate = 'A route matching `%s` could not be found.';
 
     /**
      * Message template to use when the requested method is included.
@@ -53,9 +53,9 @@ class MissingRouteException extends CakeException implements HttpErrorCodeInterf
     {
         if (is_array($message)) {
             if (isset($message['message'])) {
-                $this->_messageTemplate = $message['message'];
+                $this->messageTemplate = $message['message'];
             } elseif (isset($message['method']) && $message['method']) {
-                $this->_messageTemplate = $this->_messageTemplateWithMethod;
+                $this->messageTemplate = $this->_messageTemplateWithMethod;
             }
         }
         parent::__construct($message, $code, $previous);

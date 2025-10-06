@@ -69,7 +69,7 @@ class PaginatorHelper extends Helper
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'params' => [],
         'options' => [],
         'templates' => [
@@ -184,13 +184,13 @@ class PaginatorHelper extends Helper
     public function options(array $options = []): void
     {
         if (!empty($options['paging'])) {
-            $this->_config['params'] = $options['paging'];
+            $this->config['params'] = $options['paging'];
             unset($options['paging']);
         }
 
-        $this->_config['options'] = array_filter($options + $this->_config['options']);
-        if (empty($this->_config['options']['url'])) {
-            $this->_config['options']['url'] = [];
+        $this->config['options'] = array_filter($options + $this->config['options']);
+        if (empty($this->config['options']['url'])) {
+            $this->config['options']['url'] = [];
         }
     }
 
@@ -517,7 +517,7 @@ class PaginatorHelper extends Helper
         ) {
             $options['sort'] = $options['direction'] = null;
         }
-        $baseUrl = $this->_config['options']['url'] ?? [];
+        $baseUrl = $this->config['options']['url'] ?? [];
         if (!empty($paging['scope'])) {
             $scope = $paging['scope'];
             if (isset($baseUrl['?'][$scope]) && is_array($baseUrl['?'][$scope])) {
@@ -533,8 +533,8 @@ class PaginatorHelper extends Helper
 
         $url['?'] ??= [];
 
-        if (!empty($this->_config['options']['routePlaceholders'])) {
-            $placeholders = array_flip($this->_config['options']['routePlaceholders']);
+        if (!empty($this->config['options']['routePlaceholders'])) {
+            $placeholders = array_flip($this->config['options']['routePlaceholders']);
             $url += array_intersect_key($options, $placeholders);
             $url['?'] += array_diff_key($options, $placeholders);
         } else {

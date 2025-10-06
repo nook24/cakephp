@@ -60,7 +60,7 @@ class FormProtectionComponent extends Component
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'validate' => true,
         'unlockedFields' => [],
         'unlockedActions' => [],
@@ -96,14 +96,14 @@ class FormProtectionComponent extends Component
         $hasData = ($data || $request->is(['put', 'post', 'delete', 'patch']));
 
         if (
-            !in_array($request->getParam('action'), $this->_config['unlockedActions'], true)
+            !in_array($request->getParam('action'), $this->config['unlockedActions'], true)
             && $hasData
-            && $this->_config['validate']
+            && $this->config['validate']
         ) {
             $sessionId = $this->getSessionId();
             $url = Router::url($request->getRequestTarget());
 
-            $formProtector = new FormProtector($this->_config);
+            $formProtector = new FormProtector($this->config);
             $isValid = $formProtector->validate($data, $url, $sessionId);
 
             if (!$isValid) {
@@ -114,7 +114,7 @@ class FormProtectionComponent extends Component
         }
 
         $token = [
-            'unlockedFields' => $this->_config['unlockedFields'],
+            'unlockedFields' => $this->config['unlockedFields'],
         ];
         $request = $request->withAttribute('formTokenData', [
             'unlockedFields' => $token['unlockedFields'],
@@ -160,8 +160,8 @@ class FormProtectionComponent extends Component
             $exception = new FormProtectionException(static::DEFAULT_EXCEPTION_MESSAGE);
         }
 
-        if ($this->_config['validationFailureCallback']) {
-            return $this->executeCallback($this->_config['validationFailureCallback'], $exception);
+        if ($this->config['validationFailureCallback']) {
+            return $this->executeCallback($this->config['validationFailureCallback'], $exception);
         }
 
         throw $exception;

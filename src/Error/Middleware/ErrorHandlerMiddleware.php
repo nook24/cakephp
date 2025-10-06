@@ -62,7 +62,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
      * @var array<string, mixed>
      * @see \Cake\Error\ExceptionTrap
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'exceptionRenderer' => WebExceptionRenderer::class,
     ];
 

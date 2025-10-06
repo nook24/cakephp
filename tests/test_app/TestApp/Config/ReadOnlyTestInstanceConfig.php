@@ -10,13 +10,13 @@ class ReadOnlyTestInstanceConfig
     use InstanceConfigTrait;
 
     /**
-     * _defaultConfig
+     * defaultConfig
      *
      * Some default config
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected $defaultConfig = [
         'some' => 'string',
         'a' => [
             'nested' => 'value',

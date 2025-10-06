@@ -229,7 +229,7 @@ class View implements EventDispatcherInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [];
+    protected array $defaultConfig = [];
 
     /**
      * Holds an array of paths.

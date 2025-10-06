@@ -44,7 +44,7 @@ class SmtpTransport extends AbstractTransport
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'host' => 'localhost',
         'port' => 25,
         'timeout' => 30,
@@ -220,7 +220,7 @@ class SmtpTransport extends AbstractTransport
         $this->sendRcpt($message);
         $this->sendData($message);
 
-        if (!$this->_config['keepAlive']) {
+        if (!$this->config['keepAlive']) {
             $this->disconnectSmtp();
         }
 
@@ -268,7 +268,7 @@ class SmtpTransport extends AbstractTransport
             return;
         }
 
-        if (!isset($this->_config['username'], $this->_config['password'])) {
+        if (!isset($this->config['username'], $this->config['password'])) {
             return;
         }
 
@@ -309,7 +309,7 @@ class SmtpTransport extends AbstractTransport
         }
         $this->smtpSend(null, '220');
 
-        $config = $this->_config;
+        $config = $this->config;
 
         $host = 'localhost';
         if (isset($config['client'])) {
@@ -357,12 +357,12 @@ class SmtpTransport extends AbstractTransport
      */
     protected function auth(): void
     {
-        if (!isset($this->_config['username'], $this->_config['password'])) {
+        if (!isset($this->config['username'], $this->config['password'])) {
             return;
         }
 
-        $username = $this->_config['username'];
-        $password = $this->_config['password'];
+        $username = $this->config['username'];
+        $password = $this->config['password'];
 
         switch ($this->authType) {
             case self::AUTH_PLAIN:
@@ -595,7 +595,7 @@ class SmtpTransport extends AbstractTransport
      */
     protected function generateSocket(): void
     {
-        $this->_socket = new Socket($this->_config);
+        $this->_socket = new Socket($this->config);
     }
 
     /**
@@ -614,7 +614,7 @@ class SmtpTransport extends AbstractTransport
             $this->_socket->write($data . "\r\n");
         }
 
-        $timeout = $this->_config['timeout'];
+        $timeout = $this->config['timeout'];
 
         while ($checkCode !== false) {
             $response = '';

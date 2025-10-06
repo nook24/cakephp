@@ -89,7 +89,7 @@ class JsonView extends SerializedView
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'serialize' => null,
         'jsonOptions' => null,
         'jsonp' => null,

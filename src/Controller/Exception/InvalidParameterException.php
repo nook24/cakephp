@@ -26,7 +26,7 @@ class InvalidParameterException extends CakeException implements HttpErrorCodeIn
     /**
      * @inheritDoc
      */
-    protected int $_defaultCode = 404;
+    protected int $defaultCode = 404;
 
     /**
      * @var array<string, string>
@@ -50,7 +50,7 @@ class InvalidParameterException extends CakeException implements HttpErrorCodeIn
     public function __construct(array|string $message = '', ?int $code = null, ?Throwable $previous = null)
     {
         if (is_array($message)) {
-            $this->_messageTemplate = $this->templates[$message['template']] ?? '';
+            $this->messageTemplate = $this->templates[$message['template']] ?? '';
             unset($message['template']);
         }
         parent::__construct($message, $code, $previous);

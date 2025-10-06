@@ -26,10 +26,10 @@ class MissingActionException extends CakeException implements HttpErrorCodeInter
     /**
      * @inheritDoc
      */
-    protected int $_defaultCode = 404;
+    protected int $defaultCode = 404;
 
     /**
      * @inheritDoc
      */
-    protected string $_messageTemplate = 'Action `%s::%s()` could not be found, or is not accessible.';
+    protected string $messageTemplate = 'Action `%s::%s()` could not be found, or is not accessible.';
 }

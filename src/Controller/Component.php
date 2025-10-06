@@ -84,7 +84,7 @@ class Component implements EventListenerInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [];
+    protected array $defaultConfig = [];
 
     /**
      * Loaded component instances.

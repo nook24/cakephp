@@ -61,7 +61,7 @@ class Debugger
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'outputMask' => [],
         'exportFormatter' => null,
         'editor' => 'phpstorm',
@@ -104,7 +104,7 @@ class Debugger
             define('E_RECOVERABLE_ERROR', 4096);
         }
 
-        $config = array_intersect_key((array)Configure::read('Debugger'), $this->_defaultConfig);
+        $config = array_intersect_key((array)Configure::read('Debugger'), $this->defaultConfig);
         $this->setConfig($config);
     }
 

@@ -203,7 +203,7 @@ object(Cake\View\View) id:0 {
     (int) 8 => 'templatePath',
     (int) 9 => 'plugin'
   ]
-  [protected] _defaultConfig => []
+  [protected] defaultConfig => []
   [protected] _paths => []
   [protected] _pathsForPlugin => []
   [protected] _parents => []
@@ -213,8 +213,8 @@ object(Cake\View\View) id:0 {
   [protected] _viewBlockClass => 'Cake\View\ViewBlock'
   [protected] _eventManager => object(Cake\Event\EventManager) id:5 {}
   [protected] _eventClass => 'Cake\Event\Event'
-  [protected] _config => []
-  [protected] _configInitialized => true
+  [protected] config => []
+  [protected] configInitialized => true
 }
 TEXT;
         $this->assertTextEquals($expected, $result);

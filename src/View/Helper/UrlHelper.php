@@ -33,7 +33,7 @@ class UrlHelper extends Helper
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'assetUrlClassName' => Asset::class,
     ];
 

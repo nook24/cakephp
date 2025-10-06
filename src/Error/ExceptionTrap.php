@@ -60,7 +60,7 @@ class ExceptionTrap
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'exceptionRenderer' => null,
         'logger' => ErrorLogger::class,
         'stderr' => null,
@@ -100,7 +100,7 @@ class ExceptionTrap
     /**
      * Constructor
      *
-     * @param array<string, mixed> $options An options array. See $_defaultConfig.
+     * @param array<string, mixed> $options An options array. See $defaultConfig.
      */
     public function __construct(array $options = [])
     {
@@ -130,7 +130,7 @@ class ExceptionTrap
             }
 
             /** @var class-string<\Cake\Error\ExceptionRendererInterface> $class */
-            return new $class($exception, $request, $this->_config);
+            return new $class($exception, $request, $this->config);
         }
 
         return $class($exception, $request);
@@ -155,9 +155,9 @@ class ExceptionTrap
     public function logger(): ErrorLoggerInterface
     {
         /** @var class-string<\Cake\Error\ErrorLoggerInterface> $class */
-        $class = $this->getConfig('logger', $this->_defaultConfig['logger']);
+        $class = $this->getConfig('logger', $this->defaultConfig['logger']);
 
-        return new $class($this->_config);
+        return new $class($this->config);
     }
 
     /**
@@ -259,7 +259,7 @@ class ExceptionTrap
         if ($this->disabled) {
             return;
         }
-        $megabytes = $this->_config['extraFatalErrorMemory'] ?? 4;
+        $megabytes = $this->config['extraFatalErrorMemory'] ?? 4;
         if ($megabytes > 0) {
             $this->increaseMemoryLimit($megabytes * 1024);
         }
@@ -342,7 +342,7 @@ class ExceptionTrap
      */
     public function logException(Throwable $exception, ?ServerRequestInterface $request = null): void
     {
-        $shouldLog = $this->_config['log'];
+        $shouldLog = $this->config['log'];
         if ($shouldLog) {
             foreach ($this->getConfig('skipLog') as $class) {
                 if ($exception instanceof $class) {
@@ -352,7 +352,7 @@ class ExceptionTrap
             }
         }
         if ($shouldLog) {
-            $this->logger()->logException($exception, $request, $this->_config['trace']);
+            $this->logger()->logException($exception, $request, $this->config['trace']);
         }
     }
 
