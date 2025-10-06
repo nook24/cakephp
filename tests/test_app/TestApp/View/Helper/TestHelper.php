@@ -12,7 +12,7 @@ class TestHelper extends Helper
      *
      * @var array
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'key1' => 'val1',
         'key2' => ['key2.1' => 'val2.1', 'key2.2' => 'val2.2'],
     ];

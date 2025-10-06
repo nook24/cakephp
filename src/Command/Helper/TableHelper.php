@@ -29,7 +29,7 @@ class TableHelper extends Helper
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'headers' => true,
         'rowSeparator' => false,
         'headerStyle' => 'info',

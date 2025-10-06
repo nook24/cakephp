@@ -73,7 +73,7 @@ class FormHelper extends Helper
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'idPrefix' => null,
         'defaultPostLinkBlock' => null,
         'typeMap' => [
@@ -1322,7 +1322,7 @@ class FormHelper extends Helper
 
         $type = 'text';
         $internalType = $context->type($fieldName);
-        $map = $this->_config['typeMap'];
+        $map = $this->config['typeMap'];
         if ($internalType !== null && isset($map[$internalType])) {
             $type = $map[$internalType];
         }
@@ -2642,7 +2642,7 @@ class FormHelper extends Helper
      */
     public function resetTemplates(): void
     {
-        $this->setTemplates($this->_defaultConfig['templates']);
+        $this->setTemplates($this->defaultConfig['templates']);
     }
 
     /**

@@ -91,7 +91,7 @@ class StringTemplate
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [];
+    protected array $defaultConfig = [];
 
     /**
      * A stack of template sets that have been stashed temporarily.
@@ -125,7 +125,7 @@ class StringTemplate
     public function push(): void
     {
         $this->_configStack[] = [
-            $this->_config,
+            $this->config,
             $this->_compiled,
         ];
     }
@@ -140,7 +140,7 @@ class StringTemplate
         if (!$this->_configStack) {
             return;
         }
-        [$this->_config, $this->_compiled] = array_pop($this->_configStack);
+        [$this->config, $this->_compiled] = array_pop($this->_configStack);
     }
 
     /**
@@ -175,7 +175,7 @@ class StringTemplate
     protected function compileTemplates(array $templates = []): void
     {
         if (!$templates) {
-            $templates = array_keys($this->_config);
+            $templates = array_keys($this->config);
         }
         foreach ($templates as $name) {
             $template = $this->get($name);

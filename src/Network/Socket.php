@@ -38,7 +38,7 @@ class Socket
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'persistent' => false,
         'host' => 'localhost',
         'protocol' => 'tcp',
@@ -104,7 +104,7 @@ class Socket
      * Constructor.
      *
      * @param array<string, mixed> $config Socket configuration, which will be merged with the base configuration
-     * @see \Cake\Network\Socket::$_defaultConfig
+     * @see \Cake\Network\Socket::$defaultConfig
      */
     public function __construct(array $config = [])
     {
@@ -123,23 +123,23 @@ class Socket
             $this->disconnect();
         }
 
-        if (str_contains($this->_config['host'], '://')) {
-            [$this->_config['protocol'], $this->_config['host']] = explode('://', $this->_config['host']);
+        if (str_contains($this->config['host'], '://')) {
+            [$this->config['protocol'], $this->config['host']] = explode('://', $this->config['host']);
         }
         $scheme = null;
-        if (!empty($this->_config['protocol'])) {
-            $scheme = $this->_config['protocol'] . '://';
+        if (!empty($this->config['protocol'])) {
+            $scheme = $this->config['protocol'] . '://';
         }
 
-        $this->setSslContext($this->_config['host']);
-        if (!empty($this->_config['context'])) {
-            $context = stream_context_create($this->_config['context']);
+        $this->setSslContext($this->config['host']);
+        if (!empty($this->config['context'])) {
+            $context = stream_context_create($this->config['context']);
         } else {
             $context = stream_context_create();
         }
 
         $connectAs = STREAM_CLIENT_CONNECT;
-        if ($this->_config['persistent']) {
+        if ($this->config['persistent']) {
             $connectAs |= STREAM_CLIENT_PERSISTENT;
         }
 
@@ -147,8 +147,8 @@ class Socket
          * @phpstan-ignore-next-line
          */
         set_error_handler($this->connectionErrorHandler(...));
-        $remoteSocketTarget = $scheme . $this->_config['host'];
-        $port = (int)$this->_config['port'];
+        $remoteSocketTarget = $scheme . $this->config['host'];
+        $port = (int)$this->config['port'];
         if ($port > 0) {
             $remoteSocketTarget .= ':' . $port;
         }
@@ -159,7 +159,7 @@ class Socket
             $remoteSocketTarget,
             $errNum,
             $errStr,
-            (int)$this->_config['timeout'],
+            (int)$this->config['timeout'],
             $connectAs,
             $context,
         );
@@ -179,7 +179,7 @@ class Socket
         if ($this->connected) {
             assert($this->connection !== null);
 
-            stream_set_timeout($this->connection, (int)$this->_config['timeout']);
+            stream_set_timeout($this->connection, (int)$this->config['timeout']);
         }
 
         return $this->connected;
@@ -238,28 +238,28 @@ class Socket
      */
     protected function setSslContext(string $host): void
     {
-        foreach ($this->_config as $key => $value) {
+        foreach ($this->config as $key => $value) {
             if (!str_starts_with($key, 'ssl_')) {
                 continue;
             }
             $contextKey = substr($key, 4);
-            if (empty($this->_config['context']['ssl'][$contextKey])) {
-                $this->_config['context']['ssl'][$contextKey] = $value;
+            if (empty($this->config['context']['ssl'][$contextKey])) {
+                $this->config['context']['ssl'][$contextKey] = $value;
             }
-            unset($this->_config[$key]);
+            unset($this->config[$key]);
         }
-        $this->_config['context']['ssl']['SNI_enabled'] ??= true;
+        $this->config['context']['ssl']['SNI_enabled'] ??= true;
 
-        if (empty($this->_config['context']['ssl']['peer_name'])) {
-            $this->_config['context']['ssl']['peer_name'] = $host;
+        if (empty($this->config['context']['ssl']['peer_name'])) {
+            $this->config['context']['ssl']['peer_name'] = $host;
         }
-        if (empty($this->_config['context']['ssl']['cafile'])) {
-            $this->_config['context']['ssl']['cafile'] = CaBundle::getBundledCaBundlePath();
+        if (empty($this->config['context']['ssl']['cafile'])) {
+            $this->config['context']['ssl']['cafile'] = CaBundle::getBundledCaBundlePath();
         }
-        if (!empty($this->_config['context']['ssl']['verify_host'])) {
-            $this->_config['context']['ssl']['CN_match'] = $host;
+        if (!empty($this->config['context']['ssl']['verify_host'])) {
+            $this->config['context']['ssl']['CN_match'] = $host;
         }
-        unset($this->_config['context']['ssl']['verify_host']);
+        unset($this->config['context']['ssl']['verify_host']);
     }
 
     /**
@@ -298,8 +298,8 @@ class Socket
      */
     public function host(): string
     {
-        if (Validation::ip($this->_config['host'])) {
-            return (string)gethostbyaddr($this->_config['host']);
+        if (Validation::ip($this->config['host'])) {
+            return (string)gethostbyaddr($this->config['host']);
         }
 
         return (string)gethostbyaddr($this->address());
@@ -312,11 +312,11 @@ class Socket
      */
     public function address(): string
     {
-        if (Validation::ip($this->_config['host'])) {
-            return $this->_config['host'];
+        if (Validation::ip($this->config['host'])) {
+            return $this->config['host'];
         }
 
-        return gethostbyname($this->_config['host']);
+        return gethostbyname($this->config['host']);
     }
 
     /**
@@ -326,11 +326,11 @@ class Socket
      */
     public function addresses(): array
     {
-        if (Validation::ip($this->_config['host'])) {
-            return [$this->_config['host']];
+        if (Validation::ip($this->config['host'])) {
+            return [$this->config['host']];
         }
 
-        return gethostbynamel($this->_config['host']) ?: [];
+        return gethostbynamel($this->config['host']) ?: [];
     }
 
     /**

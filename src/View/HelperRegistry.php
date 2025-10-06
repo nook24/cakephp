@@ -66,7 +66,7 @@ class HelperRegistry extends ObjectRegistry implements EventDispatcherInterface
      */
     public function __isset(string $name): bool
     {
-        if (isset($this->_loaded[$name])) {
+        if (isset($this->loaded[$name])) {
             return true;
         }
 
@@ -98,7 +98,7 @@ class HelperRegistry extends ObjectRegistry implements EventDispatcherInterface
     {
         // This calls __isset() and loading the named helper if it isn't already loaded.
         if (isset($this->{$name})) {
-            return $this->_loaded[$name];
+            return $this->loaded[$name];
         }
 
         return null;

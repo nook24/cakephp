@@ -41,7 +41,7 @@ class ErrorTrap
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'errorLevel' => E_ALL,
         'errorRenderer' => null,
         'log' => true,
@@ -52,7 +52,7 @@ class ErrorTrap
     /**
      * Constructor
      *
-     * @param array<string, mixed> $options An options array. See $_defaultConfig.
+     * @param array<string, mixed> $options An options array. See $defaultConfig.
      */
     public function __construct(array $options = [])
     {
@@ -88,7 +88,7 @@ class ErrorTrap
      */
     public function register(): void
     {
-        $level = $this->_config['errorLevel'] ?? -1;
+        $level = $this->config['errorLevel'] ?? -1;
         error_reporting($level);
         set_error_handler($this->handleError(...), $level);
     }
@@ -164,10 +164,10 @@ class ErrorTrap
      */
     protected function logError(PhpError $error): void
     {
-        if (!$this->_config['log']) {
+        if (!$this->config['log']) {
             return;
         }
-        $this->logger()->logError($error, Router::getRequest(), $this->_config['trace']);
+        $this->logger()->logError($error, Router::getRequest(), $this->config['trace']);
     }
 
     /**
@@ -180,7 +180,7 @@ class ErrorTrap
         /** @var class-string<\Cake\Error\ErrorRendererInterface> $class */
         $class = $this->getConfig('errorRenderer') ?: $this->chooseErrorRenderer();
 
-        return new $class($this->_config);
+        return new $class($this->config);
     }
 
     /**
@@ -191,8 +191,8 @@ class ErrorTrap
     public function logger(): ErrorLoggerInterface
     {
         /** @var class-string<\Cake\Error\ErrorLoggerInterface> $class */
-        $class = $this->getConfig('logger', $this->_defaultConfig['logger']);
+        $class = $this->getConfig('logger', $this->defaultConfig['logger']);
 
-        return new $class($this->_config);
+        return new $class($this->config);
     }
 }
