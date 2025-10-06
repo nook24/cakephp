@@ -33,9 +33,9 @@ class SmtpTestTransport extends SmtpTransport
      * @param array $args
      * @return mixed
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args)
     {
-        return call_user_func_array($this->$method(...), $args);
+        return $this->$method(...$args);
     }
 
     /**
