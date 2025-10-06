@@ -39,18 +39,18 @@ class TableSchemaTest extends TestCase
         'core.Orders',
     ];
 
-    protected $_map;
+    protected $map;
 
     protected function setUp(): void
     {
-        $this->_map = TypeFactory::getMap();
+        $this->map = TypeFactory::getMap();
         parent::setUp();
     }
 
     protected function tearDown(): void
     {
         TypeFactory::clear();
-        TypeFactory::setMap($this->_map);
+        TypeFactory::setMap($this->map);
         parent::tearDown();
     }
 
@@ -709,9 +709,9 @@ class TableSchemaTest extends TestCase
      */
     public function testUnserializeCompat(): void
     {
-        // Serialized state from <5.3 where _columns, _indexes, and _constraints contained array data.
+        // Serialized state from <5.3 where columns, indexes, and constraints contained array data.
         $state = <<<'STATE'
-        O:32:"Cake\Database\Schema\TableSchema":7:{s:9:" * _table";s:8:"articles";s:11:" * _columns";a:6:{s:2:"id";a:9:{s:4:"type";s:7:"integer";s:6:"length";i:10;s:13:"autoIncrement";b:1;s:7:"default";N;s:4:"null";b:0;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;s:8:"unsigned";N;}s:5:"title";a:9:{s:4:"type";s:6:"string";s:6:"length";i:255;s:7:"default";N;s:4:"null";b:0;s:7:"collate";N;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;s:5:"fixed";N;}s:7:"excerpt";a:8:{s:4:"type";s:4:"text";s:6:"length";N;s:7:"default";N;s:4:"null";b:0;s:7:"collate";N;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;}s:6:"rating";a:9:{s:4:"type";s:7:"integer";s:6:"length";i:10;s:7:"default";N;s:4:"null";b:0;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;s:8:"unsigned";N;s:13:"autoIncrement";N;}s:7:"content";a:8:{s:4:"type";s:4:"text";s:6:"length";N;s:7:"default";N;s:4:"null";b:0;s:7:"collate";N;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;}s:4:"name";a:9:{s:4:"type";s:6:"string";s:6:"length";i:255;s:7:"default";N;s:4:"null";b:0;s:7:"collate";N;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;s:5:"fixed";N;}}s:11:" * _typeMap";a:6:{s:2:"id";s:7:"integer";s:5:"title";s:6:"string";s:7:"excerpt";s:4:"text";s:6:"rating";s:7:"integer";s:7:"content";s:4:"text";s:4:"name";s:6:"string";}s:11:" * _indexes";a:2:{s:12:"rating_index";a:3:{s:4:"type";s:5:"index";s:7:"columns";a:1:{i:0;s:6:"rating";}s:6:"length";a:0:{}}s:7:"by_name";a:3:{s:4:"type";s:5:"index";s:7:"columns";a:1:{i:0;s:4:"name";}s:6:"length";a:0:{}}}s:15:" * _constraints";a:1:{s:7:"primary";a:3:{s:4:"type";s:7:"primary";s:7:"columns";a:1:{i:0;s:2:"id";}s:6:"length";a:0:{}}}s:11:" * _options";a:0:{}s:13:" * _temporary";b:0;}
+        O:32:"Cake\Database\Schema\TableSchema":7:{s:8:" * table";s:8:"articles";s:10:" * columns";a:6:{s:2:"id";a:9:{s:4:"type";s:7:"integer";s:6:"length";i:10;s:13:"autoIncrement";b:1;s:7:"default";N;s:4:"null";b:0;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;s:8:"unsigned";N;}s:5:"title";a:9:{s:4:"type";s:6:"string";s:6:"length";i:255;s:7:"default";N;s:4:"null";b:0;s:7:"collate";N;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;s:5:"fixed";N;}s:7:"excerpt";a:8:{s:4:"type";s:4:"text";s:6:"length";N;s:7:"default";N;s:4:"null";b:0;s:7:"collate";N;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;}s:6:"rating";a:9:{s:4:"type";s:7:"integer";s:6:"length";i:10;s:7:"default";N;s:4:"null";b:0;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;s:8:"unsigned";N;s:13:"autoIncrement";N;}s:7:"content";a:8:{s:4:"type";s:4:"text";s:6:"length";N;s:7:"default";N;s:4:"null";b:0;s:7:"collate";N;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;}s:4:"name";a:9:{s:4:"type";s:6:"string";s:6:"length";i:255;s:7:"default";N;s:4:"null";b:0;s:7:"collate";N;s:7:"comment";N;s:8:"baseType";N;s:9:"precision";N;s:5:"fixed";N;}}s:10:" * typeMap";a:6:{s:2:"id";s:7:"integer";s:5:"title";s:6:"string";s:7:"excerpt";s:4:"text";s:6:"rating";s:7:"integer";s:7:"content";s:4:"text";s:4:"name";s:6:"string";}s:10:" * indexes";a:2:{s:12:"rating_index";a:3:{s:4:"type";s:5:"index";s:7:"columns";a:1:{i:0;s:6:"rating";}s:6:"length";a:0:{}}s:7:"by_name";a:3:{s:4:"type";s:5:"index";s:7:"columns";a:1:{i:0;s:4:"name";}s:6:"length";a:0:{}}}s:14:" * constraints";a:1:{s:7:"primary";a:3:{s:4:"type";s:7:"primary";s:7:"columns";a:1:{i:0;s:2:"id";}s:6:"length";a:0:{}}}s:10:" * options";a:0:{}s:12:" * temporary";b:0;}
         STATE;
         $schema = unserialize(trim($state));
 

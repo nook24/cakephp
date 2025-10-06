@@ -2930,7 +2930,7 @@ class SelectQueryTest extends TestCase
         $this->assertEquals($copyLoader, $loader, 'should be equal');
         $this->assertNotSame($copyLoader, $loader, 'should be clones');
 
-        $reflect = new ReflectionProperty($loader, '_matching');
+        $reflect = new ReflectionProperty($loader, 'matching');
         $this->assertNotSame(
             $reflect->getValue($copyLoader),
             $reflect->getValue($loader),

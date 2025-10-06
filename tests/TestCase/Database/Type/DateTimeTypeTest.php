@@ -47,7 +47,7 @@ class DateTimeTypeTest extends TestCase
      *
      * @var array
      */
-    protected $_originalMap = [];
+    protected $originalMap = [];
 
     /**
      * @var string

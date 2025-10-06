@@ -245,14 +245,14 @@ class CompatDialect extends SchemaDialect
     private function describeColumnQuery(string $tableName): string
     {
         $pragma = 'table_xinfo';
-        if (version_compare($this->_driver->version(), '3.26.0', '<')) {
+        if (version_compare($this->driver->version(), '3.26.0', '<')) {
             $pragma = 'table_info';
         }
 
         return sprintf(
             'PRAGMA %s(%s)',
             $pragma,
-            $this->_driver->quoteIdentifier($tableName),
+            $this->driver->quoteIdentifier($tableName),
         );
     }
 
@@ -355,9 +355,9 @@ class CompatDialect extends SchemaDialect
 
         $sql = sprintf(
             'PRAGMA index_info(%s)',
-            $this->_driver->quoteIdentifier($row['name']),
+            $this->driver->quoteIdentifier($row['name']),
         );
-        $statement = $this->_driver->execute($sql);
+        $statement = $this->driver->execute($sql);
         $columns = [];
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $column) {
             $columns[] = $column['name'];
@@ -392,7 +392,7 @@ class CompatDialect extends SchemaDialect
     {
         return sprintf(
             'PRAGMA index_list(%s)',
-            $this->_driver->quoteIdentifier($tableName),
+            $this->driver->quoteIdentifier($tableName),
         );
     }
 
@@ -406,7 +406,7 @@ class CompatDialect extends SchemaDialect
     private function extractIndexName(string $tableName, array $columns): ?string
     {
         $sql = 'SELECT sql FROM sqlite_master WHERE type = "table" AND tbl_name = ?';
-        $statement = $this->_driver->execute($sql, [$tableName]);
+        $statement = $this->driver->execute($sql, [$tableName]);
         $statement->execute();
 
         $tableRow = $statement->fetchAssoc();
@@ -438,7 +438,7 @@ class CompatDialect extends SchemaDialect
     {
         $sql = sprintf(
             'SELECT id FROM pragma_foreign_key_list(%s) GROUP BY id',
-            $this->_driver->quoteIdentifier($tableName),
+            $this->driver->quoteIdentifier($tableName),
         );
 
         return [$sql, []];
@@ -451,10 +451,10 @@ class CompatDialect extends SchemaDialect
     {
         $sql = sprintf(
             'SELECT * FROM pragma_foreign_key_list(%s) WHERE id = %d ORDER BY seq',
-            $this->_driver->quoteIdentifier($schema->name()),
+            $this->driver->quoteIdentifier($schema->name()),
             $row['id'],
         );
-        $statement = $this->_driver->prepare($sql);
+        $statement = $this->driver->prepare($sql);
         $statement->execute();
 
         $data = [

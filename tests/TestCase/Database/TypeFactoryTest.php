@@ -36,14 +36,14 @@ class TypeFactoryTest extends TestCase
      *
      * @var array<string, class-string<\Cake\Database\TypeInterface>>
      */
-    protected $_originalMap = [];
+    protected $originalMap = [];
 
     /**
      * Backup original Type class state
      */
     protected function setUp(): void
     {
-        $this->_originalMap = TypeFactory::getMap();
+        $this->originalMap = TypeFactory::getMap();
         parent::setUp();
     }
 
@@ -54,7 +54,7 @@ class TypeFactoryTest extends TestCase
     {
         parent::tearDown();
 
-        TypeFactory::setMap($this->_originalMap);
+        TypeFactory::setMap($this->originalMap);
     }
 
     /**

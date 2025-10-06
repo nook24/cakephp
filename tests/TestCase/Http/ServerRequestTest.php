@@ -802,13 +802,7 @@ class ServerRequestTest extends TestCase
         $this->assertFalse($request->isIndex());
 
         ServerRequest::addDetector('withParams', function ($request, array $params) {
-            foreach ($params as $name => $value) {
-                if ($request->getParam($name) != $value) {
-                    return false;
-                }
-            }
-
-            return true;
+            return array_all($params, fn($value, $name) => $request->getParam($name) == $value);
         });
 
         $request = $request->withParam('controller', 'Pages')->withParam('action', 'index');
