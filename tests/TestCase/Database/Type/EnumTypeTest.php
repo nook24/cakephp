@@ -50,7 +50,7 @@ class EnumTypeTest extends TestCase
      *
      * @var array
      */
-    protected $_originalMap;
+    protected $originalMap;
 
     /**
      * @var \Cake\Database\Type\EnumType
@@ -80,7 +80,7 @@ class EnumTypeTest extends TestCase
         parent::setUp();
         $this->driver = ConnectionManager::get('test')->getDriver();
 
-        $this->_originalMap = TypeFactory::getMap();
+        $this->originalMap = TypeFactory::getMap();
         $this->stringType = TypeFactory::build(EnumType::from(ArticleStatus::class));
         $this->intType = TypeFactory::build(EnumType::from(Priority::class));
 
@@ -98,7 +98,7 @@ class EnumTypeTest extends TestCase
     {
         parent::tearDown();
 
-        TypeFactory::setMap($this->_originalMap);
+        TypeFactory::setMap($this->originalMap);
     }
 
     /**

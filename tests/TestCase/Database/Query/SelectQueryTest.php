@@ -2299,7 +2299,7 @@ class SelectQueryTest extends TestCase
             ->execute()
             ->closeCursor();
 
-        $reflect = new ReflectionProperty($query, '_dirty');
+        $reflect = new ReflectionProperty($query, 'dirty');
         $this->assertFalse($reflect->getValue($query));
 
         $query->offset(2);

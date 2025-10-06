@@ -139,13 +139,8 @@ class ArrayContext implements ContextInterface
     public function isCreate(): bool
     {
         $primary = $this->getPrimaryKey();
-        foreach ($primary as $column) {
-            if (!empty($this->_context['defaults'][$column])) {
-                return false;
-            }
-        }
 
-        return true;
+        return array_all($primary, fn($column) => empty($this->_context['defaults'][$column]));
     }
 
     /**

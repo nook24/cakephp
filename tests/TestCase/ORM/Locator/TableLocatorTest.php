@@ -47,7 +47,7 @@ class TableLocatorTest extends TestCase
      *
      * @var \Cake\ORM\Locator\TableLocator
      */
-    protected $_locator;
+    protected $locator;
 
     /**
      * setup
@@ -57,7 +57,7 @@ class TableLocatorTest extends TestCase
         parent::setUp();
         static::setAppNamespace();
 
-        $this->_locator = new TableLocator();
+        $this->locator = new TableLocator();
     }
 
     /**
@@ -74,16 +74,16 @@ class TableLocatorTest extends TestCase
      */
     public function testGetConfig(): void
     {
-        $this->assertEquals([], $this->_locator->getConfig('Tests'));
+        $this->assertEquals([], $this->locator->getConfig('Tests'));
 
         $data = [
             'connection' => 'testing',
             'entityClass' => Article::class,
         ];
-        $result = $this->_locator->setConfig('Tests', $data);
-        $this->assertSame($this->_locator, $result, 'Returns locator');
+        $result = $this->locator->setConfig('Tests', $data);
+        $this->assertSame($this->locator, $result, 'Returns locator');
 
-        $result = $this->_locator->getConfig();
+        $result = $this->locator->getConfig();
         $expected = ['Tests' => $data];
         $this->assertEquals($expected, $result);
     }
@@ -100,8 +100,8 @@ class TableLocatorTest extends TestCase
             'entityClass' => Comment::class,
         ];
 
-        $result = $this->_locator->setConfig('TestPlugin.TestPluginComments', $data);
-        $this->assertSame($this->_locator, $result, 'Returns locator');
+        $result = $this->locator->setConfig('TestPlugin.TestPluginComments', $data);
+        $this->assertSame($this->locator, $result, 'Returns locator');
     }
 
     /**
@@ -109,13 +109,13 @@ class TableLocatorTest extends TestCase
      */
     public function testConfigOnDefinedInstance(): void
     {
-        $users = $this->_locator->get('Users');
+        $users = $this->locator->get('Users');
         $this->assertNotEmpty($users);
 
         $this->expectException(DatabaseException::class);
         $this->expectExceptionMessage('You cannot configure `Users`, it has already been constructed.');
 
-        $this->_locator->setConfig('Users', ['table' => 'my_users']);
+        $this->locator->setConfig('Users', ['table' => 'my_users']);
     }
 
     /**
@@ -123,13 +123,13 @@ class TableLocatorTest extends TestCase
      */
     public function testExists(): void
     {
-        $this->assertFalse($this->_locator->exists('Articles'));
+        $this->assertFalse($this->locator->exists('Articles'));
 
-        $this->_locator->setConfig('Articles', ['table' => 'articles']);
-        $this->assertFalse($this->_locator->exists('Articles'));
+        $this->locator->setConfig('Articles', ['table' => 'articles']);
+        $this->assertFalse($this->locator->exists('Articles'));
 
-        $this->_locator->get('Articles', ['table' => 'articles']);
-        $this->assertTrue($this->_locator->exists('Articles'));
+        $this->locator->get('Articles', ['table' => 'articles']);
+        $this->assertTrue($this->locator->exists('Articles'));
     }
 
     /**
@@ -138,15 +138,15 @@ class TableLocatorTest extends TestCase
      */
     public function testCasing(): void
     {
-        $this->assertFalse($this->_locator->exists('Articles'));
+        $this->assertFalse($this->locator->exists('Articles'));
 
-        $Article = $this->_locator->get('Articles', ['table' => 'articles']);
-        $this->assertTrue($this->_locator->exists('Articles'));
+        $Article = $this->locator->get('Articles', ['table' => 'articles']);
+        $this->assertTrue($this->locator->exists('Articles'));
 
-        $this->assertFalse($this->_locator->exists('articles'));
+        $this->assertFalse($this->locator->exists('articles'));
 
-        $article = $this->_locator->get('articles');
-        $this->assertTrue($this->_locator->exists('articles'));
+        $article = $this->locator->get('articles');
+        $this->assertTrue($this->locator->exists('articles'));
 
         $this->assertNotSame($Article, $article);
     }
@@ -156,16 +156,16 @@ class TableLocatorTest extends TestCase
      */
     public function testExistsPlugin(): void
     {
-        $this->assertFalse($this->_locator->exists('Comments'));
-        $this->assertFalse($this->_locator->exists('TestPlugin.Comments'));
+        $this->assertFalse($this->locator->exists('Comments'));
+        $this->assertFalse($this->locator->exists('TestPlugin.Comments'));
 
-        $this->_locator->setConfig('TestPlugin.Comments', ['table' => 'comments']);
-        $this->assertFalse($this->_locator->exists('Comments'), 'The Comments key should not be populated');
-        $this->assertFalse($this->_locator->exists('TestPlugin.Comments'), 'The plugin.alias key should not be populated');
+        $this->locator->setConfig('TestPlugin.Comments', ['table' => 'comments']);
+        $this->assertFalse($this->locator->exists('Comments'), 'The Comments key should not be populated');
+        $this->assertFalse($this->locator->exists('TestPlugin.Comments'), 'The plugin.alias key should not be populated');
 
-        $this->_locator->get('TestPlugin.Comments', ['table' => 'comments']);
-        $this->assertFalse($this->_locator->exists('Comments'), 'The Comments key should not be populated');
-        $this->assertTrue($this->_locator->exists('TestPlugin.Comments'), 'The plugin.alias key should now be populated');
+        $this->locator->get('TestPlugin.Comments', ['table' => 'comments']);
+        $this->assertFalse($this->locator->exists('Comments'), 'The Comments key should not be populated');
+        $this->assertTrue($this->locator->exists('TestPlugin.Comments'), 'The plugin.alias key should now be populated');
     }
 
     /**
@@ -173,23 +173,23 @@ class TableLocatorTest extends TestCase
      */
     public function testGet(): void
     {
-        $result = $this->_locator->get('Articles', [
+        $result = $this->locator->get('Articles', [
             'table' => 'my_articles',
         ]);
         $this->assertInstanceOf(Table::class, $result);
         $this->assertSame('my_articles', $result->getTable());
 
-        $result2 = $this->_locator->get('Articles');
+        $result2 = $this->locator->get('Articles');
         $this->assertSame($result, $result2);
         $this->assertSame('my_articles', $result->getTable());
 
-        $this->assertSame($this->_locator, $result->associations()->getTableLocator());
+        $this->assertSame($this->locator, $result->associations()->getTableLocator());
 
-        $result = $this->_locator->get(ArticlesTable::class);
+        $result = $this->locator->get(ArticlesTable::class);
         $this->assertSame('Articles', $result->getAlias());
         $this->assertSame(ArticlesTable::class, $result->getRegistryAlias());
 
-        $result2 = $this->_locator->get($result->getRegistryAlias());
+        $result2 = $this->locator->get($result->getRegistryAlias());
         $this->assertSame($result, $result2);
     }
 
@@ -198,32 +198,32 @@ class TableLocatorTest extends TestCase
      */
     public function testGetFallbacks(): void
     {
-        $result = $this->_locator->get('Droids');
+        $result = $this->locator->get('Droids');
         $this->assertInstanceOf(Table::class, $result);
         $this->assertSame('droids', $result->getTable());
         $this->assertSame('Droids', $result->getAlias());
 
-        $result = $this->_locator->get('R2D2', ['className' => 'Droids']);
+        $result = $this->locator->get('R2D2', ['className' => 'Droids']);
         $this->assertInstanceOf(Table::class, $result);
         $this->assertSame('droids', $result->getTable(), 'The table should be derived from the className');
         $this->assertSame('R2D2', $result->getAlias());
 
-        $result = $this->_locator->get('C3P0', ['className' => 'Droids', 'table' => 'rebels']);
+        $result = $this->locator->get('C3P0', ['className' => 'Droids', 'table' => 'rebels']);
         $this->assertInstanceOf(Table::class, $result);
         $this->assertSame('rebels', $result->getTable(), 'The table should be taken from options');
         $this->assertSame('C3P0', $result->getAlias());
 
-        $result = $this->_locator->get('Funky.Chipmunks');
+        $result = $this->locator->get('Funky.Chipmunks');
         $this->assertInstanceOf(Table::class, $result);
         $this->assertSame('chipmunks', $result->getTable(), 'The table should be derived from the alias');
         $this->assertSame('Chipmunks', $result->getAlias());
 
-        $result = $this->_locator->get('Awesome', ['className' => 'Funky.Monkies']);
+        $result = $this->locator->get('Awesome', ['className' => 'Funky.Monkies']);
         $this->assertInstanceOf(Table::class, $result);
         $this->assertSame('monkies', $result->getTable(), 'The table should be derived from the classname');
         $this->assertSame('Awesome', $result->getAlias());
 
-        $result = $this->_locator->get('Stuff', ['className' => Table::class]);
+        $result = $this->locator->get('Stuff', ['className' => Table::class]);
         $this->assertInstanceOf(Table::class, $result);
         $this->assertSame('stuff', $result->getTable(), 'The table should be derived from the alias');
         $this->assertSame('Stuff', $result->getAlias());
@@ -234,7 +234,7 @@ class TableLocatorTest extends TestCase
         $this->expectException(MissingTableClassException::class);
         $this->expectExceptionMessage('Table class for alias `Droids` could not be found.');
 
-        $this->_locator->get('Droids', ['allowFallbackClass' => false]);
+        $this->locator->get('Droids', ['allowFallbackClass' => false]);
     }
 
     public function testExceptionForFQCNWhenFallbackTurnedOff(): void
@@ -242,7 +242,7 @@ class TableLocatorTest extends TestCase
         $this->expectException(MissingTableClassException::class);
         $this->expectExceptionMessage('Table class `App\Model\DroidsTable` could not be found.');
 
-        $this->_locator->get('App\Model\DroidsTable', ['allowFallbackClass' => false]);
+        $this->locator->get('App\Model\DroidsTable', ['allowFallbackClass' => false]);
     }
 
     /**
@@ -250,10 +250,10 @@ class TableLocatorTest extends TestCase
      */
     public function testGetWithGetConfig(): void
     {
-        $this->_locator->setConfig('Articles', [
+        $this->locator->setConfig('Articles', [
             'table' => 'my_articles',
         ]);
-        $result = $this->_locator->get('Articles');
+        $result = $this->locator->get('Articles');
         $this->assertSame('my_articles', $result->getTable(), 'Should use getConfig() data.');
     }
 
@@ -263,7 +263,7 @@ class TableLocatorTest extends TestCase
     public function testGetWithConnectionName(): void
     {
         ConnectionManager::alias('test', 'testing');
-        $result = $this->_locator->get('Articles', [
+        $result = $this->locator->get('Articles', [
             'connectionName' => 'testing',
         ]);
         $this->assertSame('articles', $result->getTable());
@@ -275,10 +275,10 @@ class TableLocatorTest extends TestCase
      */
     public function testGetWithConfigClassName(): void
     {
-        $this->_locator->setConfig('MyUsersTableAlias', [
+        $this->locator->setConfig('MyUsersTableAlias', [
             'className' => MyUsersTable::class,
         ]);
-        $result = $this->_locator->get('MyUsersTableAlias');
+        $result = $this->locator->get('MyUsersTableAlias');
         $this->assertInstanceOf(MyUsersTable::class, $result, 'Should use getConfig() data className option.');
     }
 
@@ -287,13 +287,13 @@ class TableLocatorTest extends TestCase
      */
     public function testGetExistingWithConfigData(): void
     {
-        $users = $this->_locator->get('Users');
+        $users = $this->locator->get('Users');
         $this->assertNotEmpty($users);
 
         $this->expectException(CakeException::class);
         $this->expectExceptionMessage('You cannot configure `Users`, it already exists in the registry.');
 
-        $this->_locator->get('Users', ['table' => 'my_users']);
+        $this->locator->get('Users', ['table' => 'my_users']);
     }
 
     /**
@@ -302,8 +302,8 @@ class TableLocatorTest extends TestCase
      */
     public function testGetWithSameOption(): void
     {
-        $result = $this->_locator->get('Users', ['className' => MyUsersTable::class]);
-        $result2 = $this->_locator->get('Users', ['className' => MyUsersTable::class]);
+        $result = $this->locator->get('Users', ['className' => MyUsersTable::class]);
+        $result2 = $this->locator->get('Users', ['className' => MyUsersTable::class]);
         $this->assertEquals($result, $result2);
     }
 
@@ -313,10 +313,10 @@ class TableLocatorTest extends TestCase
      */
     public function testGetWithConventions(): void
     {
-        $table = $this->_locator->get('Articles');
+        $table = $this->locator->get('Articles');
         $this->assertInstanceOf(ArticlesTable::class, $table);
 
-        $table = $this->_locator->get('Authors');
+        $table = $this->locator->get('Authors');
         $this->assertInstanceOf(AuthorsTable::class, $table);
     }
 
@@ -326,19 +326,19 @@ class TableLocatorTest extends TestCase
     public function testGetPlugin(): void
     {
         $this->loadPlugins(['TestPlugin']);
-        $table = $this->_locator->get('TestPlugin.TestPluginComments');
+        $table = $this->locator->get('TestPlugin.TestPluginComments');
 
         $this->assertInstanceOf(TestPluginCommentsTable::class, $table);
         $this->assertFalse(
-            $this->_locator->exists('TestPluginComments'),
+            $this->locator->exists('TestPluginComments'),
             'Short form should NOT exist',
         );
         $this->assertTrue(
-            $this->_locator->exists('TestPlugin.TestPluginComments'),
+            $this->locator->exists('TestPlugin.TestPluginComments'),
             'Long form should exist',
         );
 
-        $second = $this->_locator->get('TestPlugin.TestPluginComments');
+        $second = $this->locator->get('TestPlugin.TestPluginComments');
         $this->assertSame($table, $second, 'Can fetch long form');
     }
 
@@ -351,17 +351,17 @@ class TableLocatorTest extends TestCase
     {
         $this->loadPlugins(['TestPlugin', 'TestPluginTwo']);
 
-        $app = $this->_locator->get('Comments');
-        $plugin1 = $this->_locator->get('TestPlugin.Comments');
-        $plugin2 = $this->_locator->get('TestPluginTwo.Comments');
+        $app = $this->locator->get('Comments');
+        $plugin1 = $this->locator->get('TestPlugin.Comments');
+        $plugin2 = $this->locator->get('TestPluginTwo.Comments');
 
         $this->assertInstanceOf(Table::class, $app, 'Should be an app table instance');
         $this->assertInstanceOf(CommentsTable::class, $plugin1, 'Should be a plugin 1 table instance');
         $this->assertInstanceOf(PluginTwoCommentsTable::class, $plugin2, 'Should be a plugin 2 table instance');
 
-        $plugin2 = $this->_locator->get('TestPluginTwo.Comments');
-        $plugin1 = $this->_locator->get('TestPlugin.Comments');
-        $app = $this->_locator->get('Comments');
+        $plugin2 = $this->locator->get('TestPluginTwo.Comments');
+        $plugin1 = $this->locator->get('TestPlugin.Comments');
+        $app = $this->locator->get('Comments');
 
         $this->assertInstanceOf(Table::class, $app, 'Should still be an app table instance');
         $this->assertInstanceOf(CommentsTable::class, $plugin1, 'Should still be a plugin 1 table instance');
@@ -374,16 +374,16 @@ class TableLocatorTest extends TestCase
     public function testGetPluginWithClassNameOption(): void
     {
         $this->loadPlugins(['TestPlugin']);
-        $table = $this->_locator->get('Comments', [
+        $table = $this->locator->get('Comments', [
             'className' => 'TestPlugin.TestPluginComments',
         ]);
         $class = TestPluginCommentsTable::class;
         $this->assertInstanceOf($class, $table);
-        $this->assertFalse($this->_locator->exists('TestPluginComments'), 'Class name should not exist');
-        $this->assertFalse($this->_locator->exists('TestPlugin.TestPluginComments'), 'Full class alias should not exist');
-        $this->assertTrue($this->_locator->exists('Comments'), 'Class name should exist');
+        $this->assertFalse($this->locator->exists('TestPluginComments'), 'Class name should not exist');
+        $this->assertFalse($this->locator->exists('TestPlugin.TestPluginComments'), 'Full class alias should not exist');
+        $this->assertTrue($this->locator->exists('Comments'), 'Class name should exist');
 
-        $second = $this->_locator->get('Comments');
+        $second = $this->locator->get('Comments');
         $this->assertSame($table, $second);
     }
 
@@ -394,13 +394,13 @@ class TableLocatorTest extends TestCase
     {
         $this->loadPlugins(['TestPlugin']);
         $class = TestPluginCommentsTable::class;
-        $table = $this->_locator->get('Comments', [
+        $table = $this->locator->get('Comments', [
             'className' => $class,
         ]);
         $this->assertInstanceOf($class, $table);
-        $this->assertFalse($this->_locator->exists('TestPluginComments'), 'Class name should not exist');
-        $this->assertFalse($this->_locator->exists('TestPlugin.TestPluginComments'), 'Full class alias should not exist');
-        $this->assertTrue($this->_locator->exists('Comments'), 'Class name should exist');
+        $this->assertFalse($this->locator->exists('TestPluginComments'), 'Class name should not exist');
+        $this->assertFalse($this->locator->exists('TestPlugin.TestPluginComments'), 'Full class alias should not exist');
+        $this->assertTrue($this->locator->exists('Comments'), 'Class name should exist');
     }
 
     /**
@@ -408,22 +408,22 @@ class TableLocatorTest extends TestCase
      */
     public function testConfigAndBuild(): void
     {
-        $this->_locator->clear();
-        $map = $this->_locator->getConfig();
+        $this->locator->clear();
+        $map = $this->locator->getConfig();
         $this->assertEquals([], $map);
 
         $connection = ConnectionManager::get('test', false);
         $options = ['connection' => $connection];
-        $this->_locator->setConfig('users', $options);
-        $map = $this->_locator->getConfig();
+        $this->locator->setConfig('users', $options);
+        $map = $this->locator->getConfig();
         $this->assertEquals(['users' => $options], $map);
-        $this->assertEquals($options, $this->_locator->getConfig('users'));
+        $this->assertEquals($options, $this->locator->getConfig('users'));
 
         $schema = ['id' => ['type' => 'rubbish']];
         $options += ['schema' => $schema];
-        $this->_locator->setConfig('users', $options);
+        $this->locator->setConfig('users', $options);
 
-        $table = $this->_locator->get('users', ['table' => 'users']);
+        $table = $this->locator->get('users', ['table' => 'users']);
         $this->assertInstanceOf(Table::class, $table);
         $this->assertSame('users', $table->getTable());
         $this->assertSame('users', $table->getAlias());
@@ -431,11 +431,11 @@ class TableLocatorTest extends TestCase
         $this->assertEquals(array_keys($schema), $table->getSchema()->columns());
         $this->assertSame($schema['id']['type'], $table->getSchema()->getColumnType('id'));
 
-        $this->_locator->clear();
-        $this->assertEmpty($this->_locator->getConfig());
+        $this->locator->clear();
+        $this->assertEmpty($this->locator->getConfig());
 
-        $this->_locator->setConfig('users', $options);
-        $table = $this->_locator->get('users', ['className' => MyUsersTable::class]);
+        $this->locator->setConfig('users', $options);
+        $table = $this->locator->get('users', ['className' => MyUsersTable::class]);
         $this->assertInstanceOf(MyUsersTable::class, $table);
         $this->assertSame('users', $table->getTable());
         $this->assertSame('users', $table->getAlias());
@@ -451,8 +451,8 @@ class TableLocatorTest extends TestCase
     {
         $validator = new Validator();
 
-        $this->_locator->setConfig('users', ['validator' => $validator]);
-        $table = $this->_locator->get('users');
+        $this->locator->setConfig('users', ['validator' => $validator]);
+        $table = $this->locator->get('users');
 
         $this->assertSame($table->getValidator('default'), $validator);
     }
@@ -466,14 +466,14 @@ class TableLocatorTest extends TestCase
         $validator2 = new Validator();
         $validator3 = new Validator();
 
-        $this->_locator->setConfig('users', [
+        $this->locator->setConfig('users', [
             'validator' => [
                 'default' => $validator1,
                 'secondary' => $validator2,
                 'tertiary' => $validator3,
             ],
         ]);
-        $table = $this->_locator->get('users');
+        $table = $this->locator->get('users');
 
         $this->assertSame($table->getValidator('default'), $validator1);
         $this->assertSame($table->getValidator('secondary'), $validator2);
@@ -486,8 +486,8 @@ class TableLocatorTest extends TestCase
     public function testSet(): void
     {
         $mock = $this->getMockBuilder(Table::class)->getMock();
-        $this->assertSame($mock, $this->_locator->set('Articles', $mock));
-        $this->assertSame($mock, $this->_locator->get('Articles'));
+        $this->assertSame($mock, $this->locator->set('Articles', $mock));
+        $this->assertSame($mock, $this->locator->get('Articles'));
     }
 
     /**
@@ -499,8 +499,8 @@ class TableLocatorTest extends TestCase
 
         $mock = $this->getMockBuilder(CommentsTable::class)->getMock();
 
-        $this->assertSame($mock, $this->_locator->set('TestPlugin.Comments', $mock));
-        $this->assertSame($mock, $this->_locator->get('TestPlugin.Comments'));
+        $this->assertSame($mock, $this->locator->set('TestPlugin.Comments', $mock));
+        $this->assertSame($mock, $this->locator->get('TestPlugin.Comments'));
     }
 
     /**
@@ -508,11 +508,11 @@ class TableLocatorTest extends TestCase
      */
     public function testGenericInstances(): void
     {
-        $foos = $this->_locator->get('Foos');
-        $bars = $this->_locator->get('Bars');
-        $this->_locator->get('Articles');
+        $foos = $this->locator->get('Foos');
+        $bars = $this->locator->get('Bars');
+        $this->locator->get('Articles');
         $expected = ['Foos' => $foos, 'Bars' => $bars];
-        $this->assertEquals($expected, $this->_locator->genericInstances());
+        $this->assertEquals($expected, $this->locator->genericInstances());
     }
 
     /**
@@ -520,17 +520,17 @@ class TableLocatorTest extends TestCase
      */
     public function testRemove(): void
     {
-        $first = $this->_locator->get('Comments');
+        $first = $this->locator->get('Comments');
 
-        $this->assertTrue($this->_locator->exists('Comments'));
+        $this->assertTrue($this->locator->exists('Comments'));
 
-        $this->_locator->remove('Comments');
-        $this->assertFalse($this->_locator->exists('Comments'));
+        $this->locator->remove('Comments');
+        $this->assertFalse($this->locator->exists('Comments'));
 
-        $second = $this->_locator->get('Comments');
+        $second = $this->locator->get('Comments');
 
         $this->assertNotSame($first, $second, 'Should be different objects, as the reference to the first was destroyed');
-        $this->assertTrue($this->_locator->exists('Comments'));
+        $this->assertTrue($this->locator->exists('Comments'));
     }
 
     /**
@@ -545,33 +545,33 @@ class TableLocatorTest extends TestCase
     {
         $this->loadPlugins(['TestPlugin', 'TestPluginTwo']);
 
-        $app = $this->_locator->get('Comments');
-        $this->_locator->get('TestPlugin.Comments');
-        $plugin = $this->_locator->get('TestPluginTwo.Comments');
+        $app = $this->locator->get('Comments');
+        $this->locator->get('TestPlugin.Comments');
+        $plugin = $this->locator->get('TestPluginTwo.Comments');
 
-        $this->assertTrue($this->_locator->exists('Comments'));
-        $this->assertTrue($this->_locator->exists('TestPlugin.Comments'));
-        $this->assertTrue($this->_locator->exists('TestPluginTwo.Comments'));
+        $this->assertTrue($this->locator->exists('Comments'));
+        $this->assertTrue($this->locator->exists('TestPlugin.Comments'));
+        $this->assertTrue($this->locator->exists('TestPluginTwo.Comments'));
 
-        $this->_locator->remove('TestPlugin.Comments');
+        $this->locator->remove('TestPlugin.Comments');
 
-        $this->assertTrue($this->_locator->exists('Comments'));
-        $this->assertFalse($this->_locator->exists('TestPlugin.Comments'));
-        $this->assertTrue($this->_locator->exists('TestPluginTwo.Comments'));
+        $this->assertTrue($this->locator->exists('Comments'));
+        $this->assertFalse($this->locator->exists('TestPlugin.Comments'));
+        $this->assertTrue($this->locator->exists('TestPluginTwo.Comments'));
 
-        $app2 = $this->_locator->get('Comments');
-        $plugin2 = $this->_locator->get('TestPluginTwo.Comments');
+        $app2 = $this->locator->get('Comments');
+        $plugin2 = $this->locator->get('TestPluginTwo.Comments');
 
         $this->assertSame($app, $app2, 'Should be the same Comments object');
         $this->assertSame($plugin, $plugin2, 'Should be the same TestPluginTwo.Comments object');
 
-        $this->_locator->remove('Comments');
+        $this->locator->remove('Comments');
 
-        $this->assertFalse($this->_locator->exists('Comments'));
-        $this->assertFalse($this->_locator->exists('TestPlugin.Comments'));
-        $this->assertTrue($this->_locator->exists('TestPluginTwo.Comments'));
+        $this->assertFalse($this->locator->exists('Comments'));
+        $this->assertFalse($this->locator->exists('TestPlugin.Comments'));
+        $this->assertTrue($this->locator->exists('TestPluginTwo.Comments'));
 
-        $plugin3 = $this->_locator->get('TestPluginTwo.Comments');
+        $plugin3 = $this->locator->get('TestPluginTwo.Comments');
 
         $this->assertSame($plugin, $plugin3, 'Should be the same TestPluginTwo.Comments object');
     }
@@ -665,9 +665,9 @@ class TableLocatorTest extends TestCase
 
     public function testSetFallbackClassName(): void
     {
-        $this->_locator->setFallbackClassName(ArticlesTable::class);
+        $this->locator->setFallbackClassName(ArticlesTable::class);
 
-        $table = $this->_locator->get('FooBar');
+        $table = $this->locator->get('FooBar');
         $this->assertInstanceOf(ArticlesTable::class, $table);
     }
 
@@ -678,25 +678,25 @@ class TableLocatorTest extends TestCase
      */
     public function testInstanceSetButNotOptions(): void
     {
-        $this->setTableLocator($this->_locator);
+        $this->setTableLocator($this->locator);
         $mock = $this->getMockForModel('Articles', ['findPublished']);
-        $table = $this->_locator->get('Articles', ['className' => ArticlesTable::class]);
+        $table = $this->locator->get('Articles', ['className' => ArticlesTable::class]);
 
         $this->assertSame($table, $mock);
     }
 
     public function testQueryFactoryInstance(): void
     {
-        $articles = $this->_locator->get(ArticlesTable::class);
+        $articles = $this->locator->get(ArticlesTable::class);
         $prop1 = new ReflectionProperty($articles, 'queryFactory');
 
-        $users = $this->_locator->get(MyUsersTable::class);
+        $users = $this->locator->get(MyUsersTable::class);
         $prop2 = new ReflectionProperty($users, 'queryFactory');
 
         $this->assertInstanceOf(QueryFactory::class, $prop1->getValue($articles));
         $this->assertSame($prop1->getValue($articles), $prop2->getValue($users));
 
-        $addresses = $this->_locator->get(AddressesTable::class, ['queryFactory' => new QueryFactory()]);
+        $addresses = $this->locator->get(AddressesTable::class, ['queryFactory' => new QueryFactory()]);
         $prop3 = new ReflectionProperty($addresses, 'queryFactory');
         $this->assertNotSame($prop1->getValue($articles), $prop3->getValue($addresses));
     }
