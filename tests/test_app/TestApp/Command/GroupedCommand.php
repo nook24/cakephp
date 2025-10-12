@@ -5,7 +5,7 @@ namespace TestApp\Command;
 
 use Cake\Command\Command;
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleIoInterface;
 
 class GroupedCommand extends Command
 {
@@ -14,7 +14,7 @@ class GroupedCommand extends Command
         return 'custom_group';
     }
 
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIoInterface $io)
     {
         $io->out('Grouped Command!');
     }
