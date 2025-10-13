@@ -250,7 +250,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Comments->rulesChecker();
         $rulesChecker->addUpdate(
             new LinkConstraint('Articles', LinkConstraint::STATUS_LINKED),
-            '_isLinkedTo',
+            'isLinkedTo',
             [
                 'errorField' => 'article',
             ],
@@ -262,7 +262,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'article' => [
-                '_isLinkedTo' => 'invalid',
+                'isLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $comment->getErrors());
@@ -300,7 +300,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Tags->rulesChecker();
         $rulesChecker->addUpdate(
             new LinkConstraint('Articles', LinkConstraint::STATUS_LINKED),
-            '_isLinkedTo',
+            'isLinkedTo',
             [
                 'errorField' => 'articles',
             ],
@@ -312,7 +312,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'articles' => [
-                '_isLinkedTo' => 'invalid',
+                'isLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $tag->getErrors());
@@ -348,7 +348,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->rulesChecker();
         $rulesChecker->addUpdate(
             new LinkConstraint('Comments', LinkConstraint::STATUS_LINKED),
-            '_isLinkedTo',
+            'isLinkedTo',
             [
                 'errorField' => 'comments',
             ],
@@ -360,7 +360,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'comments' => [
-                '_isLinkedTo' => 'invalid',
+                'isLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $article->getErrors());
@@ -396,7 +396,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->rulesChecker();
         $rulesChecker->addUpdate(
             new LinkConstraint('Comments', LinkConstraint::STATUS_LINKED),
-            '_isLinkedTo',
+            'isLinkedTo',
             [
                 'errorField' => 'comment',
             ],
@@ -408,7 +408,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'comment' => [
-                '_isLinkedTo' => 'invalid',
+                'isLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $article->getErrors());
@@ -449,7 +449,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Comments->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Articles', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'article',
             ],
@@ -460,7 +460,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'article' => [
-                '_isNotLinkedTo' => 'invalid',
+                'isNotLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $comment->getErrors());
@@ -497,7 +497,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Tags->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Articles', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'articles',
             ],
@@ -508,7 +508,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'articles' => [
-                '_isNotLinkedTo' => 'invalid',
+                'isNotLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $tag->getErrors());
@@ -543,7 +543,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Comments', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'comments',
             ],
@@ -554,7 +554,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'comments' => [
-                '_isNotLinkedTo' => 'invalid',
+                'isNotLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $article->getErrors());
@@ -589,7 +589,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Comments', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'comment',
             ],
@@ -600,7 +600,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'comment' => [
-                '_isNotLinkedTo' => 'invalid',
+                'isNotLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $article->getErrors());
@@ -671,7 +671,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Comments', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'comment',
             ],
@@ -682,7 +682,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'comment' => [
-                '_isNotLinkedTo' => 'invalid',
+                'isNotLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $article->getErrors());
@@ -725,7 +725,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Comments', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'comments',
             ],
@@ -736,7 +736,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'comments' => [
-                '_isNotLinkedTo' => 'invalid',
+                'isNotLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $article->getErrors());
@@ -796,7 +796,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Comments', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'comment',
             ],
@@ -807,7 +807,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'comment' => [
-                '_isNotLinkedTo' => 'invalid',
+                'isNotLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $article->getErrors());
@@ -857,7 +857,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Comments->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Articles', LinkConstraint::STATUS_NOT_LINKED),
-            '_isLinkedTo',
+            'isLinkedTo',
             [
                 'errorField' => 'article',
             ],
@@ -868,7 +868,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'article' => [
-                '_isLinkedTo' => 'invalid',
+                'isLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $comment->getErrors());
@@ -910,7 +910,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Comments->rulesChecker();
         $rulesChecker->addUpdate(
             new LinkConstraint($Comments->getAssociation('Articles'), LinkConstraint::STATUS_LINKED),
-            '_isLinkedTo',
+            'isLinkedTo',
             [
                 'errorField' => 'article',
             ],
@@ -922,7 +922,7 @@ class LinkConstraintTest extends TestCase
 
         $expected = [
             'article' => [
-                '_isLinkedTo' => 'invalid',
+                'isLinkedTo' => 'invalid',
             ],
         ];
         $this->assertEquals($expected, $comment->getErrors());
@@ -946,7 +946,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->getAssociation('Comments')->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Attachments', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'attachments',
             ],
@@ -979,7 +979,7 @@ class LinkConstraintTest extends TestCase
         $rulesChecker = $Articles->getAssociation('Tags')->junction()->rulesChecker();
         $rulesChecker->addDelete(
             new LinkConstraint('Articles', LinkConstraint::STATUS_NOT_LINKED),
-            '_isNotLinkedTo',
+            'isNotLinkedTo',
             [
                 'errorField' => 'articles',
             ],
