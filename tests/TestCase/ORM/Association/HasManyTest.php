@@ -1112,7 +1112,7 @@ class HasManyTest extends TestCase
         $this->assertNotEmpty($article->comments[1]->getErrors());
         $expected = [
             'user_id' => [
-                '_existsIn' => __('This value does not exist'),
+                'existsIn' => __('This value does not exist'),
             ],
         ];
         $this->assertEquals($expected, $article->comments[1]->getErrors());

@@ -5010,7 +5010,7 @@ class TableTest extends TestCase
             'atomic' => true,
             'checkRules' => true,
             'checkExisting' => true,
-            '_sourceTable' => $authors,
+            'sourceTable' => $authors,
             '_cleanOnSuccess' => true,
         ];
         $this->assertEquals($expected, $actualOptions);
@@ -5045,7 +5045,7 @@ class TableTest extends TestCase
             'atomic' => true,
             'checkRules' => true,
             'checkExisting' => true,
-            '_sourceTable' => $authors,
+            'sourceTable' => $authors,
             'associated' => [
                 'Authors' => [],
                 'Tags' => [],
@@ -5133,7 +5133,7 @@ class TableTest extends TestCase
             'atomic' => true,
             'checkRules' => true,
             'checkExisting' => true,
-            '_sourceTable' => $authors,
+            'sourceTable' => $authors,
             'associated' => [
                 'Authors' => [],
                 'Tags' => [],
@@ -5148,7 +5148,7 @@ class TableTest extends TestCase
             'foo' => 'bar',
             'atomic' => true,
             'checkRules' => true,
-            '_sourceTable' => $authors,
+            'sourceTable' => $authors,
         ];
         $this->assertEquals($expected, $actualDeleteOptions);
     }
