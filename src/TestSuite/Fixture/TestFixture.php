@@ -43,12 +43,26 @@ class TestFixture implements FixtureInterface
     public string $connection = 'test';
 
     /**
-     * Full Table Name
+     * The physical database table name to use.
+     *
+     * If set, tableAlias must initially be empty.
+     * $tableAlias will then be inflected as Inflector::camelize($table).
      *
      * @var string
      */
     public string $table = '';
 
+    /**
+     * The ORM table alias to use.
+     *
+     * If set, table must initially be empty.
+     * $table will be read from the ORM table loaded via the alias.
+     *
+     * If both table and tableAlias are empty, the alias,
+     * will be inflected from the class name with Inflector::pluralize()
+     *
+     * @var string
+     */
     public string $tableAlias = '';
 
     /**
@@ -136,7 +150,7 @@ class TestFixture implements FixtureInterface
         [, $class] = namespaceSplit(static::class);
         preg_match('/^(.*)Fixture$/', $class, $matches);
 
-        return $matches[1] ?? $class;
+        return Inflector::pluralize($matches[1] ?? $class);
     }
 
     /**
