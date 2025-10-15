@@ -26,6 +26,7 @@ use Cake\Log\Log;
 use Cake\Test\Fixture\AliasedArticlesFixture;
 use Cake\Test\Fixture\ArticlesFixture;
 use Cake\Test\Fixture\PostsFixture;
+use Cake\Test\Fixture\SpecialPkFixture;
 use Cake\TestSuite\TestCase;
 use Mockery;
 use TestApp\Test\Fixture\FeaturedTagsFixture;
@@ -60,6 +61,7 @@ class TestFixtureTest extends TestCase
         parent::tearDown();
         Log::reset();
         ConnectionManager::get('test')->execute('DROP TABLE IF EXISTS letters');
+        ConnectionManager::get('test')->execute('DROP TABLE IF EXISTS special_pks');
     }
 
     /**
@@ -84,6 +86,16 @@ class TestFixtureTest extends TestCase
     {
         $Fixture = new AliasedArticlesFixture();
         $this->assertSame('articles', $Fixture->table);
+        $this->assertSame('Articles', $Fixture->tableAlias);
+    }
+
+    public function testAliasPlural(): void
+    {
+        $connection = ConnectionManager::get('test');
+        $connection->execute('CREATE TABLE special_pks (id INT PRIMARY KEY, name VARCHAR(50))');
+        $Fixture = new SpecialPkFixture();
+        $this->assertSame('special_pks', $Fixture->table);
+        $this->assertSame('SpecialPks', $Fixture->tableAlias);
     }
 
     /**
