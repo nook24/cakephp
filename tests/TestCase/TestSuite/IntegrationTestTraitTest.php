@@ -986,7 +986,6 @@ class IntegrationTestTraitTest extends TestCase
      */
     public function testPostSecuredFormWithDebugDisabled(): void
     {
-        $originalDebug = Configure::read('debug');
         Configure::write('debug', false);
 
         $this->enableSecurityToken();
@@ -997,8 +996,6 @@ class IntegrationTestTraitTest extends TestCase
         $this->post('/posts/securePost', $data);
         $this->assertResponseOk();
         $this->assertResponseContains('Request was accepted');
-
-        Configure::write('debug', $originalDebug);
     }
 
     /**
