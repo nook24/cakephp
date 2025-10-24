@@ -1,6 +1,18 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Return type \(Cake\\Event\\EventInterface\<Cake\\Cache\\CacheEngine\>\) of method Cake\\Cache\\CacheEngine\:\:dispatchEvent\(\) should be compatible with return type \(Cake\\Event\\EventInterface\<object\>\) of method Cake\\Event\\EventDispatcherInterface\<object\>\:\:dispatchEvent\(\)$#'
+			identifier: method.childReturnType
+			count: 1
+			path: src/Cache/CacheEngine.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between int and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: src/Cache/Engine/ApcuEngine.php
+
+		-
 			message: '#^Call to function method_exists\(\) with Memcached and ''setSaslAuthData'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
