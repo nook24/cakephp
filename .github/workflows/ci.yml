@@ -71,11 +71,11 @@ jobs:
 
     steps:
     - name: Setup MySQL 8.4
-      if: matrix.db-type == 'mysql' && matrix.dependencies == 'highest'
+      if: matrix.db-type == 'mysql' && matrix.dependencies == 'highest' && matrix.php-version != '8.3'
       run: docker run --rm --name=mysqld -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=cakephp -p 3306:3306 -d mysql:8.4
 
     - name: Setup MySQL 8.0
-      if: matrix.db-type == 'mysql' && matrix.dependencies == ''
+      if: matrix.db-type == 'mysql' && matrix.dependencies == 'highest' && matrix.php-version == '8.3'
       run: |
         sudo service mysql start
         mysql -h 127.0.0.1 -u root -proot -e 'CREATE DATABASE cakephp;'
@@ -314,6 +314,8 @@ jobs:
         uses: ramsey/composer-install@v3
 
       - name: Install PHP tools with phive.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: 'phive install --trust-gpg-keys "$PHIVE_KEYS"'
 
       - name: Run phpstan for split packages
