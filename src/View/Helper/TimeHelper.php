@@ -223,7 +223,12 @@ class TimeHelper extends Helper
         ChronosDate|DateTimeInterface|string|int $dateString,
         bool $range = false,
     ): array|int {
-        return (new DateTime($dateString))->toQuarter($range);
+        $dt = new DateTime($dateString);
+        if ($range && method_exists($dt, 'toQuarterRange')) {
+            return $dt->toQuarterRange();
+        }
+
+        return $dt->toQuarter($range);
     }
 
     /**
