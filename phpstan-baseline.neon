@@ -689,3 +689,9 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: src/View/Widget/DateTimeWidget.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Cake\\I18n\\DateTime and ''toQuarterRange'' will always evaluate to true\.#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/View/Helper/TimeHelper.php
